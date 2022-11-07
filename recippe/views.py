@@ -35,7 +35,7 @@ class LoginAPI(APIView):
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if code == 0:
-            return Response("로그인 실패_비번", 0)
+            return Response("로그인 실패_비번", status=0)
         elif code == 1:
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
