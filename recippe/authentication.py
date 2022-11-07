@@ -62,8 +62,8 @@ class ControlLogin_b():
     def checkLogin(self, id, pw):
         dbCheck = User.objects.filter(uid=id)
         print(len(dbCheck))
-        if dbCheck.uid == id:
-            if dbCheck.password == pw:
+        if dbCheck['uid'] == id:
+            if dbCheck['password'] == pw:
                 serializer = self.sendResult("로그인 성공", dbCheck)
             else:
                 serializer = self.sendResult("로그인 실패_비번", dbCheck)
