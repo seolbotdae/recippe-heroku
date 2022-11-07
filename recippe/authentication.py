@@ -61,7 +61,7 @@ def send_message(service, user_id, message):
 class ControlLogin_b():
     def checkLogin(self, id, pw):
         dbCheck = User.objects.get(uid=id)
-        print(len(dbCheck))
+        print(dbCheck)
         serializer = UserInfoSerializer(dbCheck)
         print(serializer)
         if serializer.data['uid'] == id:
