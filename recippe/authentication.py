@@ -60,18 +60,16 @@ def send_message(service, user_id, message):
 
 class ControlLogin_b():
     def checkLogin(self, id, pw):
-        dbCheck = User.objects.get(uid=id)
-        print(dbCheck)
-        serializer = UserInfoSerializer(dbCheck)
-        print(serializer)
-        if serializer.data['uid'] == id:
+        try:
+            dbCheck = User.objects.get(uid=id)
+            serializer = UserInfoSerializer(dbCheck)
+            print(serializer)
             if serializer.data['password'] == pw:
                 serializer = self.sendResult("로그인 성공", dbCheck)
             else:
                 serializer = self.sendResult("로그인 실패_비번", dbCheck)
-        else:
+        except:
             serializer = self.sendResult("로그인 실패_아이디", dbCheck)
-        
         return serializer
 
     def sendResult(self, result, userInfo=None):
