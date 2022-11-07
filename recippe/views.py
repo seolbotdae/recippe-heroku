@@ -25,7 +25,7 @@ from .mypage import *
 '''
 
 class LoginAPI(APIView):
-    def post(self, request):
+    def post(self, request, format=None):
         print(request.data['uid'])
 
         inputId = request.data['uid']
