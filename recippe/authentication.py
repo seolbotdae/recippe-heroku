@@ -61,7 +61,6 @@ def send_message(service, user_id, message):
 class ControlLogin_b():
     def checkLogin(self, id, pw):
         dbCheck = get_object_or_404(User, uid=id)
-        print(len(dbCheck))
         if dbCheck.uid == id:
             if dbCheck.password == pw:
                 serializer = self.sendResult("로그인 성공", dbCheck)
