@@ -35,12 +35,14 @@ class LoginAPI(APIView):
         serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if serializer == 0:
-            return Response(0, status=status.HTTP_404_NOT_FOUND)
+            return Response(0, status=status.HTTP_400_BAD_REQUEST)
         elif serializer == 1:
+            return Response(1, status=status.HTTP_400_BAD_REQUEST)
+        elif serializer == 2:
             serializer = UserInfoSerializer(request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(3, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 class LogoutAPI(APIView):
     def post(self, request):
