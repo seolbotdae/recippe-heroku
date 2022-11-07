@@ -40,7 +40,7 @@ class LoginAPI(APIView):
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
             serializer = UserInfoSerializer(serializer)
-            return Response(serializer, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(3, status=status.HTTP_406_NOT_ACCEPTABLE)
 
