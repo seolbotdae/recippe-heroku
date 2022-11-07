@@ -8,6 +8,11 @@ from .models import Ingredients, Units, User,  PhotoPost, RecipePost, Mail, Like
 221105 이메일인증 serializer 추가
 '''
 
+class ResultSerializer(serializers.ModelSerializer):
+    code = serializers.IntegerField()
+    fields = ('code')
+
+
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

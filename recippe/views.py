@@ -35,7 +35,8 @@ class LoginAPI(APIView):
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if code == 0:
-            return Response(0, status=status.HTTP_400_BAD_REQUEST)
+            codeSerializer = ResultSerializer(code)
+            return Response(codeSerializer.data, status=status.HTTP_400_BAD_REQUEST)
         elif code == 1:
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
