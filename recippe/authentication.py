@@ -66,7 +66,7 @@ class ControlLogin_b():
         if dbCheck.password == pw:
             self.serializer = self.sendResult("로그인 성공", dbCheck)
         else:
-            self.serializer = self.sendResult("로그인 실패", self.serializer)
+            self.serializer = self.sendResult("로그인 실패", dbCheck)
 
         return self.serializer
 
