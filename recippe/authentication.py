@@ -69,7 +69,7 @@ class ControlLogin_b():
         else:
             serializer = self.sendResult("로그인 실패", dbCheck)
             print(serializer)
-        return self.serializer
+        return serializer
 
     def sendResult(self, result, userInfo=None):
         if result == "로그인 성공":
