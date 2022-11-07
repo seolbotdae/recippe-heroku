@@ -55,6 +55,7 @@ def send_message(service, user_id, message):
 221105 로그아웃 class 추가
 221106 이메일인증 finishCheck 추가, 이메일전송코드 추가
 221106 최종 회원가입 class 추가
+221107 비밀번호 변경 class 추가
 '''
 
 class ControlLogin_b():
@@ -186,7 +187,20 @@ class ControlSignUp_b():
 
 class ControlEdittingInfo_b():
     def changePassword(self, nickname, pw):
-        pass
+        beforePw = User.objects.get(nickname=nickname)
+        beforePw.password = pw
+        beforePw.save()
 
-    def sendResult(self, reuslt):
-        pass
+        afterPw = User.objects.get(nickname=nickname)
+        if afterPw.password == pw:
+            result = self.sendResult("비밀번호 변경 성공")
+        else:
+            result = self.sendResult("비밀번호 변경 실패")
+        
+        return result
+
+    def sendResult(self, result):
+        if result == "비밀번호 변경 실패":
+            return 0
+        elif result == "비밀번호 변경 성공":
+            return 1
