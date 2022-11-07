@@ -63,20 +63,21 @@ class ControlLogin_b():
         dbCheck = get_object_or_404(User, uid=id)
 
         if dbCheck.password == pw:
-            code, serializer = self.sendResult("로그인 성공", dbCheck)
+            serializer = self.sendResult("로그인 성공", dbCheck)
         else:
-            code, serializer = self.sendResult("로그인 실패", self.serializer)
+            serializer = self.sendResult("로그인 실패", self.serializer)
 
-        return code, serializer
+        return serializer
 
     def sendResult(self, result, userInfo=None):
         if result == "로그인 성공":
             print(result)
-            serializer = UserInfoSerializer(userInfo)
-            return 1, serializer
+            return 1
+            #serializer = UserInfoSerializer(userInfo)
+            #return serializer
         elif result == "로그인 실패":
             print(result)
-            return 0, None
+            return 0
 
 class ControlLogout_b():
     def cancelAutoLogin(self, nickname):

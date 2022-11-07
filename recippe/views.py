@@ -32,11 +32,12 @@ class LoginAPI(APIView):
         inputPw = request.data['password']
 
         controlLogin = ControlLogin_b()
-        code, serializer = controlLogin.checkLogin(inputId, inputPw)
+        serializer = controlLogin.checkLogin(inputId, inputPw)
 
-        if code == 0:
-            return Response(serializer, status=status.HTTP_404_NOT_FOUND)
-        elif code == 1:
+        if serializer == 0:
+            return Response(0, status=status.HTTP_404_NOT_FOUND)
+        elif serializer == 1:
+            serializer = UserInfoSerializer(request.data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
