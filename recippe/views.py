@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
-from rest_framework.renderers import JSONRenderer
 
 from .models import User
 
@@ -36,11 +35,7 @@ class LoginAPI(APIView):
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if code == 0:
-            codeSerializer = ResultSerializer(code)
-            print(type(codeSerializer))
-            json = JSONRenderer().render(codeSerializer.data)
-            print(type(json))
-            return Response(json, status=status.HTTP_400_BAD_REQUEST)
+            return Response(0, status=status.HTTP_400_BAD_REQUEST)
         elif code == 1:
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
