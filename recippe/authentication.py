@@ -69,7 +69,7 @@ class ControlLogin_b():
             else:
                 serializer = self.sendResult("로그인 실패_비번", dbCheck)
         except:
-            serializer = self.sendResult("로그인 실패_아이디", dbCheck)
+            serializer = self.sendResult("로그인 실패_아이디", None)
         return serializer
 
     def sendResult(self, result, userInfo=None):
