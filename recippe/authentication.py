@@ -67,7 +67,7 @@ class ControlLogin_b():
             self.serializer = self.sendResult("로그인 성공", dbCheck)
         else:
             self.serializer = self.sendResult("로그인 실패", dbCheck)
-
+        print(self.serializer)
         return self.serializer
 
     def sendResult(self, result, userInfo=None):
