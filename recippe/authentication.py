@@ -55,27 +55,34 @@ def send_message(service, user_id, message):
 221105 로그아웃 class 추가
 221106 이메일인증 finishCheck 추가, 이메일전송코드 추가
 221106 최종 회원가입 class 추가
+221107 비밀번호 변경 class 추가
 '''
 
 class ControlLogin_b():
     def checkLogin(self, id, pw):
-        dbCheck = get_object_or_404(User, uid=id)
+        try:
+            dbCheck = User.objects.get(uid=id)
+            serializer = UserInfoSerializer(dbCheck)
+            print(serializer)
 
-        if dbCheck.password == pw:
-            code, serializer = self.sendResult("로그인 성공", dbCheck)
-        else:
-            code, serializer = self.sendResult("로그인 실패", self.serializer)
-
+            if serializer.data['password'] == pw:
+                code, serializer = self.sendResult("로그인 성공", dbCheck)
+            else:
+                code, serializer = self.sendResult("로그인 실패_비번", dbCheck)
+        except:
+            code, serializer = self.sendResult("로그인 실패_아이디", None)
         return code, serializer
 
     def sendResult(self, result, userInfo=None):
         if result == "로그인 성공":
-            print(result)
-            serializer = UserInfoSerializer(userInfo)
-            return 1, serializer
-        elif result == "로그인 실패":
-            print(result)
-            return 0, None
+            print(result, userInfo)
+            return 2, userInfo
+        elif result == "로그인 실패_비번":
+            print(result, userInfo)
+            return 0, userInfo
+        elif result == "로그인 실패_아이디":
+            print(result, userInfo)
+            return 1, userInfo
 
 class ControlLogout_b():
     def cancelAutoLogin(self, nickname):
@@ -186,7 +193,17 @@ class ControlSignUp_b():
 
 class ControlEdittingInfo_b():
     def changePassword(self, nickname, pw):
-        pass
+        beforePw = User.objects.get(nickname=nickname)
+        beforePw.password = pw
+        beforePw.save()
+
+        afterPw = User.objects.get(nickname=nickname)
+        if afterPw.password == pw:
+            result = self.sendResult("비밀번호 변경 성공")
+        else:
+            result = self.sendResult("비밀번호 변경 실패")
+        
+        return result
 
     def checkOverlap(self, new_nickname):
         # 나오면 있는거
@@ -223,7 +240,8 @@ class ControlEdittingInfo_b():
                 print(commentObject)
                 print(refrigeratorObject)
                 print(reportObject)
-                
+
+
                 # object.delete()
                 # User.objects.delete(nickname=old_nickname)
                 # User.objects.filter(nickname = old_nickname).update(nickname = new_nickname)
@@ -242,7 +260,11 @@ class ControlEdittingInfo_b():
 
     #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공
     def sendResult(self, result):
-        if result == "중복되는 닉네임이 있습니다.":
+        if result == "비밀번호 변경 실패":
+            return 0
+        elif result == "비밀번호 변경 성공":
+            return 1
+        elif result == "중복되는 닉네임이 있습니다.":
             return 2
         elif result == "닉네임 변경에 실패했습니다.":
             return 3
@@ -250,3 +272,4 @@ class ControlEdittingInfo_b():
             return 4
         elif result == "닉네임 변경에 성공했습니다.":
             return 5
+

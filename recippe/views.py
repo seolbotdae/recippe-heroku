@@ -10,6 +10,7 @@ from .models import User
 from .serializers import *
 
 from .authentication import *
+from .mypage import *
 
 # Create your views here.
 
@@ -19,11 +20,13 @@ from .authentication import *
 221105 자동로그인 해제 view 추가
 221106 이메일 인증 get 함수 추가
 221106 최종 회원가입 view 추가
+221107 비밀번호 변경 view 추가
+221107 냉장고 조회 view 추가
 221108 닉네임 변경 view 추가 (작업중)
 '''
 
 class LoginAPI(APIView):
-    def get(self, request):
+    def post(self, request, format=None):
         print(request.data['uid'])
 
         inputId = request.data['uid']
@@ -33,11 +36,14 @@ class LoginAPI(APIView):
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if code == 0:
-            return Response(serializer, status=status.HTTP_404_NOT_FOUND)
+            return Response("로그인 실패_비번", status=status.HTTP_400_BAD_REQUEST)
         elif code == 1:
+            return Response(1, status=status.HTTP_400_BAD_REQUEST)
+        elif code == 2:
+            serializer = UserInfoSerializer(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(3, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 class LogoutAPI(APIView):
     def post(self, request):
@@ -55,7 +61,7 @@ class LogoutAPI(APIView):
         else:
             return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
             
-class EmailAPI(APIView):
+class EmailStartAPI(APIView):
     def post(self, request):
         print(request.data['email'])
 
@@ -73,7 +79,8 @@ class EmailAPI(APIView):
         else:
             return Response(6, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    def get(self, request):
+class EmailFinalAPI(APIView):
+    def post(self, request):
         print(f"email = {request.data['email']}, code = {request.data['code']}")
 
         emailVerification = ControlEmailVerification_b()
@@ -111,6 +118,21 @@ class SignUpAPI(APIView):
                 return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(5, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+class ChangePwAPI(APIView):
+    def post(self, request):
+        print(request.data)
+
+        changePw = ControlEdittingInfo_b()
+        changePwRes = changePw.changePassword(request.data['nickname'], request.data['password'])
+
+        if changePwRes == 0:
+            return Response(0, status=status.HTTP_400_BAD_REQUEST)
+        elif changePwRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
+
 
 #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공, 6->알수 없음
 class ChangeNicknameAPI(APIView):
