@@ -188,5 +188,65 @@ class ControlEdittingInfo_b():
     def changePassword(self, nickname, pw):
         pass
 
-    def sendResult(self, reuslt):
-        pass
+    def checkOverlap(self, new_nickname):
+        # 나오면 있는거
+        try:
+            codeCheck = User.objects.get(nickname = new_nickname)
+            return 1
+        # 안나오면 없는거
+        except:
+            return 0
+        
+    # 닉네임 중복시 -1 원래 닉네임과 동일 할 시 0 성공시 1
+    def changeNickname(self, old_nickname, new_nickname):
+        # 오류
+        if self.checkOverlap(new_nickname) == 1:
+            result = self.sendResult("중복되는 닉네임이 있습니다.")
+        # 된거
+        elif self.checkOverlap(new_nickname) == 0:
+            try:
+                print("no overlap")
+                userObject = User.objects.filter(nickname = old_nickname)
+                photoObject = PhotoPost.objects.filter(nickname = old_nickname)
+                recipeObject = RecipePost.objects.filter(nickname = old_nickname)
+                mailObject = Mail.objects.filter(nickname = old_nickname)
+                likeObject = LikeInfo.objects.filter(nickname = old_nickname)
+                commentObject = Comment.objects.filter(nickname = old_nickname)
+                refrigeratorObject = Refrigerator.objects.filter(nickname = old_nickname)
+                reportObject = Report.objects.filter(nickname = old_nickname)
+                
+                print(userObject)
+                print(photoObject)
+                print(recipeObject)
+                print(mailObject)
+                print(likeObject)
+                print(commentObject)
+                print(refrigeratorObject)
+                print(reportObject)
+                
+                # object.delete()
+                # User.objects.delete(nickname=old_nickname)
+                # User.objects.filter(nickname = old_nickname).update(nickname = new_nickname)
+                
+                
+                print(object.nickname)
+                try:
+                    object = get_object_or_404(User, nickname = new_nickname)
+                    result = self.sendResult("닉네임 변경에 성공했습니다.")
+                except:
+                    result = self.sendResult("닉네임 변경에 실패했습니다.")
+            except: 
+                result = self.sendResult("데이터베이스 오류.")
+        
+        return result
+
+    #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공
+    def sendResult(self, result):
+        if result == "중복되는 닉네임이 있습니다.":
+            return 2
+        elif result == "닉네임 변경에 실패했습니다.":
+            return 3
+        elif result == "데이터베이스 오류.":
+            return 4
+        elif result == "닉네임 변경에 성공했습니다.":
+            return 5

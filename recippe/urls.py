@@ -14,4 +14,6 @@ urlpatterns = [
     path("logout/", LogoutAPI.as_view()),
     path("emailcheck/", EmailAPI.as_view()),
     path("signup/", SignUpAPI.as_view()),
+    path("changenickname/", ChangeNicknameAPI.as_view()),
+    
 ]

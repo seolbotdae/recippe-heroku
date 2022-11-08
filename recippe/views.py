@@ -111,3 +111,22 @@ class SignUpAPI(APIView):
         else:
             return Response(5, status=status.HTTP_406_NOT_ACCEPTABLE)
 
+#  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공, 6->알수 없음
+class ChangeNicknameAPI(APIView):
+    def post(self, request):
+        print(request.data)
+
+        nicknameEdit = ControlEdittingInfo_b()
+
+        changeResult = nicknameEdit.changeNickname(request.data['old_nickname'], request.data['new_nickname'])
+        
+        if changeResult == 2:
+            return Response(2, status=status.HTTP_400_BAD_REQUEST)
+        elif changeResult == 3:
+            return Response(3, status=status.HTTP_400_BAD_REQUEST)
+        elif changeResult == 4:
+            return Response(4, status=status.HTTP_400_BAD_REQUEST)
+        elif changeResult == 5:
+            return Response(5, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_404_NOT_FOUND)
