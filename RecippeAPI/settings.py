@@ -132,13 +132,10 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ORIGIN_WHITELIST = ['http://192.168.200.125:8080',
-                         'http://localhost:*',
-                         'http://192.168.200.125:8080',
-                         'http://192.168.200.125:8080',
-                         'https://whseol0203.github.io'
+CORS_ORIGIN_WHITELIST = [
+    '*',
                         ]
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"

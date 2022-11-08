@@ -19,6 +19,7 @@ from .authentication import *
 221105 자동로그인 해제 view 추가
 221106 이메일 인증 get 함수 추가
 221106 최종 회원가입 view 추가
+221108 닉네임 변경 view 추가 (작업중)
 '''
 
 class LoginAPI(APIView):
