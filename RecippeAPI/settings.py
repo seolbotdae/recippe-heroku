@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-h&0&2nrv2dwy+6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', '172.30.1.8:8000']
+ALLOWED_HOSTS = ['*', '172.30.1.8:8000','https://nawhead1.github.io/se-project']
 
 # Application definition
 
@@ -133,6 +133,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-    '*',
+    'nawhead1.github.io/se-project',
                         ]
 CORS_ALLOW_CREDENTIALS = False
