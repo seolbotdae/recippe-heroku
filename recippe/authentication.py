@@ -110,12 +110,13 @@ class ControlLogout_b():
 class ControlEmailVerification_b():
     def startCheck(self, request):
         code = random.randrange(100000, 1000000)
-        request.POST._mutable = True
-        request.data['code'] = code
-        serializer = EmailVerificationSerializer(data=request.data)
+        #request.POST._mutable = True
+        request['code'] = code
+
+        tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
+        TempEmail.save(tempEmail)
         
-        if serializer.is_valid():
-            serializer.save()
+        if TempEmail.objects.get(email = request['email']).email == request['email']:
             return "이메일 등록 성공"
         else:
             return "이메일 등록 실패"
@@ -131,11 +132,14 @@ class ControlEmailVerification_b():
 
     def finishCheck(self, request):
         try:
-            self.codeCheck = TempEmail.objects.get(email = request.data['email'])
+            self.codeCheck = TempEmail.objects.get(email = request['email'])
 
-            if self.codeCheck.code == request.data['code']:
-                result = self.sendResult("이메일 인증 최종 완료")
-                self.codeCheck.delete()
+            if self.codeCheck.code == request['code']:
+                count = self.codeCheck.delete()
+                if count > 0:
+                    result = self.sendResult("이메일 인증 최종 완료")
+                else:
+                    result = self.sendResult("알 수 없는 오류")
                 return result
             else:
                 result = self.sendResult("잘못된 코드")
@@ -160,6 +164,9 @@ class ControlEmailVerification_b():
         elif result == "이메일 인증 최종 완료":
             print(result)
             return 4
+        else:
+            print(result)
+            return 6
 
 class ControlSignUp_b():
     def checkOverlap(self, id, nickname):
