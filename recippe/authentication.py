@@ -237,6 +237,7 @@ class ControlEdittingInfo_b():
                     result = self.sendResult("닉네임 변경에 실패했습니다.")
             except: 
                 result = self.sendResult("데이터베이스 오류.")
+                print("hello")
         
         return result
         #1
