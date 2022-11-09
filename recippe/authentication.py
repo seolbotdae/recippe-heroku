@@ -216,11 +216,13 @@ class ControlEdittingInfo_b():
         
     # 닉네임 중복시 -1 원래 닉네임과 동일 할 시 0 성공시 1
     def changeNickname(self, old_nickname, new_nickname):
+        '''
         # 오류
         if self.checkOverlap(new_nickname) == 1:
             result = self.sendResult("중복되는 닉네임이 있습니다.")
+        '''
         # 된거
-        elif self.checkOverlap(new_nickname) == 0:
+        if self.checkOverlap(new_nickname) == 0:
             try:
                 print("no overlap")
                 userObject = User.objects.filter(nickname = old_nickname)
@@ -246,10 +248,46 @@ class ControlEdittingInfo_b():
                 # User.objects.delete(nickname=old_nickname)
                 # User.objects.filter(nickname = old_nickname).update(nickname = new_nickname)
                 
+                print("check 성공")
+
+                print(type(new_nickname))
+                print(type(userObject[0].uid), type(userObject[0].password), type(userObject[0].email), type(userObject[0].auto_login))
                 
-                print(object.nickname)
+                user_json = {
+                    "nickname" : new_nickname,
+                    "uid" : userObject[0].uid,
+                    "password" : userObject[0].password,
+                    "email" : userObject[0].email,
+                    "auto_login" : userObject[0].auto_login
+                }
+                
+                print(user_json)
+                
+                
+                user = User(nickname= new_nickname, uid= userObject[0].uid, password= userObject[0].password, 
+                    email= userObject[0].email, auto_login= False)
+                
+
+                serializer = UserInfoSerializer(data = user_json)
+                
+                print(serializer)
+                print(serializer.is_valid())
+                print(serializer.data)
+                if serializer.is_valid():
+                    User.save(user)
+                    print('save user')
+                else:
+                    print("can't save user")
+
+            
+                '''
+                test -> test3 가라정보
+                
+                test -> delete
+                '''
+                #print(user.nickname, user.email, user.uid, user.password, user.email, user.auto_login)
+                
                 try:
-                    object = get_object_or_404(User, nickname = new_nickname)
                     result = self.sendResult("닉네임 변경에 성공했습니다.")
                 except:
                     result = self.sendResult("닉네임 변경에 실패했습니다.")

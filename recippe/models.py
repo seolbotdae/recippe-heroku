@@ -18,9 +18,9 @@ class Units(models.Model):
 # 사용자 정보
 class User(models.Model):
     nickname = models.CharField(max_length=50, primary_key=True, null=False, unique=True)
-    uid = models.CharField(max_length=30, null=False, unique=True)
+    uid = models.CharField(max_length=30, null=False)
     password = models.CharField(max_length=50, null=False)
-    email = models.CharField(max_length=30, null=False, unique=True)
+    email = models.CharField(max_length=30, null=False)
     auto_login = models.BooleanField(null=False)
 
 # 사진 게시글
