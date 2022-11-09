@@ -133,6 +133,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_WHITELIST = [
-    'nawhead1.github.io/se-project',
+    #'nawhead1.github.io/se-project',
                         ]
 CORS_ALLOW_CREDENTIALS = False

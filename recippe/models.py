@@ -18,16 +18,16 @@ class Units(models.Model):
 # 사용자 정보
 class User(models.Model):
     nickname = models.CharField(max_length=50, primary_key=True, null=False, unique=True)
-    uid = models.CharField(max_length=30, null=False, unique=True)
+    uid = models.CharField(max_length=30, null=False)
     password = models.CharField(max_length=50, null=False)
-    email = models.CharField(max_length=30, null=False, unique=True)
+    email = models.CharField(max_length=30, null=False)
     auto_login = models.BooleanField(null=False)
 
 # 사진 게시글
 class PhotoPost(models.Model):
-    post_id = models.AutoField(primary_key=True, null=False, unique=True)
+    post_id = models.AutoField(primary_key=True, null=False)
     nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="author", related_name="photopost_user")
-    photo_link = models.CharField(max_length=200, null=False, unique=True)
+    photo_link = models.CharField(max_length=200, null=False)
     like_count = models.IntegerField(null=False, default=0)
     upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=False)
 
