@@ -27,14 +27,14 @@ from .mypage import *
 
 class LoginAPI(APIView):
     def post(self, request, format=None):
-        print(request.GET.get('uid'))
+        print(request.POST.get('uid'))
         #print(request.data['uid'])
         #upload
 
         #inputId = request.data['uid']
         #inputPw = request.data['password']
-        inputId = request.GET.get('uid')
-        inputPw = request.GET.get('password')
+        inputId = request.POST.get('uid')
+        inputPw = request.POST.get('password')
 
         controlLogin = ControlLogin_b()
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
