@@ -7,6 +7,9 @@ export default {
     return axios.post(BASE_URL+'login/', User);
   },
   firstcheck: function(info) {
-    return axios.post(BASE_URL+'firstcheck/', info)
+    return axios.post(BASE_URL+'firstcheck/', info);
+  },
+  signup: function(info) {
+    return axios.post(BASE_URL+'signup/', info);
   }
 }

@@ -1,8 +1,9 @@
 <template>
   <v-app>
     <v-text-field v-model="info.email" label="email"></v-text-field>
-    <v-text-field v-model="info.code" label="code"></v-text-field>
-    <v-btn @click.enter="firstcheck">인증하기</v-btn>
+    <v-btn @click="firstcheck">코드 전송하기</v-btn>
+    <v-otp-input length="6" v-model="info.code"></v-otp-input>
+    <v-btn @click.enter="secondcheck">인증하기</v-btn>
   </v-app>
 </template>
 
@@ -20,18 +21,28 @@ export default {
   },
   methods: {
     firstcheck() {
-      const firstcheckInfo = JSON.stringify({
+      const checkInfo = JSON.stringify({
         "email": this.info.email,
-        "code": this.info.code
+        "code": 0
       })
-      console.log(firstcheckInfo);
-      herokuAPI.firstcheck(firstcheckInfo)
+      console.log(checkInfo);
+      JSON.parse(checkInfo);
+      herokuAPI.firstcheck(checkInfo)
         .then(function (response) {
           console.log("firstcheck", response);
         }) 
         .catch(function (e) {
           console.log(e);
         });
+    },
+    secondcheck() {
+      const codenum = Number(this.info.code);
+      const checkInfo = JSON.stringify({
+        "email": this.info.email,
+        "code": codenum
+      })
+      console.log(checkInfo);
+      JSON.parse(checkInfo);
     }
   }
 }
