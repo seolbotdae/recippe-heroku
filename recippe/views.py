@@ -11,6 +11,7 @@ from .serializers import *
 
 from .authentication import *
 from .mypage import *
+from .recipepost import *
 
 # Create your views here.
 
@@ -25,7 +26,8 @@ import json
 221106 최종 회원가입 view 추가
 221107 비밀번호 변경 view 추가
 221107 냉장고 조회 view 추가
-221108 닉네임 변경 view 추가 (작업중)
+221108 닉네임 변경 view 추가
+221109 레시피 view 추가 (게시판 조회, 게시글 조회)
 '''
 
 class LoginAPI(APIView):
@@ -161,3 +163,46 @@ class ChangeNicknameAPI(APIView):
             return Response(5, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeListAPI(APIView):
+    def get(self, request, page):
+        print(f"페이지 = {page}")
+
+        recipeList = ControlRecipeList_b()
+        requestRes, rlist = recipeList.requestRecipeList(page)
+
+        serializer = RecipeListSerializer(rlist, many=True)
+
+        if requestRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif requestRes == 99:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+class RecipePostAPI(APIView):
+    def get(self, request, postId):
+        print(f"게시글 번호 = {postId}")
+
+        recipe = ControlRecipe_b()
+        requestRes, recipePost = recipe.requestRecipe(postId)
+
+        serializer = RecipeListSerializer(recipePost)
+
+        if requestRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif requestRes == 99:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        newRecipe = json.loads(request.body)
+        print(f"게시글 등록 정보 = {newRecipe}")
+
+        insert = ControlRecipe_b()
+        insertRes, serializer = insert.insertRecipe(newRecipe)
+
+        serializer = RecipeListSerializer(serializer)
+        
+        if insertRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif insertRes == 99:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        

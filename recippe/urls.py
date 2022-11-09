@@ -11,6 +11,7 @@ from .views import *
 '''
 
 urlpatterns = [
+    # Authentication
     path("login/", LoginAPI.as_view()),
     path("logout/", LogoutAPI.as_view()),
     path("firstcheck/", EmailStartAPI.as_view()),
@@ -18,4 +19,9 @@ urlpatterns = [
     path("signup/", SignUpAPI.as_view()),
     path("changepw/", ChangePwAPI.as_view()),
     path("changenickname/", ChangeNicknameAPI.as_view()),
+
+    # RecipePost
+    path("recipeboard/<int:page>/", RecipeListAPI.as_view()),
+    path("recipe/<int:postId>/", RecipePostAPI.as_view()),
+    path("recipeupload/", RecipePostAPI.as_view()),
 ]

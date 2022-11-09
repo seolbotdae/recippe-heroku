@@ -6,6 +6,7 @@ from .models import Ingredients, Units, User,  PhotoPost, RecipePost, Mail, Like
 '''
 221105 유저 serializer 추가
 221105 이메일인증 serializer 추가
+221108 레시피게시판 serializer 추가
 '''
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -22,3 +23,9 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = TempEmail
         fields = ('email', 'code')
+
+class RecipeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipePost
+        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time')
+
