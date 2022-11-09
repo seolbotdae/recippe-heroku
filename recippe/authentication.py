@@ -256,4 +256,4 @@ class ControlEdittingInfo_b():
             return 4
         elif result == "닉네임 변경에 성공했습니다.":
             return 5
-
+#hello bye
