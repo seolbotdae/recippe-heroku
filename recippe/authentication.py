@@ -239,6 +239,7 @@ class ControlEdittingInfo_b():
                 result = self.sendResult("데이터베이스 오류.")
         
         return result
+        #1
 
     #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공
     def sendResult(self, result):
