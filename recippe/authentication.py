@@ -112,10 +112,11 @@ class ControlEmailVerification_b():
         code = random.randrange(100000, 1000000)
         #request.POST._mutable = True
         request['code'] = code
-        serializer = EmailVerificationSerializer(data=request)
+
+        tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
+        TempEmail.save(tempEmail)
         
-        if serializer.is_valid():
-            serializer.save()
+        if TempEmail.objects.get(email = request['email']).email == request['email']:
             return "이메일 등록 성공"
         else:
             return "이메일 등록 실패"
