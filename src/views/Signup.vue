@@ -26,7 +26,7 @@
           <v-btn><router-link to="/login">돌아가기</router-link></v-btn>
         </v-col>
         <v-col cols="3" offset="3">
-          <v-btn @click.enter="signup">회원가입</v-btn>
+          <v-btn @click="signup">회원가입</v-btn>
         </v-col>
       </v-row>
     </v-form>

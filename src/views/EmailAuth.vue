@@ -1,10 +1,10 @@
 <template>
-  <v-app>
+  <v-container>
     <v-text-field v-model="info.email" label="email"></v-text-field>
     <v-btn @click="firstcheck">코드 전송하기</v-btn>
     <v-otp-input length="6" v-model="info.code"></v-otp-input>
-    <v-btn @click.enter="secondcheck">인증하기</v-btn>
-  </v-app>
+    <v-btn @click="secondcheck">인증하기</v-btn>
+  </v-container>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
     return {
       info: {
         email: null,
-        code: null
+        code: 0
       }
     }
   },
@@ -43,6 +43,13 @@ export default {
       })
       console.log(checkInfo);
       JSON.parse(checkInfo);
+      herokuAPI.secondcheck(checkInfo)
+        .then(function (response) {
+          console.log("secondcheck", response);
+        }) 
+        .catch(function (e) {
+          console.log(e);
+        });
     }
   }
 }

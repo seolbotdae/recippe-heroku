@@ -9,6 +9,9 @@ export default {
   firstcheck: function(info) {
     return axios.post(BASE_URL+'firstcheck/', info);
   },
+  secondcheck: function(info) {
+    return axios.post(BASE_URL+'secondcheck/', info);
+  },
   signup: function(info) {
     return axios.post(BASE_URL+'signup/', info);
   }
