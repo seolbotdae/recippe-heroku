@@ -226,68 +226,14 @@ class ControlEdittingInfo_b():
             try:
                 print("no overlap")
                 userObject = User.objects.filter(nickname = old_nickname)
-                photoObject = PhotoPost.objects.filter(nickname = old_nickname)
-                recipeObject = RecipePost.objects.filter(nickname = old_nickname)
-                mailObject = Mail.objects.filter(nickname = old_nickname)
-                likeObject = LikeInfo.objects.filter(nickname = old_nickname)
-                commentObject = Comment.objects.filter(nickname = old_nickname)
-                refrigeratorObject = Refrigerator.objects.filter(nickname = old_nickname)
-                reportObject = Report.objects.filter(nickname = old_nickname)
-                
-                print(userObject)
-                print(photoObject)
-                print(recipeObject)
-                print(mailObject)
-                print(likeObject)
-                print(commentObject)
-                print(refrigeratorObject)
-                print(reportObject)
 
+                user = User.objects.create(nickname=new_nickname, uid=userObject[0].uid, password=userObject[0].password, email=userObject[0].email, auto_login=0)
+                User.save(user)
 
-                # object.delete()
-                # User.objects.delete(nickname=old_nickname)
-                # User.objects.filter(nickname = old_nickname).update(nickname = new_nickname)
-                
-                print("check 성공")
-
-                print(type(new_nickname))
-                print(type(userObject[0].uid), type(userObject[0].password), type(userObject[0].email), type(userObject[0].auto_login))
-                
-                user_json = {
-                    "nickname" : new_nickname,
-                    "uid" : userObject[0].uid,
-                    "password" : userObject[0].password,
-                    "email" : userObject[0].email,
-                    "auto_login" : userObject[0].auto_login
-                }
-                
-                print(user_json)
-                
-                
-                user = User(nickname= new_nickname, uid= userObject[0].uid, password= userObject[0].password, 
-                    email= userObject[0].email, auto_login= False)
-                
-
-                serializer = UserInfoSerializer(data = user_json)
-                
-                print(serializer)
-                print(serializer.is_valid())
-                print(serializer.data)
-                if serializer.is_valid():
-                    User.save(user)
-                    print('save user')
-                else:
-                    print("can't save user")
-
-            
-                '''
-                test -> test3 가라정보
-                
-                test -> delete
-                '''
-                #print(user.nickname, user.email, user.uid, user.password, user.email, user.auto_login)
-                
                 try:
+                    object = get_object_or_404(User, nickname = old_nickname)
+                    PhotoPost.objects.filter(nickname=old_nickname).update(nickname=new_nickname)
+                    User.delete(object)
                     result = self.sendResult("닉네임 변경에 성공했습니다.")
                 except:
                     result = self.sendResult("닉네임 변경에 실패했습니다.")
