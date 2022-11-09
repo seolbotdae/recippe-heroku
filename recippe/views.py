@@ -29,6 +29,7 @@ class LoginAPI(APIView):
     def post(self, request, format=None):
         print(request.GET.get('uid'))
         #print(request.data['uid'])
+        #upload
 
         inputId = request.data['uid']
         inputPw = request.data['password']
