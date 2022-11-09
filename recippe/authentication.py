@@ -232,7 +232,9 @@ class ControlEdittingInfo_b():
                 try:
                     object = get_object_or_404(User, nickname = old_nickname)
                     for ol in objectList:
-                        ol.objects.filter(nickname=old_nickname).update(nickname=new_nickname)
+                        olList = ol.objects.filter(nickname=old_nickname)
+                        if len(olList) > 0:
+                            olList.update(nickname = new_nickname)
                     User.delete(object)
                     result = self.sendResult("닉네임 변경에 성공했습니다.")
                 except:
