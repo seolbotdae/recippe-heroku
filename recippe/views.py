@@ -31,8 +31,10 @@ class LoginAPI(APIView):
         #print(request.data['uid'])
         #upload
 
-        inputId = request.data['uid']
-        inputPw = request.data['password']
+        #inputId = request.data['uid']
+        #inputPw = request.data['password']
+        inputId = request.GET.get('uid')
+        inputPw = request.GET.get('password')
 
         controlLogin = ControlLogin_b()
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
