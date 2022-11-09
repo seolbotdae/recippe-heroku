@@ -76,10 +76,10 @@ class EmailStartAPI(APIView):
         print(data['email'])
 
         emailVerification = ControlEmailVerification_b()
-        uploadRes = emailVerification.startCheck(request)
+        uploadRes = emailVerification.startCheck(data)
 
         if uploadRes == "이메일 등록 성공":
-            sendRes = emailVerification.sendCode(request.data['email'], request.data['code'])
+            sendRes = emailVerification.sendCode(data['email'], data['code'])
             if sendRes == 1:
                 return Response(sendRes, status=status.HTTP_200_OK)
             elif sendRes == 0:

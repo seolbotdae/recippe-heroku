@@ -110,9 +110,9 @@ class ControlLogout_b():
 class ControlEmailVerification_b():
     def startCheck(self, request):
         code = random.randrange(100000, 1000000)
-        request.POST._mutable = True
-        request.data['code'] = code
-        serializer = EmailVerificationSerializer(data=request.data)
+        #request.POST._mutable = True
+        request['code'] = code
+        serializer = EmailVerificationSerializer(data=request)
         
         if serializer.is_valid():
             serializer.save()
