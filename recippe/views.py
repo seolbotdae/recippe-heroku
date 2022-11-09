@@ -26,7 +26,8 @@ from .mypage import *
 '''
 
 class LoginAPI(APIView):
-    def post(self, request, format=None):
+    def post(self, request):
+        print("type", type(request))
         print(request.POST.get('uid'))
         #print(request.data['uid'])
         #upload
