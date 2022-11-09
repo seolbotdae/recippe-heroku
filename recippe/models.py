@@ -33,7 +33,7 @@ class PhotoPost(models.Model):
 
 # 레시피 게시글
 class RecipePost(models.Model):
-    post_id = models.AutoField(primary_key=True, null=False, unique=True)
+    post_id = models.AutoField(auto_created=True, primary_key=True, null=False, unique=True)
     nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="author", related_name="recipepost_user")
     title = models.CharField(max_length=100, null=False)
     category = models.CharField(max_length=100, null=False)

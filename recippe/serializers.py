@@ -6,6 +6,7 @@ from .models import Ingredients, Units, User,  PhotoPost, RecipePost, Mail, Like
 '''
 221105 유저 serializer 추가
 221105 이메일인증 serializer 추가
+221108 레시피게시판 serializer 추가
 221109 냉장고조회 serializer 추가
 '''
 
@@ -28,3 +29,9 @@ class InquiryRefrigeratorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Refrigerator
         fields = ('name', 'nickname', 'unit', 'amount', 'expiry_date')
+
+class RecipeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipePost
+        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time')
+
