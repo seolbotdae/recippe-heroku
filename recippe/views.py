@@ -30,10 +30,8 @@ import json
 
 class LoginAPI(APIView):
     def post(self, request):
-        print(f"LoginAPI")
+        print(f"LoginAPI Start")
         data = json.loads(request.body)
-
-        print(f"input data and password{data['uid']} {data['password']}")
         
         inputId = data['uid']
         inputPw = data['password']
@@ -53,7 +51,9 @@ class LoginAPI(APIView):
 
 class LogoutAPI(APIView):
     def post(self, request):
+        print(f"LogoutAPI Start")
         data = json.loads(request.body)
+
         print(f"CancleAutoLogin Class start")
 
         inputNickname = data['nickname']
@@ -70,7 +70,10 @@ class LogoutAPI(APIView):
             
 class EmailStartAPI(APIView):
     def post(self, request):
-        print(request.data['email'])
+        print(f"EmailStartAPI Start")
+        data = json.loads(request.body)
+
+        print(data['email'])
 
         emailVerification = ControlEmailVerification_b()
         uploadRes = emailVerification.startCheck(request)
