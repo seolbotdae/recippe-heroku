@@ -216,11 +216,13 @@ class ControlEdittingInfo_b():
         
     # 닉네임 중복시 -1 원래 닉네임과 동일 할 시 0 성공시 1
     def changeNickname(self, old_nickname, new_nickname):
+        '''
         # 오류
         if self.checkOverlap(new_nickname) == 1:
             result = self.sendResult("중복되는 닉네임이 있습니다.")
+        '''
         # 된거
-        elif self.checkOverlap(new_nickname) == 0:
+        if self.checkOverlap(new_nickname) == 0:
             try:
                 print("no overlap")
                 userObject = User.objects.filter(nickname = old_nickname)

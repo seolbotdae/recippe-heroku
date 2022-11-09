@@ -18,5 +18,4 @@ urlpatterns = [
     path("signup/", SignUpAPI.as_view()),
     path("changepw/", ChangePwAPI.as_view()),
     path("changenickname/", ChangeNicknameAPI.as_view()),
-    
 ]

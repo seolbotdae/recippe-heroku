@@ -152,8 +152,8 @@ class ChangeNicknameAPI(APIView):
         elif changeResult == 3:
             return Response(3, status=status.HTTP_400_BAD_REQUEST)
         elif changeResult == 4:
-            return Response(4, status=status.HTTP_400_BAD_REQUEST)
+            return Response(changeResult, status=status.HTTP_400_BAD_REQUEST)
         elif changeResult == 5:
             return Response(5, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_404_NOT_FOUND)
+            return Response(6, status=status.HTTP_401_UNAUTHORIZED)
