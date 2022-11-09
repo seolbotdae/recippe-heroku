@@ -27,7 +27,8 @@ from .mypage import *
 
 class LoginAPI(APIView):
     def post(self, request, format=None):
-        print(request.data['uid'])
+        print(request.GET.get('uid'))
+        #print(request.data['uid'])
 
         inputId = request.data['uid']
         inputPw = request.data['password']
