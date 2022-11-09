@@ -27,28 +27,28 @@ from .mypage import *
 
 class LoginAPI(APIView):
     def post(self, request):
-        print("type", type(request))
-        print(request.GET.get('uid'))
+        #print("type", type(request))
+        #print(request.GET.get('uid'))
         #print(request.data['uid'])
         #upload
 
-        #inputId = request.data['uid']
-        #inputPw = request.data['password']
-        inputId = request.GET.get('uid')
-        inputPw = request.GET.get('password')
+        inputId = request.data['uid']
+        inputPw = request.data['password']
+        #inputId = request.GET.get('uid')
+        #inputPw = request.GET.get('password')
 
         controlLogin = ControlLogin_b()
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
 
         if code == 0:
-            return Response("로그인 실패_비번", status=status.HTTP_400_BAD_REQUEST)
+            return Response(0, status=status.HTTP_400_BAD_REQUEST)
         elif code == 1:
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
             serializer = UserInfoSerializer(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(3, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LogoutAPI(APIView):
     def post(self, request):
@@ -62,9 +62,9 @@ class LogoutAPI(APIView):
         if result == 1:
             return Response(result, status=status.HTTP_200_OK)
         elif result == 0:
-            return Response(result,status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response(result,status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
             
 class EmailStartAPI(APIView):
     def post(self, request):
@@ -78,11 +78,11 @@ class EmailStartAPI(APIView):
             if sendRes == 1:
                 return Response(sendRes, status=status.HTTP_200_OK)
             elif sendRes == 0:
-                return Response(sendRes, status=status.HTTP_400_BAD_REQUEST)
+                return Response(sendRes, status=status.HTTP_501_NOT_IMPLEMENTED)
         elif uploadRes == "이메일 등록 실패":
             return Response(5, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return Response(6, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class EmailFinalAPI(APIView):
     def post(self, request):
@@ -92,13 +92,13 @@ class EmailFinalAPI(APIView):
         checkRes = emailVerification.finishCheck(request)
 
         if checkRes == 2:
-            return Response(checkRes, status=status.HTTP_400_BAD_REQUEST)
+            return Response(checkRes, status=status.HTTP_404_NOT_FOUND)
         elif checkRes == 3:
             return Response(checkRes, status=status.HTTP_400_BAD_REQUEST)
         elif checkRes == 4:
             return Response(checkRes, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class SignUpAPI(APIView):
     def post(self, request):
@@ -110,7 +110,7 @@ class SignUpAPI(APIView):
         if overlapRes == 0:
             return Response(0, status=status.HTTP_400_BAD_REQUEST)
         elif overlapRes == 1:
-            return Response(1, status=status.HTTP_400_BAD_REQUEST)
+            return Response(1, status=status.HTTP_401_UNAUTHORIZED)
         elif overlapRes == 2:
             return Response(2, status=status.HTTP_400_BAD_REQUEST)
         elif overlapRes == 3:
@@ -122,7 +122,7 @@ class SignUpAPI(APIView):
             else:
                 return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            return Response(5, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(5, status=status.HTTP_502_BAD_GATEWAY)
 
 class ChangePwAPI(APIView):
     def post(self, request):
@@ -132,12 +132,11 @@ class ChangePwAPI(APIView):
         changePwRes = changePw.changePassword(request.data['nickname'], request.data['password'])
 
         if changePwRes == 0:
-            return Response(0, status=status.HTTP_400_BAD_REQUEST)
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif changePwRes == 1:
             return Response(1, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_406_NOT_ACCEPTABLE)
-
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공, 6->알수 없음
 class ChangeNicknameAPI(APIView):
