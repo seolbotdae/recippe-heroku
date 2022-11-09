@@ -91,10 +91,12 @@ class EmailStartAPI(APIView):
 
 class EmailFinalAPI(APIView):
     def post(self, request):
-        print(f"email = {request.data['email']}, code = {request.data['code']}")
+        print(f"EmailFinalAPI Start")
+        data = json.loads(request.body)
+        print(f"email = {data['email']}, code = {data['code']}")
 
         emailVerification = ControlEmailVerification_b()
-        checkRes = emailVerification.finishCheck(request)
+        checkRes = emailVerification.finishCheck(data)
 
         if checkRes == 2:
             return Response(checkRes, status=status.HTTP_404_NOT_FOUND)
