@@ -22,13 +22,13 @@ export default {
   },
   methods: {
     login() {
-      const loginInfo = JSON.stringify({
+      const loginInfo = {
         "nickname": null,
         "uid": this.info.id,
         "password": this.info.pw,
         "email": null,
-        "auto-Login": this.info.al,
-      })
+        "auto-login": this.info.al,
+      }
       console.log(loginInfo);
       herokuAPI.login(loginInfo)
         .then(function (response) {

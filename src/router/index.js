@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from '@/components/Home'
-import Create from '@/components/Create'
-import Table from '@/components/Table'
+import Home from '@/views/Home'
+import Login from '@/views/Login'
+import Signup from '@/views/Signup'
+import EmailAuth from '@/views/EmailAuth'
 
 Vue.use(Router); // vue 라우터 사용
 
@@ -12,12 +13,16 @@ const routes = [
     component:Home
   },
   {
-    path:'/table',
-    component:Table
+    path:'/login',
+    component:Login
   },
   {
-    path:'/create',
-    component:Create
+    path:'/signup',
+    component:Signup
+  },
+  {
+    path:'/email-auth',
+    component:EmailAuth
   },
 ]
 
