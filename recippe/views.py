@@ -144,16 +144,15 @@ class ChangeNicknameAPI(APIView):
         print(request.data)
 
         nicknameEdit = ControlEdittingInfo_b()
-
-        changeResult = nicknameEdit.changeNickname(request.data['old_nickname'], request.data['new_nickname'])
+        changeResult = nicknameEdit.changeNickname(request.data['nickname'], request.data['uid'])
         
         if changeResult == 2:
             return Response(2, status=status.HTTP_400_BAD_REQUEST)
         elif changeResult == 3:
-            return Response(3, status=status.HTTP_400_BAD_REQUEST)
+            return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif changeResult == 4:
-            return Response(changeResult, status=status.HTTP_400_BAD_REQUEST)
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif changeResult == 5:
             return Response(5, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)

@@ -215,24 +215,24 @@ class ControlEdittingInfo_b():
             return 0
         
     # 닉네임 중복시 -1 원래 닉네임과 동일 할 시 0 성공시 1
-    def changeNickname(self, old_nickname, new_nickname):
-        '''
+    def changeNickname(self, new_nickname, id):
         # 오류
         if self.checkOverlap(new_nickname) == 1:
             result = self.sendResult("중복되는 닉네임이 있습니다.")
-        '''
         # 된거
-        if self.checkOverlap(new_nickname) == 0:
+        elif self.checkOverlap(new_nickname) == 0:
             try:
-                print("no overlap")
-                userObject = User.objects.filter(nickname = old_nickname)
+                userObject = User.objects.filter(uid = id)
+                old_nickname = userObject[0].nickname
 
-                user = User.objects.create(nickname=new_nickname, uid=userObject[0].uid, password=userObject[0].password, email=userObject[0].email, auto_login=0)
+                user = User.objects.create(nickname=new_nickname, uid=userObject[0].uid, password=userObject[0].password, email=userObject[0].email, auto_login=userObject[0].auto_login)
                 User.save(user)
 
+                objectList = [Comment, LikeInfo, Mail, PhotoPost, RecipePost, Refrigerator, Report]
                 try:
                     object = get_object_or_404(User, nickname = old_nickname)
-                    PhotoPost.objects.filter(nickname=old_nickname).update(nickname=new_nickname)
+                    for ol in objectList:
+                        ol.objects.filter(nickname=old_nickname).update(nickname=new_nickname)
                     User.delete(object)
                     result = self.sendResult("닉네임 변경에 성공했습니다.")
                 except:
@@ -256,4 +256,3 @@ class ControlEdittingInfo_b():
             return 4
         elif result == "닉네임 변경에 성공했습니다.":
             return 5
-#hello bye
