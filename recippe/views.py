@@ -14,6 +14,9 @@ from .mypage import *
 
 # Create your views here.
 
+# json 파싱을 위한 header
+import json
+
 '''
 221105 로그인 view 추가
 221105 이메일 view 추가
@@ -27,15 +30,13 @@ from .mypage import *
 
 class LoginAPI(APIView):
     def post(self, request):
-        #print("type", type(request))
-        #print(request.GET.get('uid'))
-        #print(request.data['uid'])
-        #upload
+        print(f"LoginAPI")
+        data = json.loads(request.body)
 
-        inputId = request.data['uid']
-        inputPw = request.data['password']
-        #inputId = request.GET.get('uid')
-        #inputPw = request.GET.get('password')
+        print(f"input data and password{data['uid']} {data['password']}")
+        
+        inputId = data['uid']
+        inputPw = data['password']
 
         controlLogin = ControlLogin_b()
         code, serializer = controlLogin.checkLogin(inputId, inputPw)
@@ -52,9 +53,10 @@ class LoginAPI(APIView):
 
 class LogoutAPI(APIView):
     def post(self, request):
+        data = json.loads(request.body)
         print(f"CancleAutoLogin Class start")
 
-        inputNickname = request.data['nickname']
+        inputNickname = data['nickname']
 
         controlLogout = ControlLogout_b()
         result = controlLogout.cancelAutoLogin(inputNickname)
