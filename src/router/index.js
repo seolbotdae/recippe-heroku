@@ -15,6 +15,7 @@ const routes = [
     children: [
       {
         path:'/',
+        name: 'home',
         component:Home
       },
     ]
@@ -25,14 +26,17 @@ const routes = [
     children: [
       {
         path:'/login',
+        name: 'login',
         component:Login
       },
       {
         path:'/signup',
+        name: 'signup',
         component:Signup
       },
       {
         path:'/email-auth',
+        name: 'email-auth',
         component:EmailAuth
       },
     ]

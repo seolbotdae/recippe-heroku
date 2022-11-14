@@ -47,7 +47,7 @@
 
 <script>
 import herokuAPI from '@/api/heroku.js';
-import router from '../router'
+import router from '@/router/index.js'
 
 export default {
   data() {
@@ -86,7 +86,7 @@ export default {
           console.log("secondcheck", response);
           if(response.status == 200) {
             console.log("코드 일치")
-            router.push({path: '/signup'});
+            router.push({name: 'signup'});
           }
         }) 
         .catch(function (e) {

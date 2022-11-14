@@ -53,7 +53,7 @@
 
 <script>
 import herokuAPI from '@/api/heroku.js';
-import router from '../router'
+import router from '@/router/index.js'
 
 export default {
   data() {
@@ -78,7 +78,7 @@ export default {
           console.log("login", response)
           if(response.status == 200) {
             console.log("회원가입 성공")
-            router.push({path: '/login'});
+            router.push({name: 'login'});
           }
         }) 
         .catch(function (e) {
