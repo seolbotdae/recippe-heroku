@@ -133,13 +133,15 @@ class ControlEmailVerification_b():
 
     def finishCheck(self, request):
         try:
-            self.codeCheck = TempEmail.objects.get(email = request['email'])
+            print(request['email'])
+            codeCheck = TempEmail.objects.get(email = request['email'])
 
-            if self.codeCheck.code == request['code']:
-                count = self.codeCheck.delete()
-                if count > 0:
-                    result = self.sendResult("이메일 인증 최종 완료")
-                else:
+            if codeCheck.code == request['code']:
+                result = self.sendResult("이메일 인증 최종 완료")
+                codeCheck.delete()
+
+                deleteCheck = TempEmail.objects.filter(email=request['email'])
+                if len(deleteCheck) > 0:
                     result = self.sendResult("알 수 없는 오류")
                 return result
             else:
