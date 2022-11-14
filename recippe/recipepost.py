@@ -42,25 +42,42 @@ class ControlRecipe_b():
         return result, recipePost
 
     def insertRecipe(self, newRecipe):
-        newRecipe = RecipeListSerializer(data=newRecipe)
-        print(newRecipe)
-        if newRecipe.is_valid():
-            newRecipe.save()
-            posts = RecipePost.objects.filter(nickname=newRecipe.data['nickname']).order_by('upload_time').reverse()
-            newRecipe = posts[0]
-            result, recipePost = self.sendResult("레시피 게시글 등록 성공", newRecipe)
+        recipe = RecipeListSerializer(data=newRecipe)
+        print(recipe)
+
+        if recipe.is_valid():
+            recipe.save()
+            posts = RecipePost.objects.filter(nickname=recipe.data['nickname']).order_by('upload_time').reverse()
+            nr = posts[0]
+
+            recipe_ingredients = newRecipe['Recipe_Ingredients']
+            for ingre in recipe_ingredients:
+                postid = nr.post_id
+                ingre['post_id'] = postid
+                ingre = RecipeIngredientsSerializer(data=ingre)
+                if ingre.is_valid():
+                    ingre.save()
+                
+            print("hello")
+            result, recipePost = self.sendResult("레시피 게시글 등록 성공", nr)
         else:
             result, recipePost = self.sendResult("레시피 게시글 등록 실패", None)
 
         return result, recipePost
 
-    def sendResult(self, result, recipePost):
-        if result == "레시피 게시글 등록 실패":
-            print(f"{result}, {recipePost}")
-            return 0, recipePost
-        elif result == "레시피 게시글 등록 성공":
+    def sendResult(self, result, recipePost=None):
+        if result == "레시피 게시글 조회 실패":
             print(f"{result}, {0}")
-            return 99, recipePost
+            return 0, recipePost
+        elif result == "레시피 게시글 조회 성공":
+            print(f"{result}, {recipePost}")
+            return 1, recipePost
+        if result == "레시피 게시글 등록 실패":
+            print(f"{result}, {0}")
+            return 2, recipePost
+        elif result == "레시피 게시글 등록 성공":
+            print(f"{result}, {recipePost}")
+            return 3, recipePost
 
 
         

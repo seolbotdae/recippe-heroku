@@ -193,7 +193,7 @@ class RecipePostAPI(APIView):
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 99:
+        elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -201,13 +201,12 @@ class RecipePostAPI(APIView):
         print(f"게시글 등록 정보 = {newRecipe}")
 
         insert = ControlRecipe_b()
-        insertRes, serializer = insert.insertRecipe(newRecipe)
-
-        serializer = RecipeListSerializer(serializer)
+        insertRes, recipe = insert.insertRecipe(newRecipe)
         
-        if insertRes == 0:
+        serializer = RecipeListSerializer(recipe)
+        if insertRes == 2:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif insertRes == 99:
+        elif insertRes == 3:
             return Response(serializer.data, status=status.HTTP_200_OK)
         
 
