@@ -74,9 +74,10 @@ export default {
       JSON.parse(signupInfo);
       herokuAPI.signup(signupInfo)
         .then(function (response) {
-          console.log("login", response);
+          console.log("login", response)
           const res = JSON.parse(response)
           if(res.status == 200) {
+            console.log("회원가입 성공")
             this.$router.push('/login')
           }
         }) 

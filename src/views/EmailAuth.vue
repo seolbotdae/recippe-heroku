@@ -83,7 +83,9 @@ export default {
       herokuAPI.secondcheck(checkInfo)
         .then(function (response) {
           console.log("secondcheck", response);
+          const res = JSON.parse(response)
           if(res.status == 200) {
+            console.log("코드 일치")
             this.$router.push('/signup')
           }
         }) 
