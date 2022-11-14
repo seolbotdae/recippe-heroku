@@ -112,6 +112,7 @@ class ControlEmailVerification_b():
         code = random.randrange(100000, 1000000)
         #request.POST._mutable = True
         request['code'] = code
+        print(request['code'])
 
         tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
         TempEmail.save(tempEmail)
