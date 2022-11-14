@@ -77,7 +77,7 @@ export default {
           console.log("login", response)
           if(response.status == 200) {
             console.log("회원가입 성공")
-            router.push("/login")
+            self.$router.push({path: '/login'});
           }
         }) 
         .catch(function (e) {

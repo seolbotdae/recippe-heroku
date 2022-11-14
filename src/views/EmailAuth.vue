@@ -85,7 +85,7 @@ export default {
           console.log("secondcheck", response);
           if(response.status == 200) {
             console.log("코드 일치")
-            router.push("/signup")
+            self.$router.push({path: '/signup'});
           }
         }) 
         .catch(function (e) {

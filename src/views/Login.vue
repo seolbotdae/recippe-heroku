@@ -76,7 +76,7 @@ export default {
           console.log("response.status", response.status);
           if(response.status == 200) {
             console.log("로그인 성공")
-            router.push("/home")
+            self.$router.push({path: '/'});
           }
         }) 
         .catch(function (e) {
