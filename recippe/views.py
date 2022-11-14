@@ -28,6 +28,8 @@ import json
 221107 냉장고 조회 view 추가
 221108 닉네임 변경 view 추가
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
+221109 냉장고 조회 view 추가 (작업중)
+
 '''
 
 class LoginAPI(APIView):
@@ -208,3 +210,24 @@ class RecipePostAPI(APIView):
         elif insertRes == 99:
             return Response(serializer.data, status=status.HTTP_200_OK)
         
+
+class InquiryRefrigeratorAPI(APIView):
+    def get(self, request, nickname):
+        print("InquiryRefrigeraotrAPI Start")
+        print(f"nickname {nickname}")
+
+        refrigerator = ControlRefrigerator_b()
+        result, code = refrigerator.requestRefrigerator(nickname)
+
+        print(result)
+
+        if code == 0:
+            return Response(result, status=status.HTTP_401_UNAUTHORIZED)
+        elif code == 1:
+            serializers = InquiryRefrigeratorSerializer(result, many=True)
+            #print(serializers)
+            #print(serializers.is_valid())
+            
+            return Response(serializers.data, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_403_FORBIDDEN)
