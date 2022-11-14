@@ -110,13 +110,16 @@ class ControlLogout_b():
 class ControlEmailVerification_b():
     def startCheck(self, request):
         code = random.randrange(100000, 1000000)
-        #request.POST._mutable = True
         request['code'] = code
         print(request['code'])
 
-        tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
-        TempEmail.save(tempEmail)
-        
+        tempEmail = TempEmail.objects.filter(email=request['email'])
+        if len(tempEmail) == 0:
+            tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
+            TempEmail.save(tempEmail)
+        else:
+            tempEmail.update(code=request['code'])
+            
         if TempEmail.objects.get(email = request['email']).email == request['email']:
             return "이메일 등록 성공"
         else:
