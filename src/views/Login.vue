@@ -73,8 +73,7 @@ export default {
       herokuAPI.login(loginInfo)
         .then(function (response) {
           console.log("login", response);
-          const res = JSON.parse(response)
-          if(res.status == 200) {
+          if(response.status == 200) {
             console.log("로그인 성공")
             this.$router.push('/home')
           }
