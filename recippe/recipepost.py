@@ -6,6 +6,7 @@ from .serializers import *
 
 '''
 221109 레시피 class 추가
+221114 레시피 수정 함수 추가
 '''
 
 class ControlRecipeList_b():
@@ -58,12 +59,31 @@ class ControlRecipe_b():
                 if ingre.is_valid():
                     ingre.save()
                 
-            print("hello")
             result, recipePost = self.sendResult("레시피 게시글 등록 성공", nr)
         else:
             result, recipePost = self.sendResult("레시피 게시글 등록 실패", None)
 
         return result, recipePost
+
+    def updateRecipe(self, updatedRecipe):
+        try:
+            RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(title=updatedRecipe['title'])
+            RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(category=updatedRecipe['category'])
+            RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(degree_of_spicy=updatedRecipe['degree_of_spicy'])
+            RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(description=updatedRecipe['description'])
+
+            Recipe_Ingredients.objects.filter(post_id=updatedRecipe['post_id']).delete()
+            update_ingredients = updatedRecipe['Recipe_Ingredients']
+            for uingre in update_ingredients:
+                uingre = RecipeIngredientsSerializer(data=uingre)
+                if uingre.is_valid():
+                    uingre.save()
+            
+            result, updatedRecipe = self.sendResult("레시피 게시글 수정 성공", updatedRecipe)
+        except:
+            result, updatedRecipe = self.sendResult("레시피 게시글 수정 실패", None)
+        
+        return result, updatedRecipe
 
     def sendResult(self, result, recipePost=None):
         if result == "레시피 게시글 조회 실패":
@@ -72,12 +92,18 @@ class ControlRecipe_b():
         elif result == "레시피 게시글 조회 성공":
             print(f"{result}, {recipePost}")
             return 1, recipePost
-        if result == "레시피 게시글 등록 실패":
+        elif result == "레시피 게시글 등록 실패":
             print(f"{result}, {0}")
             return 2, recipePost
         elif result == "레시피 게시글 등록 성공":
             print(f"{result}, {recipePost}")
             return 3, recipePost
+        elif result == "레시피 게시글 수정 실패":
+            print(f"{result}, {0}")
+            return 4, recipePost
+        elif result == "레시피 게시글 수정 성공":
+            print(f"{result}, {recipePost}")
+            return 5, recipePost
 
 
         

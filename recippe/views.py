@@ -29,7 +29,7 @@ import json
 221108 닉네임 변경 view 추가
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
 221109 냉장고 조회 view 추가 (작업중)
-
+221114 레시피 수정 view 추가 (게시글 수정)
 '''
 
 class LoginAPI(APIView):
@@ -205,11 +205,23 @@ class RecipePostAPI(APIView):
         
         serializer = RecipeListSerializer(recipe)
         if insertRes == 2:
-            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif insertRes == 3:
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
 
+class RecipeModifyAPI(APIView):
+    def post(self, request):
+        updatedRecipe = json.loads(request.body)
+        print(f"수정된 게시글 정보 = {updatedRecipe}")
+
+        update = ControlRecipe_b()
+        updateRes, updateRecipe = update.updateRecipe(updatedRecipe)
+
+        if updateRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif updateRes == 5:
+            return Response(updateRecipe, status=status.HTTP_200_OK)
+        
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
         print("InquiryRefrigeraotrAPI Start")
