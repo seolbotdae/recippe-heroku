@@ -65,8 +65,8 @@ class LikeInfo(models.Model):
 # 댓글
 class Comment(models.Model):
     comment_id = models.AutoField(primary_key=True, null=False, unique=True)
-    nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="nickname", related_name="comment_user")
-    post_id = models.ForeignKey(RecipePost, null=False, on_delete=models.CASCADE, db_column="post_id", related_name="comment_recipepost")
+    nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="nickname", related_name="comments")
+    post_id = models.ForeignKey(RecipePost, null=False, on_delete=models.CASCADE, db_column="post_id", related_name="comments")
     comments = models.CharField(max_length=100, null=False)
     comment_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=False)
 
