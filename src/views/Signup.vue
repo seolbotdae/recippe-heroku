@@ -1,32 +1,50 @@
 <template>
-  <v-container justify-center align-center>
+  <v-container>
     <v-form ref="form">
       <v-row>
-        <v-col cols="6">
+        <v-col cols="4" offset="4">
+          <v-card-title style="justify-content: center">레쉽피 회원가입</v-card-title>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="6" offset="3">
+          <v-divider></v-divider>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="4" offset="4">
           <v-text-field v-model="info.id" label="id"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="4" offset="4">
           <v-text-field v-model="info.nick" label="nickname"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="4" offset="4">
           <v-text-field v-model="info.pw" label="password"></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="4" offset="4">
           <v-text-field v-model="info.pwcheck" label="check password"></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col cols="3" offset="3">
-          <v-btn><router-link to="/login">돌아가기</router-link></v-btn>
+      <v-row justify="center">
+        <v-col cols="auto">
+          <v-btn @click="back">돌아가기</v-btn>
         </v-col>
-        <v-col cols="3" offset="3">
-          <v-btn @click="signup">회원가입</v-btn>
+        <v-col cols="2">
+          <v-btn @click="signup" style="width: 100%">회원가입</v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="6" offset="3">
+          <v-divider></v-divider>
         </v-col>
       </v-row>
     </v-form>
@@ -57,10 +75,17 @@ export default {
       herokuAPI.signup(signupInfo)
         .then(function (response) {
           console.log("login", response);
+          const res = JSON.parse(response)
+          if(res.status == 200) {
+            this.$router.push('/login')
+          }
         }) 
         .catch(function (e) {
           console.log(e);
         });
+    },
+    back() {
+      this.$router.go(-1);
     }
   }
 }
