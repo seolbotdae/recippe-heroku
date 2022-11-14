@@ -46,7 +46,7 @@ class ControlRecipe_b():
         print(newRecipe)
         if newRecipe.is_valid():
             newRecipe.save()
-            posts = RecipePost.objects.order_by('upload_time').reverse()
+            posts = RecipePost.objects.filter(nickname=newRecipe.data['nickname']).order_by('upload_time').reverse()
             newRecipe = posts[0]
             result, recipePost = self.sendResult("레시피 게시글 등록 성공", newRecipe)
         else:

@@ -30,8 +30,14 @@ class InquiryRefrigeratorSerializer(serializers.ModelSerializer):
         model = Refrigerator
         fields = ('name', 'nickname', 'unit', 'amount', 'expiry_date')
 
+class RecipeIngredientsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe_Ingredients
+        fields = ('name', 'post_id', 'unit', 'amount')
+
 class RecipeListSerializer(serializers.ModelSerializer):
+    Recipe_Ingredients = RecipeIngredientsSerializer(many=True, read_only=True)
     class Meta:
         model = RecipePost
-        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time')
+        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time', 'Recipe_Ingredients')
 

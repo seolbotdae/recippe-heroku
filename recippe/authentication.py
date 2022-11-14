@@ -112,6 +112,7 @@ class ControlEmailVerification_b():
         code = random.randrange(100000, 1000000)
         #request.POST._mutable = True
         request['code'] = code
+        print(request['code'])
 
         tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
         TempEmail.save(tempEmail)
@@ -132,13 +133,15 @@ class ControlEmailVerification_b():
 
     def finishCheck(self, request):
         try:
-            self.codeCheck = TempEmail.objects.get(email = request['email'])
+            print(request['email'])
+            codeCheck = TempEmail.objects.get(email = request['email'])
 
-            if self.codeCheck.code == request['code']:
-                count = self.codeCheck.delete()
-                if count > 0:
-                    result = self.sendResult("이메일 인증 최종 완료")
-                else:
+            if codeCheck.code == request['code']:
+                result = self.sendResult("이메일 인증 최종 완료")
+                codeCheck.delete()
+
+                deleteCheck = TempEmail.objects.filter(email=request['email'])
+                if len(deleteCheck) > 0:
                     result = self.sendResult("알 수 없는 오류")
                 return result
             else:
