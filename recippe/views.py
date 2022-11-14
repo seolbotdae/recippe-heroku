@@ -30,6 +30,7 @@ import json
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
 221109 냉장고 조회 view 추가 (작업중)
 221114 레시피 수정 view 추가 (게시글 수정)
+221114 레시피 삭제 view 추가 (게시글 삭제)
 '''
 
 class LoginAPI(APIView):
@@ -221,7 +222,20 @@ class RecipeModifyAPI(APIView):
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif updateRes == 5:
             return Response(updateRecipe, status=status.HTTP_200_OK)
-        
+
+class RecipeDeleteAPI(APIView):
+    def post(self, request):
+        deleteTarget = json.loads(request.body)
+        print(f"삭제된 게시글 정보 = {deleteTarget}")
+
+        delete = ControlRecipe_b()
+        deleteRes = delete.deleteRecipe(deleteTarget['nickname'], deleteTarget['post_id'])
+
+        if deleteRes == 6:
+            return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif deleteRes == 7:
+            return Response(7, status=status.HTTP_200_OK)
+   
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
         print("InquiryRefrigeraotrAPI Start")

@@ -85,6 +85,17 @@ class ControlRecipe_b():
         
         return result, updatedRecipe
 
+    def deleteRecipe(self, nickname, postId):
+        try:
+            deleteTarget = RecipePost.objects.get(nickname=nickname, post_id=postId)
+            deleteTarget.delete()
+
+            result = self.sendResult("레시피 게시글 삭제 성공")
+        except:
+            result = self.sendResult("레시피 게시글 삭제 실패")
+
+        return result
+
     def sendResult(self, result, recipePost=None):
         if result == "레시피 게시글 조회 실패":
             print(f"{result}, {0}")
@@ -104,6 +115,13 @@ class ControlRecipe_b():
         elif result == "레시피 게시글 수정 성공":
             print(f"{result}, {recipePost}")
             return 5, recipePost
+        elif result == "레시피 게시글 삭제 실패":
+            print(f"{result}, {0}")
+            return 6
+        elif result == "레시피 게시글 삭제 성공":
+            print(f"{result}, {0}")
+            return 7
+
 
 
         
