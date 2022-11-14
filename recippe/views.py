@@ -223,7 +223,7 @@ class InquiryRefrigeratorAPI(APIView):
 
         if code == 0:
             print("냉장고에 식재료 없음")
-            return Response("냉장고에 식재료가 없습니다.", status=status.HTTP_401_UNAUTHORIZED)
+            return Response(0, status=status.HTTP_401_UNAUTHORIZED)
         elif code == 1:
             print("식재료 있음")
             serializers = InquiryRefrigeratorSerializer(data = result, many=True) 
