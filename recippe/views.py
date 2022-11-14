@@ -221,13 +221,15 @@ class InquiryRefrigeratorAPI(APIView):
 
         print(result)
 
+
         if code == 0:
-            return Response(result, status=status.HTTP_401_UNAUTHORIZED)
+            print("냉장고에 식재료 없음")
+            return Response("냉장고에 식재료가 없습니다.", status=status.HTTP_401_UNAUTHORIZED)
         elif code == 1:
-            serializers = InquiryRefrigeratorSerializer(result, many=True)
-            #print(serializers)
-            #print(serializers.is_valid())
-            
+            print("식재료 있음")
+            serializers = InquiryRefrigeratorSerializer(data = result, many=True) 
+            print(serializers.is_valid())
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
+            print("알 수 없는 오류")
             return Response(6, status=status.HTTP_403_FORBIDDEN)

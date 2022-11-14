@@ -31,10 +31,10 @@ class ControlRefrigerator_b():
     def sendResult(self, result, refrigerator):
         if result == "냉장고에 식재료가 없습니다.":
             print("no food in refri")
-            return refrigerator, result
+            return refrigerator, 0
         elif result == "냉장고 조회 성공.":
             print("yes food in refri")
-            return refrigerator, result
+            return refrigerator, 1
         else:
             print("i don't know in refri")
             return refrigerator, 6
