@@ -34,7 +34,7 @@ import json
 221115  냉장고 추가 view 추가 
         냉장고 재료 삭제 view 추가 
         냉장고 재료 변경 view 추가
-
+        사용자 작성 사진 게시글 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -261,7 +261,7 @@ class InquiryRefrigeratorAPI(APIView):
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             print("알 수 없는 오류")
-            return Response(6, status=status.HTTP_403_FORBIDDEN)
+            return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AddRefrigeratorAPI(APIView):
     def post(self, request):
@@ -307,5 +307,24 @@ class UpdateRefrigeratorAPI(APIView):
             return Response(code, status=status.HTTP_200_OK)
         elif code == 8:
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMyPhotoPostsAPI(APIView):
+    def get(self, request, nickname):
+        print("InquiryMyPhotoPostsAPI Start")
+
+        photoInstance = ControlMyPhoto_b()
+        result, code = photoInstance.requestMyPhotoList(nickname = nickname)
+
+        if code == 0:
+            result = MyPhotoPostSerializer(data = result, many = True)
+            print(result.is_valid())
+            print(result.data)
+            return Response(result.data, status=status.HTTP_200_OK)
+        elif code == 1:
+            return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        elif code == 2:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

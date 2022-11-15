@@ -36,4 +36,8 @@ urlpatterns = [
     path("addrefrigerator/", AddRefrigeratorAPI.as_view()),
     path("deleterefrigerator/", DeleteRefrigeratorAPI.as_view()),
     path("updaterefrigerator/", UpdateRefrigeratorAPI.as_view()),
+
+    # MyPhotoPost
+    path("inquirymyphotoposts/<str:nickname>/", InquiryMyPhotoPostsAPI.as_view()),
+    
 ]

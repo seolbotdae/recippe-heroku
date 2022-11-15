@@ -8,6 +8,7 @@ from .models import Ingredients, Units, User,  PhotoPost, RecipePost, Mail, Like
 221105 이메일인증 serializer 추가
 221108 레시피게시판 serializer 추가
 221109 냉장고조회 serializer 추가
+221115 자신이 작성한 사진 게시글 serializer 추가
 '''
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -47,3 +48,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         model = RecipePost
         fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time', 'Recipe_Ingredients')
 
+class MyPhotoPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhotoPost
+        fields = ('post_id', 'photo_link', 'like_count', 'upload_time', 'nickname')

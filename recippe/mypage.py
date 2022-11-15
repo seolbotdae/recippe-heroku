@@ -11,6 +11,7 @@ import json
 221115  냉장고 재료 추가 함수 작업 완료.
         냉장고 재료 삭제 함수 작업 완료.
         냉장고 재료 변경 함수 작업 완료.
+        사용자 작성 사진 게시글 조회 완료.
 '''
 
 class ControlRefrigerator_b():
@@ -134,7 +135,36 @@ class ControlRefrigerator_b():
             return refrigerator, 6
 
 class ControlMyPhoto_b():
-    pass
+    def requestMyPhotoList(self, nickname):
+        print("requestMyPhotoList 함수 실행")
+        
+        if PhotoPost.objects.filter(nickname = nickname).exists():
+            print("서버 : 사용자 작성 사진 게시글 조회 성공")
+            result, code = self.sendResult("사용자 작성 사진 게시글 조회 성공.",
+                PhotoPost.objects.filter(nickname = nickname))
+        elif len(PhotoPost.objects.filter(nickname = nickname)) == 0:
+            print("서버 : 사용자가 작성한 가진 게시글이 없음.")
+            result, code = self.sendResult("사용자 작성 사진 게시글 없음.",
+                PhotoPost.objects.filter(nickname = nickname))
+        else:
+            print("서버 : 사용자 작성 사진 게시글 조회 실패.")
+            result, code = self.sendResult("사용자 작성 사진 게시글 조회 실패.", None)
+
+        return result, code 
+    
+    def sendResult(self, result, photoList):
+        if result == "사용자 작성 사진 게시글 조회 성공.":
+            print("사진게시글 조회 성공 응답")
+            return photoList, 0
+        elif result == "사용자 작성 사진 게시글 조회 실패.":
+            print("사진게시글 조회 실패 응답")
+            return photoList, 1
+        elif result == "사용자 작성 사진 게시글 없음.":
+            print("사용자 작성 사진 게시글 없음")
+            return None, 2
+        else:
+            print("뭔 일인교..?")
+            return photoList, 6
 
 class ControlMyRecipe_b():
     pass
