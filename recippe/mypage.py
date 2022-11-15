@@ -7,9 +7,10 @@ import json
 221107  냉장고 조회 class 추가
 221109  냉장고 조회 함수 작업중
 221114  냉장고 조회 함수 작업 완료
-221114  냉장고 재료 추가 함수 작업중
-221115  냉장고 재료 추가 함수 작업 완료
+        냉장고 재료 추가 함수 작업중
+221115  냉장고 재료 추가 함수 작업 완료.
         냉장고 재료 삭제 함수 작업 완료.
+        냉장고 재료 변경 함수 작업 완료.
 '''
 
 class ControlRefrigerator_b():
@@ -74,9 +75,31 @@ class ControlRefrigerator_b():
             print("식재료 삭제 실패")
 
         return result, code
+    '''
+    냉장고 변경 함수
 
-    def updateRefrigerator(self, nickname, ingredient):
-        pass
+    parameter       refrigerator:Refrigerator
+    return type     None
+    로 변경해야함.
+    '''
+    def updateRefrigerator(self, refrigerator):
+        try:
+            test = Refrigerator.objects.get(id = refrigerator["id"])
+            Refrigerator.objects.filter(id = refrigerator["id"]).update(
+                name = Ingredients.objects.get(name= refrigerator['name']),
+                unit = Units.objects.get(unit = refrigerator["unit"]),
+                amount = refrigerator["amount"],
+                expiry_date = refrigerator["expiry_date"]
+            )
+
+            print("서버 : 냉장고 재료정보 변경 성공")
+            result, code = self.sendResult("냉장고 재료 변경 성공.", None)
+        except:
+            print("서버 : 냉장고 재료정보 변경 실패")
+            result, code = self.sendResult("냉장고 재료 변경 실패.", None)
+
+        return result, code
+
     def sendResult(self, result, refrigerator):
         if result == "냉장고에 식재료가 없습니다.":
             print("no food in refri")
@@ -84,20 +107,30 @@ class ControlRefrigerator_b():
         elif result == "냉장고 조회 성공.":
             print("yes food in refri")
             return refrigerator, 1
+
         elif result == "냉장고 재료 추가 성공.":
             print("냉장고 재료 추가 성공")
             return refrigerator, 2
         elif result == "냉장고 재료 추가 실패.":
             print("냉장고 재료 추가 실패")
             return refrigerator, 3
+
         elif result == "냉장고 재료 삭제에 성공했습니다.":
             print("냉장고 재료 삭제 성공")
             return refrigerator, 4
         elif result == "냉장고 재료 삭제에 실패했습니다.":
             print("냉장고 재료 삭제 실패")
             return refrigerator, 5
+
+        elif result == "냉장고 재료 변경 성공.":
+            print("냉장고 재료 변경 성공")
+            return refrigerator, 7
+        elif result == "냉장고 재료 변경 실패.":
+            print("냉장고 재료 변경 실패")
+            return refrigerator, 8
+    
         else:
-            print("i don't know in refri")
+            print("뭔 일인겨..?")
             return refrigerator, 6
 
 class ControlMyPhoto_b():

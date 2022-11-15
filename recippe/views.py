@@ -19,20 +19,22 @@ from .recipepost import *
 import json
 
 '''
-221105 로그인 view 추가
-221105 이메일 view 추가
-221105 자동로그인 해제 view 추가
-221106 이메일 인증 get 함수 추가
-221106 최종 회원가입 view 추가
-221107 비밀번호 변경 view 추가
-221107 냉장고 조회 view 추가
-221108 닉네임 변경 view 추가
-221109 레시피 view 추가 (게시판 조회, 게시글 조회)
-221109 냉장고 조회 view 추가 
-221114 레시피 수정 view 추가 (게시글 수정)
-221114 레시피 삭제 view 추가 (게시글 삭제)
-221115 냉장고 추가 view 추가 
-221115 냉장고 재료 삭제 view 추가 
+221105  로그인 view 추가
+221105  이메일 view 추가
+221105  자동로그인 해제 view 추가
+221106  이메일 인증 get 함수 추가
+221106  최종 회원가입 view 추가
+221107  비밀번호 변경 view 추가
+221107  냉장고 조회 view 추가
+221108  닉네임 변경 view 추가
+221109  레시피 view 추가 (게시판 조회, 게시글 조회)
+221109  냉장고 조회 view 추가 
+221114  레시피 수정 view 추가 (게시글 수정)
+221114  레시피 삭제 view 추가 (게시글 삭제)
+221115  냉장고 추가 view 추가 
+        냉장고 재료 삭제 view 추가 
+        냉장고 재료 변경 view 추가
+
 '''
 
 class LoginAPI(APIView):
@@ -289,6 +291,21 @@ class DeleteRefrigeratorAPI(APIView):
         if code == 4:
             return Response(code, status=status.HTTP_200_OK)
         elif code == 5:
+            return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class UpdateRefrigeratorAPI(APIView):
+    def post(self, request):
+        print(f"UpdateRefrigeratorAPI 실행")
+        updateTarget = json.loads(request.body)
+        refriInstance = ControlRefrigerator_b()
+        result, code = refriInstance.updateRefrigerator(updateTarget)
+
+        if code == 7:
+            return Response(code, status=status.HTTP_200_OK)
+        elif code == 8:
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
