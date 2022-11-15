@@ -28,8 +28,8 @@ import json
 221107 냉장고 조회 view 추가
 221108 닉네임 변경 view 추가
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
-221109 냉장고 조회 view 추가 (작업중)
-
+221109 냉장고 조회 view 추가 
+221115 냉장고 추가 view 추가 
 '''
 
 class LoginAPI(APIView):
@@ -233,3 +233,20 @@ class InquiryRefrigeratorAPI(APIView):
         else:
             print("알 수 없는 오류")
             return Response(6, status=status.HTTP_403_FORBIDDEN)
+
+class AddRefrigeratorAPI(APIView):
+    def post(self, request):
+        print("AddRefrigeratorAPI Start")
+       
+        refrigerator = ControlRefrigerator_b()
+        result, code = refrigerator.insertRefrigerator(refrigerator=request)
+
+        if code == 2:
+            print("서버 : 냉장고 추가 성공 응답")
+            return Response(code, status = status.HTTP_200_OK)
+        elif code == 3:
+            print("서버 : 냉장고 추가 실패 응답")
+            return Response(code, status = status.HTTP_400_BAD_REQUEST)
+        else:
+            print("서버 : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -25,5 +25,8 @@ urlpatterns = [
     path("recipeboard/<int:page>/", RecipeListAPI.as_view()),
     path("recipe/<int:postId>/", RecipePostAPI.as_view()),
     path("recipeupload/", RecipePostAPI.as_view()),
+
+    # Mypage
     path("inquiryrefrigerator/<str:nickname>/", InquiryRefrigeratorAPI.as_view()),
+    path("addrefrigerator/", AddRefrigeratorAPI.as_view())
 ]

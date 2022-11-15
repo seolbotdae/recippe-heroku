@@ -40,4 +40,3 @@ class RecipeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipePost
         fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time', 'Recipe_Ingredients')
-
