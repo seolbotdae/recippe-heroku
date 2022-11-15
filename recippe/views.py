@@ -29,7 +29,8 @@ import json
 221108 닉네임 변경 view 추가
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
 221109 냉장고 조회 view 추가 
-221115 냉장고 추가 view 추가 
+221114 레시피 수정 view 추가 (게시글 수정)
+221114 레시피 삭제 view 추가 (게시글 삭제)221115 냉장고 추가 view 추가 
 '''
 
 class LoginAPI(APIView):
@@ -193,7 +194,7 @@ class RecipePostAPI(APIView):
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 99:
+        elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -201,16 +202,40 @@ class RecipePostAPI(APIView):
         print(f"게시글 등록 정보 = {newRecipe}")
 
         insert = ControlRecipe_b()
-        insertRes, serializer = insert.insertRecipe(newRecipe)
-
-        serializer = RecipeListSerializer(serializer)
+        insertRes, recipe = insert.insertRecipe(newRecipe)
         
-        if insertRes == 0:
-            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif insertRes == 99:
+        serializer = RecipeListSerializer(recipe)
+        if insertRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif insertRes == 3:
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
 
+class RecipeModifyAPI(APIView):
+    def post(self, request):
+        updatedRecipe = json.loads(request.body)
+        print(f"수정된 게시글 정보 = {updatedRecipe}")
+
+        update = ControlRecipe_b()
+        updateRes, updateRecipe = update.updateRecipe(updatedRecipe)
+
+        if updateRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif updateRes == 5:
+            return Response(updateRecipe, status=status.HTTP_200_OK)
+
+class RecipeDeleteAPI(APIView):
+    def post(self, request):
+        deleteTarget = json.loads(request.body)
+        print(f"삭제된 게시글 정보 = {deleteTarget}")
+
+        delete = ControlRecipe_b()
+        deleteRes = delete.deleteRecipe(deleteTarget['nickname'], deleteTarget['post_id'])
+
+        if deleteRes == 6:
+            return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif deleteRes == 7:
+            return Response(7, status=status.HTTP_200_OK)
+   
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
         print("InquiryRefrigeraotrAPI Start")
