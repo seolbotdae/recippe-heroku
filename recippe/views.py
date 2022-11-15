@@ -30,7 +30,9 @@ import json
 221109 레시피 view 추가 (게시판 조회, 게시글 조회)
 221109 냉장고 조회 view 추가 
 221114 레시피 수정 view 추가 (게시글 수정)
-221114 레시피 삭제 view 추가 (게시글 삭제)221115 냉장고 추가 view 추가 
+221114 레시피 삭제 view 추가 (게시글 삭제)
+221115 냉장고 추가 view 추가 
+221115 냉장고 재료 삭제 view 추가 
 '''
 
 class LoginAPI(APIView):
@@ -262,9 +264,10 @@ class InquiryRefrigeratorAPI(APIView):
 class AddRefrigeratorAPI(APIView):
     def post(self, request):
         print("AddRefrigeratorAPI Start")
+        addTarget = json.loads(request.body)
        
         refrigerator = ControlRefrigerator_b()
-        result, code = refrigerator.insertRefrigerator(refrigerator=request)
+        result, code = refrigerator.insertRefrigerator(refrigerator = addTarget)
 
         if code == 2:
             print("서버 : 냉장고 추가 성공 응답")
@@ -274,4 +277,18 @@ class AddRefrigeratorAPI(APIView):
             return Response(code, status = status.HTTP_400_BAD_REQUEST)
         else:
             print("서버 : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DeleteRefrigeratorAPI(APIView):
+    def post(self, request):
+        print(f"DeleteRefrigeratorAPI 실행")
+        deleteTarget = json.loads(request.body)
+        refriInstance = ControlRefrigerator_b()
+        result, code = refriInstance.deleteRefrigerator(deleteTarget['id'],None,None)
+
+        if code == 4:
+            return Response(code, status=status.HTTP_200_OK)
+        elif code == 5:
+            return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

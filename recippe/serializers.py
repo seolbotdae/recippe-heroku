@@ -28,7 +28,7 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
 class InquiryRefrigeratorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Refrigerator
-        fields = ('name', 'nickname', 'unit', 'amount', 'expiry_date')
+        fields = ('id', 'name', 'nickname', 'unit', 'amount', 'expiry_date')
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
     class Meta:

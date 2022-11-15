@@ -4,10 +4,12 @@ from .serializers import *
 # json 임포트
 import json
 '''
-221107 냉장고 조회 class 추가
-221109 냉장고 조회 함수 작업중
-221114 냉장고 조회 함수 작업 완료
-221114 냉장고 재료 추가 함수 작업중
+221107  냉장고 조회 class 추가
+221109  냉장고 조회 함수 작업중
+221114  냉장고 조회 함수 작업 완료
+221114  냉장고 재료 추가 함수 작업중
+221115  냉장고 재료 추가 함수 작업 완료
+        냉장고 재료 삭제 함수 작업 완료.
 '''
 
 class ControlRefrigerator_b():
@@ -34,7 +36,7 @@ class ControlRefrigerator_b():
 
     def insertRefrigerator(self, refrigerator):
         print(f"insert Refrigerator start")
-        userRequest = json.loads(refrigerator.body)
+        userRequest = refrigerator
 
         try:
             refriObject = Refrigerator.objects.create(amount = userRequest['amount'],
@@ -53,9 +55,26 @@ class ControlRefrigerator_b():
         
         return result, code
 
-    def deleteRefrigerator(self, nickname, name):
-        pass
-    
+    '''
+    냉장고 삭제 함수
+
+    parameter       id:Integer
+    return type     None
+    로 변경해야함.
+    '''
+    def deleteRefrigerator(self, id, nickname, name):
+
+        try:
+            deleteTarget = Refrigerator.objects.get(id = id)
+            deleteTarget.delete()
+            result, code = self.sendResult("냉장고 재료 삭제에 성공했습니다.", None)
+            print("식재료 삭제 성공")
+        except:
+            result, code = self.sendResult("냉장고 재료 삭제에 실패했습니다.", None)
+            print("식재료 삭제 실패")
+
+        return result, code
+
     def updateRefrigerator(self, nickname, ingredient):
         pass
     def sendResult(self, result, refrigerator):
@@ -71,6 +90,12 @@ class ControlRefrigerator_b():
         elif result == "냉장고 재료 추가 실패.":
             print("냉장고 재료 추가 실패")
             return refrigerator, 3
+        elif result == "냉장고 재료 삭제에 성공했습니다.":
+            print("냉장고 재료 삭제 성공")
+            return refrigerator, 4
+        elif result == "냉장고 재료 삭제에 실패했습니다.":
+            print("냉장고 재료 삭제 실패")
+            return refrigerator, 5
         else:
             print("i don't know in refri")
             return refrigerator, 6
