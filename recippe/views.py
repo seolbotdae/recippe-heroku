@@ -41,6 +41,8 @@ import json
         사용자 작성 레시피 검색 view 추가
         레시피 신고 view 추가
         레시피 없는 재료 보여주기 view 추가
+        레시피 남은 재료 계산하기 view 추가
+        레시피 게시글 검색 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -193,7 +195,7 @@ class RecipeListAPI(APIView):
         elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipePostAPI(APIView):
     def get(self, request, postId):
@@ -256,6 +258,25 @@ class RecipeDeleteAPI(APIView):
         else:
             return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
+class RecipeQueryAPI(APIView):
+    def post(self, request):
+        searchInfo = json.loads(request.body)
+        print(f"검색 정보 = {searchInfo}")
+
+        search = ControlRecipeList_b()
+        searchRes, searchList = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
+                                                        searchInfo['keywordType'], searchInfo['keyword'],
+                                                        searchInfo['page'])
+        print("plz", searchList)
+
+        if searchRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif searchRes == 3:
+            serializer = RecipeListSerializer(searchList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+
 class RecipeReportAPI(APIView):
     def post(self, request):
         reportInfo = json.loads(request.body)
@@ -282,9 +303,25 @@ class RecipeUnExistIngredientsAPI(APIView):
         if ueIngreRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif ueIngreRes == 1:
-            return Response(ueIngreList, status=status.HTTP_200_OK)
+            serializer = RecipeIngredientsSerializer(ueIngreList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeDecreaseAPI(APIView):
+    def post(self, request):
+        requestInfo = json.loads(request.body)
+        print(f"남은 재료 계산하기 = {requestInfo}")
+
+        daIngre = ControlIngredients_b()
+        daIngreRes = daIngre.decreaseAmmounts(requestInfo['nickname'], requestInfo['post_id'])
+
+        if daIngreRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif daIngreRes == 3:
+            return Response(3, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
    
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
