@@ -18,7 +18,7 @@ from .views import *
         레시피 게시글 신고 링크 추가
         레시피 없는 재료 보여주기 링크 추가
         레시피 남은 재료 계산하기 링크 추가
-        레시피 게시글 검색 링크 추가
+        레시피 게시글 검색, 정렬 링크 추가
 '''
 
 urlpatterns = [
@@ -38,6 +38,7 @@ urlpatterns = [
     path("updaterecipe/", RecipeModifyAPI.as_view()),
     path("deleterecipe/", RecipeDeleteAPI.as_view()),
     path("queryrecipe/", RecipeQueryAPI.as_view()),
+    path("sortrecipe/", RecipeSortAPI.as_view()),
     path("reportrecipe/", RecipeReportAPI.as_view()),
     path("unexistingredients/", RecipeUnExistIngredientsAPI.as_view()),
     path("decreaseamount/", RecipeDecreaseAPI.as_view()),

@@ -42,7 +42,7 @@ import json
         레시피 신고 view 추가
         레시피 없는 재료 보여주기 view 추가
         레시피 남은 재료 계산하기 view 추가
-        레시피 게시글 검색 view 추가
+        레시피 게시글 검색, 정렬 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -195,7 +195,7 @@ class RecipeListAPI(APIView):
         elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipePostAPI(APIView):
     def get(self, request, postId):
@@ -267,7 +267,6 @@ class RecipeQueryAPI(APIView):
         searchRes, searchList = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
                                                         searchInfo['keywordType'], searchInfo['keyword'],
                                                         searchInfo['page'])
-        print("plz", searchList)
 
         if searchRes == 2:
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -275,7 +274,23 @@ class RecipeQueryAPI(APIView):
             serializer = RecipeListSerializer(searchList, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeSortAPI(APIView):
+    def post(self, request):
+        sortInfo = json.loads(request.body)
+        print(f"정렬 정보 = {sortInfo}")
+        
+        sort = ControlRecipeList_b()
+        sortRes, sortList = sort.arrangeRecipeList(sortInfo['arrangeBy'], sortInfo['page'])
+
+        if sortRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif sortRes == 5:
+            serializer = RecipeListSerializer(sortList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeReportAPI(APIView):
     def post(self, request):
