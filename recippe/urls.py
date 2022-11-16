@@ -30,9 +30,9 @@ urlpatterns = [
     # RecipePost
     path("recipeboard/<int:page>/", RecipeListAPI.as_view()),
     path("recipe/<int:postId>/", RecipePostAPI.as_view()),
-    path("recipeupload/", RecipePostAPI.as_view()),
-    path("recipeupdate/", RecipeModifyAPI.as_view()),
-    path("recipedelete/", RecipeDeleteAPI.as_view()),
+    path("uploadrecipe/", RecipePostAPI.as_view()),
+    path("updaterecipe/", RecipeModifyAPI.as_view()),
+    path("deleterecipe/", RecipeDeleteAPI.as_view()),
 
     # Mypage
     path("inquiryrefrigerator/<str:nickname>/", InquiryRefrigeratorAPI.as_view()),

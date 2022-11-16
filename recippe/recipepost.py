@@ -58,19 +58,20 @@ class ControlRecipe_b():
             posts = RecipePost.objects.filter(nickname=recipe.data['nickname']).order_by('upload_time').reverse()
             nr = posts[0]
 
-            recipe_ingredients = newRecipe['Recipe_Ingredients']
-            for ingre in recipe_ingredients:
-                postid = nr.post_id
-                ingre['post_id'] = postid
-                ingre = RecipeIngredientsSerializer(data=ingre)
-                if ingre.is_valid():
-                    ingre.save()
+            if newRecipe['Recipe_Ingredients'] != None:
+                recipe_ingredients = newRecipe['Recipe_Ingredients']
+                for ingre in recipe_ingredients:
+                    postid = nr.post_id
+                    ingre['post_id'] = postid
+                    ingre = RecipeIngredientsSerializer(data=ingre)
+                    if ingre.is_valid():
+                        ingre.save()
                 
-            result, recipePost = self.sendResult("레시피 게시글 등록 성공", nr)
+            result, newRecipe = self.sendResult("레시피 게시글 등록 성공", nr)
         else:
-            result, recipePost = self.sendResult("레시피 게시글 등록 실패", None)
+            result, newRecipe = self.sendResult("레시피 게시글 등록 실패", None)
 
-        return result, recipePost
+        return result, newRecipe
 
     def updateRecipe(self, updatedRecipe):
         try:

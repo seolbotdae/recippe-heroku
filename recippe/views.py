@@ -204,6 +204,8 @@ class RecipePostAPI(APIView):
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
     def post(self, request):
         newRecipe = json.loads(request.body)
@@ -217,6 +219,8 @@ class RecipePostAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif insertRes == 3:
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeModifyAPI(APIView):
     def post(self, request):
@@ -230,6 +234,8 @@ class RecipeModifyAPI(APIView):
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif updateRes == 5:
             return Response(updateRecipe, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeDeleteAPI(APIView):
     def post(self, request):
@@ -243,6 +249,8 @@ class RecipeDeleteAPI(APIView):
             return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif deleteRes == 7:
             return Response(7, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
    
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
