@@ -438,3 +438,20 @@ class ArrangeMyRecipePostsAPI(APIView):
         else:
             print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMyLikePostsAPI(APIView):
+    def post(self, request):
+        print("API : InquiryMyLikePostsAPI Start")
+        inquiryTarget = json.loads(request.body)
+
+        postsInstance = ControlPost_b()
+        result, code = postsInstance.requestMyLikeList(inquiryTarget['nickname'], inquiryTarget['postType'])
+
+        if code == 0:
+            print("API : 사용자 좋아요 게시글 조회 실패 응답")
+            return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        elif code == 1:
+            print("API : 사용자 좋아요 게시글 조회 성공 응답")
+            result = MyLikeRecipePostSerializer(data=result, many=True)
+            result.is_valid()
+            return Response(result.data, status=status.HTTP_200_OK)

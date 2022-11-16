@@ -52,3 +52,15 @@ class MyPhotoPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhotoPost
         fields = ('post_id', 'photo_link', 'like_count', 'upload_time', 'nickname')
+
+class MyLikePhotoPostSerializer(serializers.ModelSerializer):
+    photo = MyPhotoPostSerializer(many=True, read_only=True)
+    class Meta:
+        model = LikeInfo
+        fields = ('like_id', 'post_type', 'nickname', 'post_id', 'photo')
+
+class MyLikeRecipePostSerializer(serializers.ModelSerializer):
+    recipe = RecipeListSerializer(many=True, read_only=True)
+    class Meta:
+        model = LikeInfo
+        fields = ('like_id', 'post_type', 'nickname', 'post_id', 'recipe')

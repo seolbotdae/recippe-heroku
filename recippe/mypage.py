@@ -281,19 +281,52 @@ class ControlPost_b():
     postType: Int
     List<Post>
     '''
-    def requestMyLikeList(nickname, postType):
+    def requestMyLikeList(self, nickname, postType):
+        print("내부 함수 : requestMyLikeList Start")
+        try:
+            likePosts = LikeInfo.objects.filter(nickname=nickname, post_type = postType)
+
+            result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likePosts)
+            print("내부 함수 : 사용자 좋아요 게시글 조회 성공")
+        except:
+            result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
+            print("내부 함수 : 사용자 좋아요 게시글 조회 실패")
         
-        pass
+        return result, code
     '''
     nickname: String
     List<RecipePost>
     '''
-    def requestMyCommentList(nickname):
-        pass
+    def requestMyCommentList(self, nickname):
+        print("내부 함수 : requestMyCommentList Start")
+        try:
+            commentPosts = Comment.objects.filter(nickname=nickname).order_by("-comment_time")
+
+            result, code = self.sendResult("사용자 댓글단 게시글 조회 성공.", commentPosts)
+            print("내부 함수 : 사용자 댓글단 게시글 조회 성공")
+        except:
+            result, code = self.sendResult("사용자 댓글단 게시글 조회 실패.", commentPosts)
+            print("내부 함수 : 사용자 댓글단 게시글 조회 실패")
+        return result, code
     '''
     result : int
     postList: List<Post>
     '''
-    def sendResult(result, postList):
-        pass
+    def sendResult(self, result, postList):
+        if result == "사용자 좋아요 게시글 조회 실패.":
+            print("sendResult : 사용자 좋아요 게시글 조회 실패")
+            return postList, 0
+        elif result == "사용자 좋아요 게시글 조회 성공.":
+            print("sendResult : 사용자 좋아요 게시글 조회 성공")
+            return postList, 1
+        elif result == "사용자 댓글단 게시글 조회 실패.":
+            print("sendResult : 사용자 댓글단 게시글 조회 실패")
+            return postList, 2
+        elif result == "사용자 댓글단 게시글 조회 성공.":
+            print("sendResult : 사용자 댓글단 게시글 조회 성공")
+            return postList, 3
+        else:
+            print("sendResult : 사용자 댓글단 게시글 조회 성공")
+            return postList, 4
+
 
