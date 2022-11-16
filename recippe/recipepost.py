@@ -5,8 +5,9 @@ from .models import *
 from .serializers import *
 
 '''
-221109 레시피 class 추가
-221114 레시피 수정 함수 추가
+221109  레시피 class 추가
+221114  레시피 수정 함수 추가
+221116  레시피 검색, 정렬 함수 추가
 '''
 
 class ControlRecipeList_b():
@@ -19,6 +20,12 @@ class ControlRecipeList_b():
             result, recipeList = self.sendResult("레시피 게시판 조회 실패", None)
 
         return result, recipeList
+
+    def queryRecipeList(self, searchType, categories, keywordType, keyword, page):
+        pass
+
+    def arrangeRecipeList(self, arrangeBy, page):
+        pass
 
     def sendResult(self, result, recipeList):
         if result == "레시피 게시판 조회 실패":

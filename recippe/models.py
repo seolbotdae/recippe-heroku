@@ -59,7 +59,7 @@ class Mail(models.Model):
 class LikeInfo(models.Model):
     like_id = models.AutoField(primary_key=True, null=False, unique=True)
     nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="nickname", related_name="likeinfo_user")
-    post_id = models.ForeignKey(RecipePost, null=False, on_delete=models.CASCADE, db_column="post_id", related_name="likeinfo_recipepost")
+    post_id = models.IntegerField(null=False)
     post_type = models.IntegerField(null=False)
 
 # 댓글
