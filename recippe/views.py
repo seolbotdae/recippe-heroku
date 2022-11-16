@@ -14,6 +14,7 @@ from .mypage import *
 from .recipepost import *
 from .report import *
 from .ingredients import *
+from .like import *
 
 # Create your views here.
 
@@ -43,6 +44,7 @@ import json
         레시피 없는 재료 보여주기 view 추가
         레시피 남은 재료 계산하기 view 추가
         레시피 게시글 검색, 정렬 view 추가
+        레시피 게시글 좋아요 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -257,6 +259,28 @@ class RecipeDeleteAPI(APIView):
             return Response(7, status=status.HTTP_200_OK)
         else:
             return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeLikeAPI(APIView):
+    def post(self, request):
+        likeInfo = json.loads(request.body)
+        print(f"좋아요 정보 = {likeInfo}")
+
+        like = ControlLike_b()
+        if likeInfo['task'] == "취소":
+            likeRes = like.cancelLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+        elif likeInfo['task'] == "등록":
+            likeRes = like.pressLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+
+        if likeRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif likeRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        elif likeRes == 2:
+            return Response(2, status=status.HTTP_501_NOT_IMPLEMENTED)
+        elif likeRes == 3:
+            return Response(3, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeQueryAPI(APIView):
     def post(self, request):
