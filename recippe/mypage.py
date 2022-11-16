@@ -13,7 +13,8 @@ import json
         냉장고 재료 변경 함수 작업 완료.
         사용자 작성 사진 게시글 조회 완료.
 221116  사용자 작성 레시피 게시글 조회 완료.
-        
+        사용자 레시피 게시글 검색 완료
+
 '''
 
 class ControlRefrigerator_b():
@@ -177,9 +178,9 @@ class ControlMyRecipe_b():
         print("내부 함수 : requestMyRecipeList Start")
 
         try:
-            recipeList = RecipePost.objects.filter(nickname = nickname)
+            recipePosts = RecipePost.objects.filter(nickname = nickname)
 
-            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 성공.", recipeList)
+            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 성공.", recipePosts)
             print("내부 함수 : 사용자 작성 레시피 게시글 조회 성공")
         except:
             result, code = self.sendResult("사용자 작성 레시피 게시글 조회 실패.", None)
@@ -193,16 +194,57 @@ class ControlMyRecipe_b():
     시퀀스 13
     '''
     def queryMyRecipeList(self, nickname, keyword):
-        pass
+        print("내부 함수 : queryMyRecipeList Start")
+
+        try:
+            recipePosts = RecipePost.objects.filter(nickname = nickname, title = keyword)
+
+            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 성공.", recipePosts)
+            print("내부 함수 : 사용자 작성 레시피 검색 성공")
+        except:
+            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 실패.", None)
+            print("내부 함수 : 사용자 작성 레시피 검색 실패")
+        
+        return result, code
     
     '''
     return type     List<RecipePost>
     parameter       nickname:String, arrangeBy:String
     시퀀스 14
+    정렬 기준 : 좋아요 순, 최신글 순, 시간 대비 누적 조회수 순
     '''
     def arrangeMyRecipeList(self, nickname, arrangeBy):
-        pass
-
+        print("내부 함수 : arrangeMyRecipeList Start")
+        if arrangeBy == "좋아요 순":
+            try:
+                orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-like_count')
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 좋아요 순 정렬 성공")
+            except:
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 좋아요 순 정렬 실패")
+        elif arrangeBy == "최신글 순":
+            try:
+                orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-upload_time')
+                print(orderedPosts)
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 최신글 순 정렬 성공")
+            except:
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 최신글 순 정렬 실패")
+        elif arrangeBy == "조회수 순":
+            try:
+                orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-views')
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 조회수 순 정렬 성공")
+            except:
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
+                print("내부 함수 : 사용자 작성 레시피 조회수 순 정렬 실패")
+        else:
+            result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", None)
+            print("내부 함수 : 사용자 작성 레시피 정렬 기준 오류")
+    
+        return result, code
     '''
     return type     response
     parameter       result:Integer, recipeList:List<RecipePost>
@@ -214,11 +256,44 @@ class ControlMyRecipe_b():
         elif result == "사용자 작성 레시피 게시글 조회 성공.":
             print("sendResult : 사용자 작성 레시피 게시글 조회 성공")
             return recipeList, 1
+        
+        elif result == "사용자 작성 레시피 게시글 검색 실패.":
+            print("sendResult : 사용자 작성 레시피 게시글 검색 실패")
+            return recipeList, 2
+        elif result == "사용자 작성 레시피 게시글 검색 성공.":
+            print("sendResult : 사용자 작성 레시피 게시글 검색 성공")
+            return recipeList, 3
+
+        elif result == "사용자 작성 레시피 정렬 실패.":
+            print("sendResult : 사용자 작성 레시피 정렬 실패")
+            return recipeList, 4
+        elif result == "사용자 작성 레시피 정렬 성공.":
+            print("sendResult : 사용자 작성 레시피 정렬 성공")
+            return recipeList, 5
+
         else:
             print("sendResult : 알 수 없는 오류")
-            return None, 0
+            return None, 6
             
-
 class ControlPost_b():
-    pass
+    '''
+    nickname: String
+    postType: Int
+    List<Post>
+    '''
+    def requestMyLikeList(nickname, postType):
+        
+        pass
+    '''
+    nickname: String
+    List<RecipePost>
+    '''
+    def requestMyCommentList(nickname):
+        pass
+    '''
+    result : int
+    postList: List<Post>
+    '''
+    def sendResult(result, postList):
+        pass
 
