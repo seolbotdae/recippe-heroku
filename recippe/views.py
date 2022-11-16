@@ -186,8 +186,10 @@ class RecipeListAPI(APIView):
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 99:
+        elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipePostAPI(APIView):
     def get(self, request, postId):

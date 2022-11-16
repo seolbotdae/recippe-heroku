@@ -26,7 +26,7 @@ class ControlRecipeList_b():
             return 0, recipeList
         elif result == "레시피 게시판 조회 성공":
             print(f"{result}, {len(recipeList)}")
-            return 99, recipeList
+            return 1, recipeList
 
 class ControlRecipe_b():
     def requestRecipe(self, postId):
