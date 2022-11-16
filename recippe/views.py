@@ -341,10 +341,10 @@ class InquiryMyRecipePostsAPI(APIView):
         recipeInstance = ControlMyRecipe_b()
         result, code = recipeInstance.requestMyRecipeList(nickname = nickname)
 
-        if code == 1:
+        if code == 0:
             print("API : 사용자 작성 레시피 조회 실패 응답")
             return Response(code, status=status.HTTP_400_BAD_REQUEST)
-        elif code == 2:
+        elif code == 1:
             print("API : 사용자 작성 레시피 조회 성공 응답")
             result = RecipeListSerializer(data = result, many = True)
             result.is_valid()

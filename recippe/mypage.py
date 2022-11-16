@@ -210,10 +210,10 @@ class ControlMyRecipe_b():
     def sendResult(self, result, recipeList):
         if result == "사용자 작성 레시피 게시글 조회 실패.":
             print("sendResult : 사용자 작성 레시피 게시글 조회 실패")
-            return recipeList, 1
+            return recipeList, 0
         elif result == "사용자 작성 레시피 게시글 조회 성공.":
             print("sendResult : 사용자 작성 레시피 게시글 조회 성공")
-            return recipeList, 2
+            return recipeList, 1
         else:
             print("sendResult : 알 수 없는 오류")
             return None, 0
