@@ -1,4 +1,6 @@
 from .models import *
+# subquery 임포트
+from django.db.models import Subquery
 
 from .serializers import *
 # json 임포트
@@ -283,15 +285,42 @@ class ControlPost_b():
     '''
     def requestMyLikeList(self, nickname, postType):
         print("내부 함수 : requestMyLikeList Start")
-        try:
-            likePosts = LikeInfo.objects.filter(nickname=nickname, post_type = postType)
-
-            result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likePosts)
-            print("내부 함수 : 사용자 좋아요 게시글 조회 성공")
-        except:
-            result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
-            print("내부 함수 : 사용자 좋아요 게시글 조회 실패")
         
+        # 레시피 좋아요 찾는 분기
+        if postType == 1:
+            try:
+                postTarget = LikeInfo.objects.filter(nickname=nickname, post_type = postType)
+                targetList = []
+
+                for i in postTarget:
+                    targetList.append(i.post_id)
+                
+                likeRecipes = RecipePost.objects.filter(post_id__in = targetList)
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likeRecipes)
+                print("내부 함수 : 사용자 좋아요 레시피 게시글 조회 성공")
+            except:
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
+                print("내부 함수 : 사용자 좋아요 레시피 게시글 조회 실패")
+        # 사진 좋아요 찾는 분기
+        elif postType == -1:
+            try:
+                postTarget = LikeInfo.objects.filter(nickname=nickname, post_type = postType)
+                targetList = []
+
+                for i in postTarget:
+                    targetList.append(i.post_id)
+
+                likePhotos = PhotoPost.objects.filter(post_id__in = targetList)
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likePhotos)
+                print("내부 함수 : 사용자 좋아요 사진 게시글 조회 성공")
+            except:
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
+                print("내부 함수 : 사용자 좋아요 사진 게시글 조회 실패")
+        # 아무 분기도 아닌 경우
+        else:
+            result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
+            print("내부 함수 : 사용자 postType 오류")
+       
         return result, code
     '''
     nickname: String
@@ -326,7 +355,7 @@ class ControlPost_b():
             print("sendResult : 사용자 댓글단 게시글 조회 성공")
             return postList, 3
         else:
-            print("sendResult : 사용자 댓글단 게시글 조회 성공")
+            print("sendResult : 알 수 없는 오류")
             return postList, 4
 
 
