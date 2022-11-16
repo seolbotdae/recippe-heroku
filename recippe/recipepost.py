@@ -22,18 +22,84 @@ class ControlRecipeList_b():
         return result, recipeList
 
     def queryRecipeList(self, searchType, categories, keywordType, keyword, page):
-        pass
-
+        if searchType == "카테고리":
+            try:
+                categories = categories.split("-")
+                posts = RecipePost.objects.filter(category__in = categories).order_by('upload_time').reverse()
+                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+            except:
+                result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+        elif searchType == "타이핑":
+            if keywordType == "요리 이름":
+                try:
+                    posts = RecipePost.objects.filter(title__icontains=keyword).order_by('upload_time').reverse()
+                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                except:
+                    result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+            elif keywordType == "작성자":
+                try:
+                    posts = RecipePost.objects.filter(nickname=keyword).order_by('upload_time').reverse()
+                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                except:
+                    result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+            elif keywordType == "재료":
+                try:
+                    ids = Recipe_Ingredients.objects.filter(name=keyword).values_list('post_id', flat=True)
+                    posts = RecipePost.objects.filter(post_id__in = ids).order_by('upload_time').reverse()
+                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                except:
+                    result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+        
+        return result, recipeList
+                
     def arrangeRecipeList(self, arrangeBy, page):
-        pass
+        if arrangeBy == "최근 순":
+            try:
+                posts = RecipePost.objects.filter().order_by('upload_time').reverse()
+                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+            except:
+                result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
+        elif arrangeBy == "좋아요 순":
+            try:
+                posts = RecipePost.objects.filter().order_by('like_count').reverse()
+                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+            except:
+                result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
+        if arrangeBy == "조회수 순":
+            try:
+                posts = RecipePost.objects.filter().order_by('views').reverse()
+                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+            except:
+                result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
 
-    def sendResult(self, result, recipeList):
+        return result, recipeList
+
+    def sendResult(self, result, recipeList=None):
         if result == "레시피 게시판 조회 실패":
             print(f"{result}, {0}")
             return 0, recipeList
         elif result == "레시피 게시판 조회 성공":
             print(f"{result}, {len(recipeList)}")
             return 1, recipeList
+        elif result == "레시피 게시글 검색 실패":
+            print(f"{result}, {0}")
+            return 2, recipeList
+        elif result == "레시피 게시글 검색 성공":
+            print(f"{result}, {len(recipeList)}")
+            return 3, recipeList
+        elif result == "레시피 게시글 정렬 실패":
+            print(f"{result}, {0}")
+            return 4, recipeList
+        elif result == "레시피 게시글 정렬 성공":
+            print(f"{result}, {len(recipeList)}")
+            return 5, recipeList
 
 class ControlRecipe_b():
     def requestRecipe(self, postId):
@@ -129,7 +195,3 @@ class ControlRecipe_b():
         elif result == "레시피 게시글 삭제 성공":
             print(f"{result}, {0}")
             return 7
-
-
-
-        

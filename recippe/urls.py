@@ -20,6 +20,8 @@ from .views import *
         사용자 작성 레시피 조회, 검색, 정렬 링크 추가
         사용자 좋아요 게시글 링크 추가
         사용자 댓글단 게시글 링크 추가
+        레시피 남은 재료 계산하기 링크 추가
+        레시피 게시글 검색, 정렬 링크 추가
 '''
 
 urlpatterns = [
@@ -38,8 +40,11 @@ urlpatterns = [
     path("uploadrecipe/", RecipePostAPI.as_view()),
     path("updaterecipe/", RecipeModifyAPI.as_view()),
     path("deleterecipe/", RecipeDeleteAPI.as_view()),
+    path("queryrecipe/", RecipeQueryAPI.as_view()),
+    path("sortrecipe/", RecipeSortAPI.as_view()),
     path("reportrecipe/", RecipeReportAPI.as_view()),
     path("unexistingredients/", RecipeUnExistIngredientsAPI.as_view()),
+    path("decreaseamount/", RecipeDecreaseAPI.as_view()),
 
     # Mypage
     path("inquiryrefrigerator/<str:nickname>/", InquiryRefrigeratorAPI.as_view()),
