@@ -47,4 +47,8 @@ urlpatterns = [
     path("inquirymyrecipeposts/<str:nickname>/", InquiryMyRecipePostsAPI.as_view()),
     path("querymyrecipeposts/", QueryMyRecipePostsAPI.as_view()),
     path("arrangemyrecipeposts/", ArrangeMyRecipePostsAPI.as_view()),
+
+    # MyLikePost
+    path("inquirymylikeposts/", InquiryMyLikePostsAPI.as_view()),
+    
 ]
