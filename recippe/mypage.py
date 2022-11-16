@@ -15,7 +15,9 @@ import json
         냉장고 재료 변경 함수 작업 완료.
         사용자 작성 사진 게시글 조회 완료.
 221116  사용자 작성 레시피 게시글 조회 완료.
-        사용자 레시피 게시글 검색 완료
+        사용자 작성 레시피 게시글 검색, 정렬 완료.
+        사용자 좋아요 게시글 조회 완료.
+        사용자 댓글단 게시글 조회 완료.
 
 '''
 
@@ -329,31 +331,42 @@ class ControlPost_b():
     def requestMyCommentList(self, nickname):
         print("내부 함수 : requestMyCommentList Start")
         try:
-            commentPosts = Comment.objects.filter(nickname=nickname).order_by("-comment_time")
+            postTarget = Comment.objects.filter(nickname=nickname).order_by("-comment_time").values("post_id")
+            targetList = []
 
+            for i in postTarget:
+                targetList.append(i['post_id'])
+
+            commentPosts = RecipePost.objects.filter(post_id__in = targetList)
+            
             result, code = self.sendResult("사용자 댓글단 게시글 조회 성공.", commentPosts)
             print("내부 함수 : 사용자 댓글단 게시글 조회 성공")
+
         except:
-            result, code = self.sendResult("사용자 댓글단 게시글 조회 실패.", commentPosts)
+            result, code = self.sendResult("사용자 댓글단 게시글 조회 실패.", None)
             print("내부 함수 : 사용자 댓글단 게시글 조회 실패")
+
         return result, code
     '''
     result : int
     postList: List<Post>
     '''
     def sendResult(self, result, postList):
+
         if result == "사용자 좋아요 게시글 조회 실패.":
             print("sendResult : 사용자 좋아요 게시글 조회 실패")
             return postList, 0
         elif result == "사용자 좋아요 게시글 조회 성공.":
             print("sendResult : 사용자 좋아요 게시글 조회 성공")
             return postList, 1
+
         elif result == "사용자 댓글단 게시글 조회 실패.":
             print("sendResult : 사용자 댓글단 게시글 조회 실패")
             return postList, 2
         elif result == "사용자 댓글단 게시글 조회 성공.":
             print("sendResult : 사용자 댓글단 게시글 조회 성공")
             return postList, 3
+
         else:
             print("sendResult : 알 수 없는 오류")
             return postList, 4
