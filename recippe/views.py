@@ -243,111 +243,113 @@ class RecipeDeleteAPI(APIView):
    
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
-        print("InquiryRefrigeraotrAPI Start")
-        print(f"nickname {nickname}")
+        print("API : InquiryRefrigeraotrAPI Start")
 
         refrigerator = ControlRefrigerator_b()
         result, code = refrigerator.requestRefrigerator(nickname)
 
-        print(result)
-
-
-        if code == 0:
-            print("냉장고에 식재료 없음")
-            return Response(0, status=status.HTTP_401_UNAUTHORIZED)
-        elif code == 1:
-            print("식재료 있음")
+        if code == 1:
+            print("API : 냉장고 조회 실패 응답")
+            return Response(code, status=status.HTTP_401_UNAUTHORIZED)
+        elif code == 2:
+            print("API : 냉장고 식재료 없음 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:
+            print("API : 냉장고 조회 성공 응답")
             serializers = InquiryRefrigeratorSerializer(data = result, many=True) 
-            print(serializers.is_valid())
+            serializers.is_valid()
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
-            print("알 수 없는 오류")
-            return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AddRefrigeratorAPI(APIView):
     def post(self, request):
-        print("AddRefrigeratorAPI Start")
+        print("API : AddRefrigeratorAPI Start")
         addTarget = json.loads(request.body)
        
         refrigerator = ControlRefrigerator_b()
         result, code = refrigerator.insertRefrigerator(refrigerator = addTarget)
-
-        if code == 2:
-            print("서버 : 냉장고 추가 성공 응답")
-            return Response(code, status = status.HTTP_200_OK)
-        elif code == 3:
-            print("서버 : 냉장고 추가 실패 응답")
+       
+        if code == 4:
+            print("API : 냉장고 추가 실패 응답")
             return Response(code, status = status.HTTP_400_BAD_REQUEST)
+        elif code == 5:
+            print("API : 냉장고 추가 성공 응답")
+            return Response(code, status = status.HTTP_200_OK)
         else:
-            print("서버 : 알 수 없는 오류 응답")
+            print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class DeleteRefrigeratorAPI(APIView):
     def post(self, request):
-        print(f"DeleteRefrigeratorAPI 실행")
+        print(f"API : DeleteRefrigeratorAPI 실행")
         deleteTarget = json.loads(request.body)
         refriInstance = ControlRefrigerator_b()
         result, code = refriInstance.deleteRefrigerator(deleteTarget['id'],None,None)
 
-        if code == 4:
-            return Response(code, status=status.HTTP_200_OK)
-        elif code == 5:
+        if code == 6:
+            print("API : 냉장고 삭제 실패 응답")
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
+        elif code == 7:
+            print("API : 냉장고 삭제 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
         else:
+            print("서버 : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UpdateRefrigeratorAPI(APIView):
     def post(self, request):
-        print(f"UpdateRefrigeratorAPI 실행")
+        print(f"API : UpdateRefrigeratorAPI 실행")
         updateTarget = json.loads(request.body)
         refriInstance = ControlRefrigerator_b()
         result, code = refriInstance.updateRefrigerator(updateTarget)
 
-        if code == 7:
-            return Response(code, status=status.HTTP_200_OK)
-        elif code == 8:
+        if code == 8:
+            print("API : 냉장고 변경 실패 응답")
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
+        elif code == 9:
+            print("API : 냉장고 변경 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
         else:
+            print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InquiryMyPhotoPostsAPI(APIView):
     def get(self, request, nickname):
-        print("InquiryMyPhotoPostsAPI Start")
+        print("API : InquiryMyPhotoPostsAPI Start")
 
         photoInstance = ControlMyPhoto_b()
         result, code = photoInstance.requestMyPhotoList(nickname = nickname)
-
-        if code == 0:
-            result = MyPhotoPostSerializer(data = result, many = True)
-            print(result.is_valid())
-            print(result.data)
-            return Response(result.data, status=status.HTTP_200_OK)
-        elif code == 1:
-            return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        elif code == 2:
+        
+        if code == 1:
+            print("API : 사용자 사진 게시글 조회 실패 응답")
             return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 2:
+            result = MyPhotoPostSerializer(data = result, many = True)
+            result.is_valid()
+            print("API : 사용자 사진 게시글 조회 성공 응답")
+            return Response(result.data, status=status.HTTP_200_OK)
         else:
+            print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-'''
-1 -> 400 
-'''
 class InquiryMyRecipePostsAPI(APIView):
     def get(self, request, nickname):
-        print("InquiryMyRecipePostAPI Start")
+        print("API : InquiryMyRecipePostAPI Start")
 
         recipeInstance = ControlMyRecipe_b()
         result, code = recipeInstance.requestMyRecipeList(nickname = nickname)
 
         if code == 1:
+            print("API : 사용자 작성 레시피 조회 실패 응답")
             return Response(code, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
-            return Response(code, status=status.HTTP_204_NO_CONTENT)
-        elif code == 3:
+            print("API : 사용자 작성 레시피 조회 성공 응답")
             result = RecipeListSerializer(data = result, many = True)
             result.is_valid()
             return Response(result.data, status=status.HTTP_200_OK)
         else:
+            print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
