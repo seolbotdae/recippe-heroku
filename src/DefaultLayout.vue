@@ -21,13 +21,13 @@
         <v-row>
           <v-spacer />
           <v-col>
-            <v-btn to="/signup" style="width: 100%">레시피 게시판</v-btn>
+            <v-btn to="/recipe" style="width: 100%">레시피 게시판</v-btn>
           </v-col>
           <v-col>
-            <v-btn to="/login" style="width: 100%">요리 사진 게시판</v-btn>
+            <v-btn to="/photo" style="width: 100%">요리 사진 게시판</v-btn>
           </v-col>
           <v-col>
-            <v-btn to="/login" style="width: 100%">마이페이지</v-btn>
+            <v-btn to="/mypage" style="width: 100%">마이페이지</v-btn>
           </v-col>
           <v-spacer />
         </v-row>
