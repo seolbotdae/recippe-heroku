@@ -42,6 +42,9 @@ import json
         사용자 작성 레시피 검색 view 추가
         레시피 신고 view 추가
         레시피 없는 재료 보여주기 view 추가
+        사용자 작성 레시피 정렬 view 추가
+        사용자 좋아요 게시글 조회 view 추가
+        사용자 댓글단 게시글 조회 view 추가
         레시피 남은 재료 계산하기 view 추가
         레시피 게시글 검색, 정렬 view 추가
         레시피 게시글 좋아요 view 추가
@@ -537,6 +540,25 @@ class InquiryMyLikePostsAPI(APIView):
                 print("API : 사용자 좋아요 사진 게시글 조회 성공 응답")
                 result.is_valid()
                 return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMyCommentPostsAPI(APIView):
+    def get(self, request, nickname):
+        print("API : InquiryMyCommentPostsAPI Start")
+        
+        postsInstance = ControlPost_b()
+        result, code = postsInstance.requestMyCommentList(nickname)
+
+        if code == 2:
+            print("API : 사용자 댓글단 게시글 조회 실패 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:    
+            result = RecipeListSerializer(data=result, many=True)
+            result.is_valid()
+            print("API : 사용자 댓글단 게시글 조회 성공 응답")
+            return Response(result.data, status=status.HTTP_200_OK)
         else:
             print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
