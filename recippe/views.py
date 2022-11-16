@@ -12,6 +12,8 @@ from .serializers import *
 from .authentication import *
 from .mypage import *
 from .recipepost import *
+from .report import *
+from .ingredients import *
 
 # Create your views here.
 
@@ -37,6 +39,8 @@ import json
         사용자 작성 사진 게시글 view 추가
 221116  사용자 작성 레시피 게시글 view 추가
         사용자 작성 레시피 검색 view 추가
+        레시피 신고 view 추가
+        레시피 없는 재료 보여주기 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -251,6 +255,36 @@ class RecipeDeleteAPI(APIView):
             return Response(7, status=status.HTTP_200_OK)
         else:
             return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeReportAPI(APIView):
+    def post(self, request):
+        reportInfo = json.loads(request.body)
+        print(f"레시피 게시글 삭제 정보 = {reportInfo}")
+
+        report = ControlReport_b()
+        reportRes = report.reportPost(reportInfo)
+
+        if reportRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif reportRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeUnExistIngredientsAPI(APIView):
+    def post(self, request):
+        requestInfo = json.loads(request.body)
+        print(f"없는 재료 보여주기 = {requestInfo}")
+
+        ueIngre = ControlIngredients_b()
+        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(requestInfo['nickname'], requestInfo['post_id'])
+
+        if ueIngreRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif ueIngreRes == 1:
+            return Response(ueIngreList, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
    
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
