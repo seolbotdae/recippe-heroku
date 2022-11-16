@@ -36,6 +36,7 @@ import json
         냉장고 재료 변경 view 추가
         사용자 작성 사진 게시글 view 추가
 221116  사용자 작성 레시피 게시글 view 추가
+        사용자 작성 레시피 검색 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -353,3 +354,43 @@ class InquiryMyRecipePostsAPI(APIView):
             print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class QueryMyRecipePostsAPI(APIView):
+    def post(self, request):
+        print("API : QueryMyRecipePostsAPI Start")
+        queryTarget = json.loads(request.body)
+
+        recipeInstance = ControlMyRecipe_b()
+        result, code = recipeInstance.queryMyRecipeList(queryTarget['nickname'], queryTarget['keyword'])
+
+        if code == 2:
+            print("API : 사용자 작성 레시피 게시글 검색 실패 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:
+            print("API : 사용자 작성 레시피 게시글 검색 성공 응답")
+            recipePosts = RecipeListSerializer(data = result, many = True)
+            recipePosts.is_valid()
+            
+            return Response(recipePosts.data, status=status.HTTP_200_OK)
+        else:
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ArrangeMyRecipePostsAPI(APIView):
+    def post(self, request):
+        print("API : ArrangeMyRecipePostsAPI Start")
+        arrangeTarget = json.loads(request.body)
+
+        recipeInstance = ControlMyRecipe_b()
+        result, code = recipeInstance.arrangeMyRecipeList(arrangeTarget['nickname'], arrangeTarget['arrangeBy'])
+
+        if code == 4:
+            print("API : 사용자 작성 레시피 정렬 실패 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 5:
+            print("API : 사용자 작성 레시피 정렬 성공 응답")
+            result = RecipeListSerializer(data=result, many=True)
+            result.is_valid()
+            return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
