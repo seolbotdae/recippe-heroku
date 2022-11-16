@@ -12,6 +12,7 @@ import json
         냉장고 재료 삭제 함수 작업 완료.
         냉장고 재료 변경 함수 작업 완료.
         사용자 작성 사진 게시글 조회 완료.
+221116  사용자 작성 레시피 게시글 조회 작업중.
 '''
 
 class ControlRefrigerator_b():
@@ -167,7 +168,58 @@ class ControlMyPhoto_b():
             return photoList, 6
 
 class ControlMyRecipe_b():
-    pass
+    '''
+    return type     List<RecipePost>
+    parameter       nickname:String
+    시퀀스 12
+    '''
+    def requestMyRecipeList(self, nickname):
+        print("requestMyRecipeList 함수 실행")
+
+        if RecipePost.objects.filter(nickname = nickname).exists():
+            print("서버 : 사용자 작성 레시피 게시글 조회 성공")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 성공.",
+                RecipePost.objects.filter(nickname = nickname))
+        elif len(RecipePost.objects.filter(nickname = nickname)) == 0:
+            print("서버 : 사용자가 작성한 레시피 게시글이 없음")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 없음.",
+                RecipePost.objects.filter(nickname = nickname))
+        else:
+            print("서버 : 사용자 작성 레시피 게시글 조회 실패")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 실패.", None)
+        
+        return result, code
+
+    '''
+    return type     List<RecipePost>
+    parameter       nickname:String, keyword:String
+    시퀀스 13
+    '''
+    def queryMyRecipeList(self, nickname, keyword):
+        pass
+    
+    '''
+    return type     List<RecipePost>
+    parameter       nickname:String, arrangeBy:String
+    시퀀스 14
+    '''
+    def arrangeMyRecipeList(self, nickname, arrangeBy):
+        pass
+
+    '''
+    return type     response
+    parameter       result:Integer, recipeList:List<RecipePost>
+    '''
+    def sendResult(self, result, recipeList):
+        if result == "사용자 작성 레시피 게시글 조회 실패.":
+            return recipeList, 1
+        elif result == "사용자 작성 레시피 게시글 없음.":
+            return recipeList, 2
+        elif result == "사용자 작성 레시피 게시글 조회 성공.":
+            return recipeList, 3
+        else:
+            return None, 0
+            
 
 class ControlPost_b():
     pass

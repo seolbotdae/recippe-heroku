@@ -35,6 +35,7 @@ import json
         냉장고 재료 삭제 view 추가 
         냉장고 재료 변경 view 추가
         사용자 작성 사진 게시글 view 추가
+221116  사용자 작성 레시피 게시글 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -328,3 +329,25 @@ class InquiryMyPhotoPostsAPI(APIView):
             return Response(code, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+'''
+1 -> 400 
+'''
+class InquiryMyRecipePostsAPI(APIView):
+    def get(self, request, nickname):
+        print("InquiryMyRecipePostAPI Start")
+
+        recipeInstance = ControlMyRecipe_b()
+        result, code = recipeInstance.requestMyRecipeList(nickname = nickname)
+
+        if code == 1:
+            return Response(code, status=status.HTTP_400_BAD_REQUEST)
+        elif code == 2:
+            return Response(code, status=status.HTTP_204_NO_CONTENT)
+        elif code == 3:
+            result = RecipeListSerializer(data = result, many = True)
+            result.is_valid()
+            return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

@@ -12,6 +12,8 @@ from .views import *
 221114  레시피 조회, 등록, 수정, 삭제 링크 추가
 221115  냉장고 재료 삭제 링크 추가
         냉장고 재료 변경 링크 추가
+        사용자 작성 사진 게시글 조회 링크 추가
+221116  사용자 레시피 게시글 조회 링크 추가
 '''
 
 urlpatterns = [
@@ -39,5 +41,8 @@ urlpatterns = [
 
     # MyPhotoPost
     path("inquirymyphotoposts/<str:nickname>/", InquiryMyPhotoPostsAPI.as_view()),
+
+    # MyRecipePost
+    path("inquirymyrecipeposts/<str:nickname>/", InquiryMyRecipePostsAPI.as_view()),
     
 ]

@@ -46,7 +46,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     class Meta:
         model = RecipePost
-        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time', 'Recipe_Ingredients')
+        fields = ('post_id', 'nickname', 'title', 'category', 'degree_of_spicy', 'description', 'views', 'like_count', 'comment_count', 'upload_time', 'Recipe_Ingredients', 'comments')
 
 class MyPhotoPostSerializer(serializers.ModelSerializer):
     class Meta:
