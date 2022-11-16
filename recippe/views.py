@@ -248,13 +248,13 @@ class InquiryRefrigeratorAPI(APIView):
         refrigerator = ControlRefrigerator_b()
         result, code = refrigerator.requestRefrigerator(nickname)
 
-        if code == 1:
+        if code == 0:
             print("API : 냉장고 조회 실패 응답")
             return Response(code, status=status.HTTP_401_UNAUTHORIZED)
-        elif code == 2:
+        elif code == 1:
             print("API : 냉장고 식재료 없음 응답")
             return Response(code, status=status.HTTP_404_NOT_FOUND)
-        elif code == 3:
+        elif code == 2:
             print("API : 냉장고 조회 성공 응답")
             serializers = InquiryRefrigeratorSerializer(data = result, many=True) 
             serializers.is_valid()
@@ -271,10 +271,10 @@ class AddRefrigeratorAPI(APIView):
         refrigerator = ControlRefrigerator_b()
         result, code = refrigerator.insertRefrigerator(refrigerator = addTarget)
        
-        if code == 4:
+        if code == 3:
             print("API : 냉장고 추가 실패 응답")
             return Response(code, status = status.HTTP_400_BAD_REQUEST)
-        elif code == 5:
+        elif code == 4:
             print("API : 냉장고 추가 성공 응답")
             return Response(code, status = status.HTTP_200_OK)
         else:
@@ -288,10 +288,10 @@ class DeleteRefrigeratorAPI(APIView):
         refriInstance = ControlRefrigerator_b()
         result, code = refriInstance.deleteRefrigerator(deleteTarget['id'],None,None)
 
-        if code == 6:
+        if code == 5:
             print("API : 냉장고 삭제 실패 응답")
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
-        elif code == 7:
+        elif code == 6:
             print("API : 냉장고 삭제 성공 응답")
             return Response(code, status=status.HTTP_200_OK)
         else:
@@ -305,10 +305,10 @@ class UpdateRefrigeratorAPI(APIView):
         refriInstance = ControlRefrigerator_b()
         result, code = refriInstance.updateRefrigerator(updateTarget)
 
-        if code == 8:
+        if code == 7:
             print("API : 냉장고 변경 실패 응답")
             return Response(code, status=status.HTTP_406_NOT_ACCEPTABLE)
-        elif code == 9:
+        elif code == 8:
             print("API : 냉장고 변경 성공 응답")
             return Response(code, status=status.HTTP_200_OK)
         else:
@@ -322,10 +322,10 @@ class InquiryMyPhotoPostsAPI(APIView):
         photoInstance = ControlMyPhoto_b()
         result, code = photoInstance.requestMyPhotoList(nickname = nickname)
         
-        if code == 1:
+        if code == 0:
             print("API : 사용자 사진 게시글 조회 실패 응답")
             return Response(code, status=status.HTTP_404_NOT_FOUND)
-        elif code == 2:
+        elif code == 1:
             result = MyPhotoPostSerializer(data = result, many = True)
             result.is_valid()
             print("API : 사용자 사진 게시글 조회 성공 응답")

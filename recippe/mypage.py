@@ -108,38 +108,38 @@ class ControlRefrigerator_b():
     def sendResult(self, result, refrigerator):
         if result == "냉장고 조회 실패.":
             print("sendResult : 냉장고 조회 실패")
-            return refrigerator, 1
+            return refrigerator, 0
         elif result == "냉장고에 식재료가 없습니다.":
             print("sendResult : 냉장고 식재료 없음")
-            return refrigerator, 2
+            return refrigerator, 1
         elif result == "냉장고 조회 성공.":
             print("sendResult : 냉장고 조회 성공")
-            return refrigerator, 3
+            return refrigerator, 2
 
         elif result == "냉장고 재료 추가 실패.":
             print("sendResult : 냉장고 재료 추가 실패")
-            return refrigerator, 4
+            return refrigerator, 3
         elif result == "냉장고 재료 추가 성공.":
             print("sendResult : 냉장고 재료 추가 성공")
-            return refrigerator, 5
+            return refrigerator, 4
 
         elif result == "냉장고 재료 삭제에 실패했습니다.":
             print("sendResult : 냉장고 재료 삭제 실패")  
-            return refrigerator, 6
+            return refrigerator, 5
         elif result == "냉장고 재료 삭제에 성공했습니다.":
             print("sendResult : 냉장고 재료 삭제 성공")
-            return refrigerator, 7
+            return refrigerator, 6
 
         elif result == "냉장고 재료 변경 실패.":
             print("sendResult : 냉장고 재료 변경 실패")
-            return refrigerator, 8
+            return refrigerator, 7
         elif result == "냉장고 재료 변경 성공.":
             print("sendResult : 냉장고 재료 변경 성공")
-            return refrigerator, 9
+            return refrigerator, 8
         
         else:
-            print("뭔 일인겨..?")
-            return refrigerator, 0
+            print("sendResult : 알 수 없는 오류")
+            return refrigerator, 9
 
 class ControlMyPhoto_b():
     def requestMyPhotoList(self, nickname):
@@ -159,13 +159,13 @@ class ControlMyPhoto_b():
     def sendResult(self, result, photoList):
         if result == "사용자 작성 사진 게시글 조회 실패.":
             print("sendResult : 사진게시글 조회 실패 응답")
-            return photoList, 1
+            return photoList, 0
         elif result == "사용자 작성 사진 게시글 조회 성공.":
             print("sendResult : 사용자 작성 사진 게시글 조회 성공")
-            return photoList, 2
+            return photoList, 1
         else:
             print("sendResult : 뭔 일인교..?")
-            return photoList, 0
+            return photoList, 2
 
 class ControlMyRecipe_b():
     '''
