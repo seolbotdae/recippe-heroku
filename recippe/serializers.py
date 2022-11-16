@@ -34,7 +34,7 @@ class InquiryRefrigeratorSerializer(serializers.ModelSerializer):
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe_Ingredients
-        fields = ('name', 'post_id', 'unit', 'amount')
+        fields = ('id', 'name', 'post_id', 'unit', 'amount')
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
