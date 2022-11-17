@@ -47,7 +47,7 @@ class RecipePost(models.Model):
 # 쪽지함
 class Mail(models.Model):
     mail_id = models.AutoField(primary_key=True, null=False, unique=True)
-    nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="sender", related_name="mail_user")
+    nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="nickname", related_name="mail_user")
     receiver = models.CharField(max_length=30, null=False)
     title = models.CharField(max_length=100, null=False)
     contents = models.CharField(max_length=100, null=True)
