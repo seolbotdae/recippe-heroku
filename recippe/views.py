@@ -67,7 +67,7 @@ class LoginAPI(APIView):
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
             serializer = UserInfoSerializer(serializer)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response((serializer.data,6974), status=status.HTTP_200_OK)
         else:
             return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -198,7 +198,7 @@ class RecipeListAPI(APIView):
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response((serializer.data, 6974), status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
