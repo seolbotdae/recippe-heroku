@@ -16,11 +16,12 @@ class ControlRecipeList_b():
             posts = RecipePost.objects.order_by('upload_time').reverse()
             postlist = posts[0+20*(page-1):20+20*(page-1)]
             result, recipeList = self.sendResult("레시피 게시판 조회 성공", postlist)
-            result = result + int(len(posts)/20)
+            pageCnt = int(len(posts)/20) + 1
         except:
             result, recipeList = self.sendResult("레시피 게시판 조회 실패", None)
+            pageCnt = 0
 
-        return result, recipeList
+        return result, recipeList, pageCnt
 
     def queryRecipeList(self, searchType, categories, keywordType, keyword, page):
         if searchType == "카테고리":
@@ -29,33 +30,41 @@ class ControlRecipeList_b():
                 posts = RecipePost.objects.filter(category__in = categories).order_by('upload_time').reverse()
                 postlist = posts[0+20*(page-1):20+20*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                pageCnt = int(len(posts)/20) + 1
             except:
                 result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+                pageCnt = 0
         elif searchType == "타이핑":
             if keywordType == "요리 이름":
                 try:
                     posts = RecipePost.objects.filter(title__icontains=keyword).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                    pageCnt = int(len(posts)/20) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+                    pageCnt = 0
             elif keywordType == "작성자":
                 try:
                     posts = RecipePost.objects.filter(nickname=keyword).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                    pageCnt = int(len(posts)/20) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+                    pageCnt = 0
             elif keywordType == "재료":
                 try:
                     ids = Recipe_Ingredients.objects.filter(name=keyword).values_list('post_id', flat=True)
                     posts = RecipePost.objects.filter(post_id__in = ids).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
+                    pageCnt = int(len(posts)/20) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
+                    pageCnt = 0
         
-        return result, recipeList
+        return result, recipeList, pageCnt
                 
     def arrangeRecipeList(self, arrangeBy, page):
         if arrangeBy == "최근 순":
@@ -72,7 +81,7 @@ class ControlRecipeList_b():
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
-        if arrangeBy == "조회수 순":
+        elif arrangeBy == "조회수 순":
             try:
                 posts = RecipePost.objects.filter().order_by('views').reverse()
                 postlist = posts[0+20*(page-1):20+20*(page-1)]

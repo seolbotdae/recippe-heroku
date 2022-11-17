@@ -52,6 +52,7 @@ import json
 221117  사진 게시판 view 추가
         사진 게시글 조회 view 추가
         사진 게시글 등록 view 추가
+        사진 게시글 삭제, 좋아요, 정렬, 신고 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -195,7 +196,7 @@ class RecipeListAPI(APIView):
         print(f"페이지 = {page}")
 
         recipeList = ControlRecipeList_b()
-        requestRes, rlist = recipeList.requestRecipeList(page)
+        requestRes, rlist, pageCnt = recipeList.requestRecipeList(page)
 
         serializer = RecipeListSerializer(rlist, many=True)
 
@@ -204,7 +205,7 @@ class RecipeListAPI(APIView):
         elif requestRes >= 1:
             recipeDict = {}
             recipeDict['recipeList'] = serializer.data
-            recipeDict['total_page'] = requestRes
+            recipeDict['total_page'] = pageCnt
             return Response(recipeDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
@@ -290,7 +291,7 @@ class RecipeLikeAPI(APIView):
         elif likeRes == 3:
             return Response(3, status=status.HTTP_200_OK)
         else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeQueryAPI(APIView):
     def post(self, request):
@@ -298,7 +299,7 @@ class RecipeQueryAPI(APIView):
         print(f"검색 정보 = {searchInfo}")
 
         search = ControlRecipeList_b()
-        searchRes, searchList = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
+        searchRes, searchList, pageCnt = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
                                                         searchInfo['keywordType'], searchInfo['keyword'],
                                                         searchInfo['page'])
 
@@ -306,7 +307,10 @@ class RecipeQueryAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif searchRes == 3:
             serializer = RecipeListSerializer(searchList, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            searchDict = {}
+            searchDict['searchList'] = serializer.data
+            searchDict['total_page'] = pageCnt
+            return Response(searchDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
@@ -575,19 +579,34 @@ class PhotoListAPI(APIView):
         print(f"페이지 = {page}")
 
         photoList = ControlPhotoList_b()
-        requestRes, plist = photoList.requestPhotoList(page)
+        requestRes, plist, pageCnt = photoList.requestPhotoList(page)
 
         serializer = MyPhotoPostSerializer(plist, many=True)
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes >= 1:
+        elif requestRes == 1:
             photoDict = {}
             photoDict['photoList'] = serializer.data
-            photoDict['total_page'] = requestRes
+            photoDict['total_page'] = pageCnt
             return Response(photoDict, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+
+    def post(self, request):
+        sortInfo = json.loads(request.body)
+        print(f"정렬 정보 = {sortInfo}")
+        
+        sort = ControlPhotoList_b()
+        sortRes, sortList = sort.arrangePhotoList(sortInfo['arrangeBy'], sortInfo['page'])
+
+        if sortRes == 2:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif sortRes == 3:
+            serializer = MyPhotoPostSerializer(sortList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class PhotoPostAPI(APIView):
     def get(self, request, postId):
@@ -601,7 +620,7 @@ class PhotoPostAPI(APIView):
         elif requestRes == 1:
             return Response(photoPost, status=status.HTTP_200_OK)
         else:
-            return Response(99, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
     def post(self, request):
         photoInfo = json.loads(request.body)
@@ -613,6 +632,57 @@ class PhotoPostAPI(APIView):
         if insertRes == 2:
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif insertRes == 3:
-            return Response(newPhoto, status=status.HTTP_200_OK)
+            return Response(newPhoto.data, status=status.HTTP_200_OK)
         else:
-            return Response(99, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+    def delete(self, request):
+        deleteTarget = json.loads(request.body)
+        print(f"삭제할 게시글 정보 = {deleteTarget}")
+
+        delete = ControlPhoto_b()
+        deleteRes = delete.deletePhoto(deleteTarget['nickname'], deleteTarget['post_id'])
+
+        if deleteRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif deleteRes == 5:
+            return Response(5, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+class PhotoLikeAPI(APIView):
+    def post(self, request):
+        likeInfo = json.loads(request.body)
+        print(f"좋아요 정보 = {likeInfo}")
+
+        like = ControlLike_b()
+        if likeInfo['task'] == "취소":
+            likeRes = like.cancelLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+        elif likeInfo['task'] == "등록":
+            likeRes = like.pressLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+
+        if likeRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif likeRes == 5:
+            return Response(5, status=status.HTTP_200_OK)
+        elif likeRes == 6:
+            return Response(6, status=status.HTTP_501_NOT_IMPLEMENTED)
+        elif likeRes == 7:
+            return Response(7, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+
+class PhotoReportAPI(APIView):
+    def post(self, request):
+        reportInfo = json.loads(request.body)
+        print(f"사진 게시글 삭제 정보 = {reportInfo}")
+
+        report = ControlReport_b()
+        reportRes = report.reportPost(reportInfo)
+
+        if reportRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif reportRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
