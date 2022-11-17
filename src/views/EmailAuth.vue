@@ -55,7 +55,15 @@ export default {
       info: {
         email: null,
         code: 0
-      }
+      },
+      nextPage: null
+    }
+  },
+  created() {
+    if(this.router.query.nextPage == 0) {
+      this.nextPage = "/signup";
+    } else if(this.router.query.nextPage == 1) {
+      this.nextPage = "/mypage/changePassword";
     }
   },
   methods: {
@@ -86,7 +94,7 @@ export default {
           console.log("secondcheck", response);
           if(response.status == 200) {
             console.log("코드 일치")
-            router.push({name: router.query.nextpage });
+            router.push({name: nextPage});
           }
         }) 
         .catch(function (e) {
