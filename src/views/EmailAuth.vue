@@ -63,9 +63,9 @@ export default {
     console.log("크리에이트 외않돌지?!?");
     console.log("route", this.$route.params.id);
     if(this.$route.params.id == 0) {
-      this.next = "/signup";
+      this.next = "signup";
     } else if(this.$route.params.id == 1) {
-      this.next = "/mypage/changePassword";
+      this.next = "changePassword";
     }
     console.log("params 메시지 받은내용", this.next);
   },
@@ -91,14 +91,14 @@ export default {
         "email": this.info.email,
         "code": codenum
       });
-      const nextURL = this.next;
+      const next = this.next;
       console.log(checkInfo);
       herokuAPI.secondcheck(checkInfo)
         .then(function (response) {
           console.log("secondcheck", response);
           if(response.status == 200) {
-            console.log("코드 일치", nextURL);
-            router.push({path: '"'+nextURL+'"'});
+            console.log("코드 일치", next);
+            router.push({name: '"'+next+'"'});
           }
         }) 
         .catch(function (e) {
