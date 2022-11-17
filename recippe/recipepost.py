@@ -16,6 +16,7 @@ class ControlRecipeList_b():
             posts = RecipePost.objects.order_by('upload_time').reverse()
             postlist = posts[0+20*(page-1):20+20*(page-1)]
             result, recipeList = self.sendResult("레시피 게시판 조회 성공", postlist)
+            result = result + int(len(posts)/20)
         except:
             result, recipeList = self.sendResult("레시피 게시판 조회 실패", None)
 

@@ -15,6 +15,7 @@ from .recipepost import *
 from .report import *
 from .ingredients import *
 from .like import *
+from .photopost import *
 
 # Create your views here.
 
@@ -48,6 +49,7 @@ import json
         레시피 남은 재료 계산하기 view 추가
         레시피 게시글 검색, 정렬 view 추가
         레시피 게시글 좋아요 view 추가
+221117  사진 게시판 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -67,7 +69,7 @@ class LoginAPI(APIView):
             return Response(1, status=status.HTTP_400_BAD_REQUEST)
         elif code == 2:
             serializer = UserInfoSerializer(serializer)
-            return Response((serializer.data,6974), status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(3, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -197,8 +199,11 @@ class RecipeListAPI(APIView):
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 1:
-            return Response((serializer.data, 6974), status=status.HTTP_200_OK)
+        elif requestRes >= 1:
+            recipeDict = {}
+            recipeDict['recipeList'] = serializer.data
+            recipeDict['total_page'] = requestRes
+            return Response(recipeDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
@@ -562,3 +567,47 @@ class InquiryMyCommentPostsAPI(APIView):
         else:
             print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PhotoListAPI(APIView):
+    def get(self, request, page):
+        print(f"페이지 = {page}")
+
+        photoList = ControlPhotoList_b()
+        requestRes, plist = photoList.requestPhotoList(page)
+
+        serializer = MyPhotoPostSerializer(plist, many=True)
+
+        if requestRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif requestRes >= 1:
+            photoDict = {}
+            photoDict['photoList'] = serializer.data
+            photoDict['total_page'] = requestRes
+            return Response(photoDict, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+'''
+class PhotoPostAPI(APIView):
+    def get(self, request, postId):
+        print(f"게시글 번호 = {postId}")
+
+        photo = ControlPhoto_b()
+        requestRes, photoPost = photo.requestPhoto(postId)
+
+        serializer = MyPhotoPostSerializer(photoPost)
+
+        if requestRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif requestRes == 1:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+
+    def post(self, request):
+        photoInfo = json.loads(request.body)
+        print(f"사진 게시글 정보 = {photoInfo}")
+
+        photo = ControlPhoto_b()
+        insertRes, newPhoto = photo.insertPhoto(photoInfo)
+'''
