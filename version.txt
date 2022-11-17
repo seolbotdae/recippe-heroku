@@ -24,3 +24,4 @@
 1.3.031 : query->params로 다시 교체, router.params->$route.params로 교체
 1.3.032 : created->mounted로 교체, $route.params->this.$route.params로 교체
 1.3.033 : $route.params->router.params로 되돌림
+1.3.034 : console.log() 로 어떤게 동작하는지 확인
