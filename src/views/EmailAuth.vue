@@ -95,6 +95,7 @@ export default {
       herokuAPI.secondcheck(checkInfo)
         .then(function (response) {
           console.log("secondcheck", response);
+          console.log(this.next);
           if(response.status == 200) {
             console.log("코드 일치", this.next);
             router.push({name: this.next});
