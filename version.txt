@@ -23,3 +23,4 @@
 1.3.03 : 어디서 데이터가 넘어가는지 보기 위해 콘솔 로그 추가
 1.3.031 : query->params로 다시 교체, router.params->$route.params로 교체
 1.3.032 : created->mounted로 교체, $route.params->this.$route.params로 교체
+1.3.033 : $route.params->router.params로 되돌림
