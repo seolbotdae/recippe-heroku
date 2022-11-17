@@ -13,7 +13,7 @@
       <v-spacer />
       <v-spacer />
 
-      <v-btn to="/login">로그아웃</v-btn>
+      <v-btn @click="logout">로그아웃</v-btn>
 
       <v-spacer />
 
@@ -45,3 +45,16 @@
     </v-footer>
   </v-card>
 </template>
+
+<script>
+import router from '@/router/index.js';
+
+export default {
+  methods: {
+    logout() {
+      localStorage.removeItem("UserInfo");
+      router.push({name: 'login'});
+    }
+  }
+}
+</script>

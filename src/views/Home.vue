@@ -10,3 +10,17 @@
     </v-row>
   </v-container>
 </template>
+
+<script>
+import router from '@/router/index.js';
+
+export default {
+
+  created() {
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"))
+    if(UserInfo == null) {
+      router.push({name: 'login'});
+    }
+  }
+}
+</script>

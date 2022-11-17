@@ -15,6 +15,12 @@ export default {
   signup: function(info) {
     return axios.post(BASE_URL+'signup/', info);
   },
+  changeNN: function(info) {
+    return axios.post(BASE_URL+'changenickname/', info);
+  },
+  changePW: function(info) {
+    return axios.post(BASE_URL+'changepw/', info);
+  },
   recipeList: function(page) {
     return axios.get(BASE_URL+'recipeboard/'+page+'/');
   },
