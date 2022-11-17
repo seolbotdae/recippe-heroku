@@ -63,6 +63,7 @@ export default {
     console.log("route", this.$route.params.id);
     if(this.$route.params.id == 0) {
       this.next = "signup";
+      localStorage.setItem("email", this.info.email)
     } else if(this.$route.params.id == 1) {
       this.next = "changePassword";
     }

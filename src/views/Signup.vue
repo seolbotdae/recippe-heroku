@@ -35,7 +35,7 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="auto">
-          <v-btn @click="back">돌아가기</v-btn>
+          <v-btn to="/login">돌아가기</v-btn>
         </v-col>
         <v-col cols="2">
           <v-btn @click="signup" style="width: 100%">회원가입</v-btn>
@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       info: {
+        email: null,
         id: null,
         nick: null,
         pw: null,
@@ -66,11 +67,19 @@ export default {
       }
     }
   },
+  created() {
+    this.info.email = localStorage.getItem("email");
+    console.log("로컬스토리지에서 이메일 받아오기", this.info.email);
+  },
   methods: {
     signup() {
-      const signupInfo = {
-        
-      }
+      const signupInfo = JSON.stringify({
+        "nickname": this.info.nick,
+        "uid": this.info.id,
+        "password": this.info.pw,
+        "email": this.info.email,
+        "auto_login": this.info.al,
+      });
       console.log(signupInfo);
       JSON.parse(signupInfo);
       herokuAPI.signup(signupInfo)
@@ -85,9 +94,6 @@ export default {
           console.log(e);
         });
     },
-    back() {
-      this.$router.go(-1);
-    }
   }
 }
 </script>
