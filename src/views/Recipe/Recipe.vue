@@ -39,7 +39,7 @@ export default {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            recipes = response;
+            recipes = response.data;
             console.log(recipes);
           }
       })

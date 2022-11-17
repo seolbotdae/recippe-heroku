@@ -30,7 +30,7 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="auto">
-          <v-btn to="/email-auth">회원가입</v-btn>
+          <v-btn to="{name: '/email-auth', query: { nextpage: '/signup' }}">회원가입</v-btn>
         </v-col>
         <v-col cols="2">
           <v-btn @click="login" style="width: 100%">login</v-btn>
