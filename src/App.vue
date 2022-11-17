@@ -11,6 +11,13 @@ export default {
 
   data: () => ({
     
-  })
+  }),
+  created() {
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    if(UserInfo.auto_login == false) {
+      localStorage.removeItem("UserInfo");
+      router.push({name: 'login'});
+    }
+  }
 };
 </script>

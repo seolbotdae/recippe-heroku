@@ -18,10 +18,6 @@ export default {
 
   created() {
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-    if(UserInfo.auto_login == false) {
-      localStorage.removeItem("UserInfo");
-      router.push({name: 'login'});
-    }
     if(UserInfo == null) {
       router.push({name: 'login'});
     }
