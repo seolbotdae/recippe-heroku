@@ -4,6 +4,8 @@ from .serializers import *
 
 '''
 221117  사진 게시판 class 추가
+        사진 게시글 조회 추가
+        사진 게시글 등록 추가
 '''
 
 class ControlPhotoList_b():
@@ -32,17 +34,25 @@ class ControlPhotoList_b():
 class ControlPhoto_b():
     def requestPhoto(self, postId):
         try:
-            post = PhotoPost.objects.filter(post_id = postId)
-            print(post)
-            result, photoPost = self.sendResult("사진 게시글 조회 성공", post)
-            print(result, photoPost)
+            post = PhotoPost.objects.get(post_id = postId)
+            serializer = MyPhotoPostSerializer(post)
+            result, photoPost = self.sendResult("사진 게시글 조회 성공", serializer.data)
         except:
             result, photoPost = self.sendResult("사진 게시글 조회 실패", None)
 
         return result, photoPost
 
     def insertPhoto(self, newPhoto):
-        pass
+        photo = MyPhotoPostSerializer(newPhoto)
+        print(photo)
+
+        try:
+            photo.save()
+            result, newPhoto = self.sendResult("사진 게시글 등록 성공", photo) 
+        except:
+            result, newPhoto = self.sendResult("사진 게시글 등록 실패", None)
+        
+        return result, newPhoto
 
     def deletePhoto(self, nickname, postId):
         pass
@@ -54,3 +64,9 @@ class ControlPhoto_b():
         elif result == "사진 게시글 조회 성공":
             print(f"{result}, {len(photoPost)}")
             return 1, photoPost
+        elif result == "사진 게시글 등록 실패":
+            print(f"{result}, {len(photoPost)}")
+            return 2, photoPost
+        elif result == "사진 게시글 등록 성공":
+            print(f"{result}, {len(photoPost)}")
+            return 3, photoPost

@@ -24,6 +24,8 @@ from .views import *
         레시피 게시글 검색, 정렬 링크 추가
         레기피 게시글 좋아요 링크 추가
 221117  사진 게시판 조회 링크 추가
+        사진 게시글 조회 링크 추가
+        사진 게시글 등록 링크 추가
 '''
 
 urlpatterns = [
@@ -39,6 +41,7 @@ urlpatterns = [
     # PhotoPost
     path("photoboard/<int:page>/", PhotoListAPI.as_view()),
     path("photo/<int:postId>/", PhotoPostAPI.as_view()),
+    path("uploadphoto/", PhotoPostAPI.as_view()),
 
     # RecipePost
     path("recipeboard/<int:page>/", RecipeListAPI.as_view()),

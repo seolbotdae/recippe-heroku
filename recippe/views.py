@@ -50,6 +50,8 @@ import json
         레시피 게시글 검색, 정렬 view 추가
         레시피 게시글 좋아요 view 추가
 221117  사진 게시판 view 추가
+        사진 게시글 조회 view 추가
+        사진 게시글 등록 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -587,7 +589,6 @@ class PhotoListAPI(APIView):
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
-'''
 class PhotoPostAPI(APIView):
     def get(self, request, postId):
         print(f"게시글 번호 = {postId}")
@@ -595,14 +596,12 @@ class PhotoPostAPI(APIView):
         photo = ControlPhoto_b()
         requestRes, photoPost = photo.requestPhoto(postId)
 
-        serializer = MyPhotoPostSerializer(photoPost)
-
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(photoPost, status=status.HTTP_200_OK)
         else:
-            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(99, status=status.HTTP_502_BAD_GATEWAY)
 
     def post(self, request):
         photoInfo = json.loads(request.body)
@@ -610,4 +609,10 @@ class PhotoPostAPI(APIView):
 
         photo = ControlPhoto_b()
         insertRes, newPhoto = photo.insertPhoto(photoInfo)
-'''
+
+        if insertRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif insertRes == 3:
+            return Response(newPhoto, status=status.HTTP_200_OK)
+        else:
+            return Response(99, status=status.HTTP_502_BAD_GATEWAY)
