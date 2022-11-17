@@ -13,7 +13,7 @@ export default {
     changePW() {
       router.push({
         path: "/email-auth",
-        params: { nextPage: 1 }
+        params: { 'nextPage': 1 }
       })
     }
   }

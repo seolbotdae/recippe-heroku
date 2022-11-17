@@ -61,13 +61,10 @@ export default {
   },
   mounted() {
     console.log("크리에이트 외않돌지?!?");
-    console.log("this,router", this.router.params);
-    console.log("router", router.params);
-    console.log("this,$route", this.$route.params);
-    console.log("$route", $route.params);
-    if(this.router.params.nextPage == 0) {
+    console.log("route", router.params.nextPage);
+    if(router.params.nextPage == 0) {
       this.nextPage = "/signup";
-    } else if(this.router.params.nextPage == 1) {
+    } else if(router.params.nextPage == 1) {
       this.nextPage = "/mypage/changePassword";
     }
     console.log("params 메시지 받은내용", this.nextPage);

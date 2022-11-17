@@ -88,7 +88,7 @@ export default {
     signup() {
       router.push({
         path: "/email-auth",
-        params: { nextPage: 0 }
+        params: { 'nextPage': 0 }
       })
     }
   }
