@@ -15,6 +15,7 @@ export default {
   }),
   created() {
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    console.log("App.vue created");
     if(UserInfo == null) {
       router.push({name: 'login'});
     } else if(UserInfo.auto_login == false) {
