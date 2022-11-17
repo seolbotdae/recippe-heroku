@@ -97,7 +97,7 @@ export default {
           console.log("secondcheck", response);
           if(response.status == 200) {
             console.log("코드 일치", next);
-            if(next == signup) {
+            if(next == 'signup') {
               localStorage.setItem("email", this.info.email);
             }
             router.push({name: next});
