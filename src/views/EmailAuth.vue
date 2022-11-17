@@ -94,7 +94,7 @@ export default {
           console.log("secondcheck", response);
           if(response.status == 200) {
             console.log("코드 일치")
-            router.push({name: nextPage});
+            router.push({name: this.nextPage});
           }
         }) 
         .catch(function (e) {
