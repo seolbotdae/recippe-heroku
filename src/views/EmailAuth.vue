@@ -61,9 +61,9 @@ export default {
   },
   created() {
     console.log("크리에이트 외않돌지?!?")
-    if(this.router.query.nextPage == 0) {
+    if(router.query.nextPage == 0) {
       this.nextPage = "/signup";
-    } else if(this.router.query.nextPage == 1) {
+    } else if(router.query.nextPage == 1) {
       this.nextPage = "/mypage/changePassword";
     }
     console.log("query 메시지 받은내용", this.nextPage);
