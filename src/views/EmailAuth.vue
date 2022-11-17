@@ -60,7 +60,6 @@ export default {
     }
   },
   created() {
-    console.log("크리에이트 외않돌지?!?");
     console.log("route", this.$route.params.id);
     if(this.$route.params.id == 0) {
       this.next = "signup";
