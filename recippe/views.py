@@ -15,6 +15,7 @@ from .recipepost import *
 from .report import *
 from .ingredients import *
 from .like import *
+from .mail import *
 
 # Create your views here.
 
