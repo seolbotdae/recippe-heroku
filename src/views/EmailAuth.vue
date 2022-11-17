@@ -90,6 +90,7 @@ export default {
         "email": this.info.email,
         "code": codenum
       });
+      const email = this.info.email;
       const next = this.next;
       console.log(checkInfo);
       herokuAPI.secondcheck(checkInfo)
@@ -98,7 +99,7 @@ export default {
           if(response.status == 200) {
             console.log("코드 일치", next);
             if(next == 'signup') {
-              localStorage.setItem("email", this.info.email);
+              localStorage.setItem("email", email);
             }
             router.push({name: next});
           }

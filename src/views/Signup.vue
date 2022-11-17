@@ -78,7 +78,7 @@ export default {
         "uid": this.info.id,
         "password": this.info.pw,
         "email": this.info.email,
-        "auto_login": this.info.al,
+        "auto_login": false,
       });
       console.log(signupInfo);
       JSON.parse(signupInfo);
