@@ -49,7 +49,9 @@ import json
         레시피 남은 재료 계산하기 view 추가
         레시피 게시글 검색, 정렬 view 추가
         레시피 게시글 좋아요 view 추가
-221117  사진 게시판 view 추가
+221117  레시피 댓글 추가, 수정, 삭제 view 추가
+        레시피 댓글 신고 view 추가
+        사진 게시판 view 추가
         사진 게시글 조회 view 추가
         사진 게시글 등록 view 추가
         사진 게시글 삭제, 좋아요, 정렬, 신고 view 추가
@@ -574,115 +576,72 @@ class InquiryMyCommentPostsAPI(APIView):
             print("API : 알 수 없는 오류 응답")
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class PhotoListAPI(APIView):
-    def get(self, request, page):
-        print(f"페이지 = {page}")
-
-        photoList = ControlPhotoList_b()
-        requestRes, plist, pageCnt = photoList.requestPhotoList(page)
-
-        serializer = MyPhotoPostSerializer(plist, many=True)
-
-        if requestRes == 0:
-            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 1:
-            photoDict = {}
-            photoDict['photoList'] = serializer.data
-            photoDict['total_page'] = pageCnt
-            return Response(photoDict, status=status.HTTP_200_OK)
-        else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
-
+class InsertCommentAPI(APIView):
     def post(self, request):
-        sortInfo = json.loads(request.body)
-        print(f"정렬 정보 = {sortInfo}")
+        print("API : InsertCommentAPI Start")
+        insertTarget = json.loads(request.body)
+
+        commentInstance = ControlComment_b()
+        code = commentInstance.insertComment(insertTarget)
         
-        sort = ControlPhotoList_b()
-        sortRes, sortList = sort.arrangePhotoList(sortInfo['arrangeBy'], sortInfo['page'])
-
-        if sortRes == 2:
-            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif sortRes == 3:
-            serializer = MyPhotoPostSerializer(sortList, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        if code == 0:
+            print("API : 댓글 등록 실패 응답")
+            return Response(code, status=status.HTTP_403_FORBIDDEN)
+        elif code == 1:
+            print("API : 댓글 등록 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
         else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class PhotoPostAPI(APIView):
-    def get(self, request, postId):
-        print(f"게시글 번호 = {postId}")
-
-        photo = ControlPhoto_b()
-        requestRes, photoPost = photo.requestPhoto(postId)
-
-        if requestRes == 0:
-            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 1:
-            return Response(photoPost, status=status.HTTP_200_OK)
-        else:
-            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
-
+class UpdateCommentAPI(APIView):
     def post(self, request):
-        photoInfo = json.loads(request.body)
-        print(f"사진 게시글 정보 = {photoInfo}")
+        print("API : UpdateCommentAPI Start")
+        updateTarget = json.loads(request.body)
 
-        photo = ControlPhoto_b()
-        insertRes, newPhoto = photo.insertPhoto(photoInfo)
-
-        if insertRes == 2:
-            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif insertRes == 3:
-            return Response(newPhoto.data, status=status.HTTP_200_OK)
+        commentInstance = ControlComment_b()
+        code = commentInstance.updateComment(updateTarget)
+        
+        if code == 2:
+            print("API : 댓글 수정 실패 응답")
+            return Response(code, status=status.HTTP_403_FORBIDDEN)
+        elif code == 3:
+            print("API : 댓글 수정 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def delete(self, request):
+class DeleteCommentAPI(APIView):
+    def post(self, request):
+        print("API : DeleteCommentAPI Start")
         deleteTarget = json.loads(request.body)
-        print(f"삭제할 게시글 정보 = {deleteTarget}")
+        commentInstance = ControlComment_b()
+        code = commentInstance.deleteComment(deleteTarget['nickname'], deleteTarget['comment_id'])
 
-        delete = ControlPhoto_b()
-        deleteRes = delete.deletePhoto(deleteTarget['nickname'], deleteTarget['post_id'])
-
-        if deleteRes == 4:
-            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif deleteRes == 5:
-            return Response(5, status=status.HTTP_200_OK)
+        if code == 4:
+            print("API : 댓글 삭제 실패 응답")
+            return Response(code, status=status.HTTP_403_FORBIDDEN)
+        elif code == 5:
+            print("API : 댓글 삭제 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
         else:
-            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class PhotoLikeAPI(APIView):
+class ReportCommentAPI(APIView):
     def post(self, request):
-        likeInfo = json.loads(request.body)
-        print(f"좋아요 정보 = {likeInfo}")
+        print("API : ReportCommentAPI Start")
+        reportTarget = json.loads(request.body)
+        reportInstance = ControlReport_b()
+        code = reportInstance.reportComment(reportTarget)
 
-        like = ControlLike_b()
-        if likeInfo['task'] == "취소":
-            likeRes = like.cancelLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
-        elif likeInfo['task'] == "등록":
-            likeRes = like.pressLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
-
-        if likeRes == 4:
+        if code == 2:
+            print("API : 댓글 신고 실패 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:
+            print("API : 댓글 신고 성공 응답")
+            return Response(code, status=status.HTTP_200_OK)
+        else:
+            print("알 수 없는 오류 응답")
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif likeRes == 5:
-            return Response(5, status=status.HTTP_200_OK)
-        elif likeRes == 6:
-            return Response(6, status=status.HTTP_501_NOT_IMPLEMENTED)
-        elif likeRes == 7:
-            return Response(7, status=status.HTTP_200_OK)
-        else:
-            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
-
-class PhotoReportAPI(APIView):
-    def post(self, request):
-        reportInfo = json.loads(request.body)
-        print(f"사진 게시글 삭제 정보 = {reportInfo}")
-
-        report = ControlReport_b()
-        reportRes = report.reportPost(reportInfo)
-
-        if reportRes == 0:
-            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif reportRes == 1:
-            return Response(1, status=status.HTTP_200_OK)
-        else:
-            return Response(2, status=status.HTTP_502_BAD_GATEWAY)

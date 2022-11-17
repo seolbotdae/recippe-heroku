@@ -23,7 +23,9 @@ from .views import *
         레시피 남은 재료 계산하기 링크 추가
         레시피 게시글 검색, 정렬 링크 추가
         레기피 게시글 좋아요 링크 추가
-221117  사진 게시판 조회 링크 추가
+221117  레시피 댓글 추가, 수정, 삭제 링크 추가
+        레시피 댓글 신고 링크 추가
+        사진 게시판 조회 링크 추가
         사진 게시글 조회 링크 추가
         사진 게시글 등록 링크 추가
         사진 게시글 삭제, 좋아요, 정렬, 신고 링크 추가
@@ -77,6 +79,13 @@ urlpatterns = [
 
     # MyLikePost
     path("inquirymylikeposts/", InquiryMyLikePostsAPI.as_view()),
-    path("inquirymycommentposts/<str:nickname>/", InquiryMyCommentPostsAPI.as_view())
+    path("inquirymycommentposts/<str:nickname>/", InquiryMyCommentPostsAPI.as_view()),
     
+    # Comment
+    path("addcomment/", InsertCommentAPI.as_view()),
+    path("updatecomment/", UpdateCommentAPI.as_view()),
+    path("deletecomment/", DeleteCommentAPI.as_view()),
+    path("reportcomment/", ReportCommentAPI.as_view()),
+
+
 ]

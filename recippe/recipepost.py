@@ -8,6 +8,9 @@ from .serializers import *
 221109  레시피 class 추가
 221114  레시피 수정 함수 추가
 221116  레시피 검색, 정렬 함수 추가
+221117  레시피 게시판 댓글 작성 추가
+        레시피 게시판 댓글 수정 추가
+        레시피 게시판 댓글 삭제 추가
 '''
 
 class ControlRecipeList_b():
@@ -205,3 +208,100 @@ class ControlRecipe_b():
         elif result == "레시피 게시글 삭제 성공":
             print(f"{result}, {0}")
             return 7
+
+class ControlComment_b():
+    '''
+    댓글 등록 메소드
+    comment: Comment
+
+    return int
+    '''
+    def insertComment(self, comment):
+        print("내부 함수 : insertComment Start")
+        try:            
+            comment = CommentSerializer(data = comment)
+            comment.is_valid()
+            comment.save()
+
+            code = self.sendResult("댓글 등록 성공.")
+            print("내부 함수 : 댓글 등록 성공")
+        except:
+            code = self.sendResult("댓글 등록 실패.")
+            print("내부 함수 : 댓글 등록 실패")
+        
+        return code
+
+
+    '''
+    게시글 정보 업데이트 메소드
+    comment: Comment
+
+    return int
+    '''
+    def updateComment(self, comment):
+        print("내부 함수 : updateComment Start")
+        try:            
+            Comment.objects.filter(
+                comment_id = comment['comment_id']
+            ).update(comments = comment['comments'])
+
+            code = self.sendResult("댓글 수정 성공.")
+            print("내부 함수 : 댓글 수정 성공")
+        except:
+            code = self.sendResult("댓글 수정 실패.")
+            print("내부 함수 : 댓글 수정 실패")
+        
+        return code
+
+    '''
+    댓글 삭제 메소드
+    nickname: String
+    commentId: int
+
+    return int
+    '''
+    def deleteComment(self, nickname, commentId):
+        print("내부 함수 : deleteComment Start")
+        try:            
+            d = Comment.objects.get(
+                nickname = nickname,
+                comment_id = commentId
+            )
+            
+            d.delete()
+
+            code = self.sendResult("댓글 삭제 성공.")
+            print("내부 함수 : 댓글 삭제 성공")
+        except:
+            code = self.sendResult("댓글 삭제 실패.")
+            print("내부 함수 : 댓글 삭제 실패")
+        
+        return code 
+
+    '''
+    sendResult
+    result: int
+
+    void-> 바꿈
+    '''
+    def sendResult(self, result):
+        if result == "댓글 등록 실패.":
+            print("sendResult : 댓글 등록 실패")
+            return 0
+        elif result == "댓글 등록 성공.":
+            print("sendResult : 댓글 등록 성공")
+            return 1
+        elif result == "댓글 수정 실패.":
+            print("sendResult : 댓글 수정 실패")
+            return 2
+        elif result == "댓글 수정 성공.":
+            print("sendResult : 댓글 수정 성공")
+            return 3
+        elif result == "댓글 삭제 실패.":
+            print("sendResult : 댓글 삭제 실패")
+            return 4
+        elif result == "댓글 삭제 성공.":
+            print("sendResult : 댓글 삭제 성공")
+            return 5
+        else:
+            return 6
