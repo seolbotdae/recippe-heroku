@@ -56,18 +56,18 @@ export default {
         email: null,
         code: 0
       },
-      nextPage: null
+      next: null
     }
   },
   mounted() {
     console.log("크리에이트 외않돌지?!?");
-    console.log("route", router.params.nextpage);
-    if(router.params.nextpage == 0) {
-      this.nextPage = "/signup";
-    } else if(router.params.nextpage == 1) {
-      this.nextPage = "/mypage/changePassword";
+    console.log("route", this.router.params.nextpage);
+    if(this.router.params.nextpage == 0) {
+      this.next = "/signup";
+    } else if(this.router.params.nextpage == 1) {
+      this.next = "/mypage/changePassword";
     }
-    console.log("params 메시지 받은내용", this.nextPage);
+    console.log("params 메시지 받은내용", this.next);
   },
   methods: {
     firstcheck() {
@@ -96,8 +96,8 @@ export default {
         .then(function (response) {
           console.log("secondcheck", response);
           if(response.status == 200) {
-            console.log("코드 일치", this.nextPage);
-            router.push({name: this.nextPage});
+            console.log("코드 일치", this.next);
+            router.push({name: this.next});
           }
         }) 
         .catch(function (e) {
