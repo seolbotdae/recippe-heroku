@@ -61,10 +61,10 @@ export default {
   },
   created() {
     console.log("크리에이트 외않돌지?!?");
-    console.log("route", router.params.nextpage);
-    if(router.params.nextpage == 0) {
+    console.log("route", this.$route.params.id);
+    if(this.$route.params.id == 0) {
       this.next = "/signup";
-    } else if(router.params.nextpage == 1) {
+    } else if(this.$route.params.id == 1) {
       this.next = "/mypage/changePassword";
     }
     console.log("params 메시지 받은내용", this.next);
