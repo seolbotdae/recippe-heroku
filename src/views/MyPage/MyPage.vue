@@ -1,5 +1,5 @@
 <template>
-  <div>
-    마이페이지 기본화면
-  </div>
+  <v-container>
+    마이페이지 기본 화면
+  </v-container>
 </template>

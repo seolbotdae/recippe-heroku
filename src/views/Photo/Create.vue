@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     요리 사진 게시글 작성 화면
-  </div>
+  </v-container>
 </template>

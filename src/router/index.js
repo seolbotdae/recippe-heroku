@@ -33,87 +33,87 @@ import ChangePassword from '@/views/MyPage/ChangePassword';
 Vue.use(Router); // vue 라우터 사용
 const routes = [
   {
-    path: '/',
+    path: '',
     component: Default,
     children: [
       {
-        path: '/',
+        path: '',
         name: 'home',
         component: Home
       },
       {
-        path: '/recipe',
+        path: 'recipe',
         component: Recipe,
         children: [
           {
-            path: '/recipe',
+            path: '',
             name: 'recipe',
             component: RecipeR
           },
           {
-            path: '/recipe/create',
+            path: 'create',
             name: 'createR',
             component: CreateR
           },
           {
-            path: '/recipe/lookup',
+            path: 'lookup',
             name: 'lookupR',
             component: LookupR
           },
           {
-            path: '/recipe/edit',
+            path: 'edit',
             name: 'editR',
             component: EditR
           },
         ]
       },
       {
-        path: '/photo',
+        path: 'photo',
         component: Photo,
         children: [
           {
-            path: '/photo',
+            path: '',
             name: 'photo',
             component: PhotoP
           },
           {
-            path: '/photo/create',
+            path: 'create',
             name: 'createP',
             component: CreateP
           },
           {
-            path: '/photo/lookup',
+            path: 'lookup',
             name: 'lookupP',
             component: LookupP
           },
           {
-            path: '/photo/edit',
+            path: 'edit',
             name: 'editP',
             component: EditP
           },
         ]
       },
       {
-        path: '/mypage',
+        path: 'mypage',
         component: MyPage,
         children: [
           {
-            path: '/mypage',
+            path: '',
             name: 'mypage',
             component: MyPageM
           },
           {
-            path: '/mypage/refrigerator',
+            path: 'refrigerator',
             name: 'refrigerator',
             component: Refrigerator
           },
           {
-            path: '/changeNickname',
+            path: 'changeNickname',
             name: 'changeNickname',
             component: ChangeNickname
           },
           {
-            path: '/changePassword',
+            path: 'changePassword',
             name: 'changePassword',
             component: ChangePassword
           },
@@ -122,7 +122,7 @@ const routes = [
     ]
   },
   {
-    path: '/',
+    path: '',
     component: Empty,
     children: [
       {
