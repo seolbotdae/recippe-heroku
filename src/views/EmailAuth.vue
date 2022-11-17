@@ -65,6 +65,7 @@ export default {
     } else if(this.router.query.nextPage == 1) {
       this.nextPage = "/mypage/changePassword";
     }
+    console.log("query 메시지 받은내용", this.nextPage);
   },
   methods: {
     firstcheck() {
@@ -93,7 +94,7 @@ export default {
         .then(function (response) {
           console.log("secondcheck", response);
           if(response.status == 200) {
-            console.log("코드 일치")
+            console.log("코드 일치", this.nextPage);
             router.push({name: this.nextPage});
           }
         }) 
