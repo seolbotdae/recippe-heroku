@@ -62,9 +62,9 @@ export default {
   mounted() {
     console.log("크리에이트 외않돌지?!?");
     console.log("route", router.params.nextPage);
-    if(router.params.nextPage == 0) {
+    if(router.params.nextpage == 0) {
       this.nextPage = "/signup";
-    } else if(router.params.nextPage == 1) {
+    } else if(router.params.nextpage == 1) {
       this.nextPage = "/mypage/changePassword";
     }
     console.log("params 메시지 받은내용", this.nextPage);

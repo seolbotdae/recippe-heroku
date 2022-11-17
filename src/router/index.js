@@ -141,7 +141,7 @@ const routes = [
         component: EmailAuth
       },
       {
-        path: '/email-auth/:nextPage',
+        path: '/email-auth/:nextpage',
         name: 'email-auth',
         component: EmailAuth
       },
