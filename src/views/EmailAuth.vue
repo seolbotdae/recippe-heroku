@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     console.log("크리에이트 외않돌지?!?");
-    console.log("route", router.params.nextPage);
+    console.log("route", router.params.nextpage);
     if(router.params.nextpage == 0) {
       this.nextPage = "/signup";
     } else if(router.params.nextpage == 1) {
