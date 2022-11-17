@@ -18,4 +18,7 @@ export default {
   recipeList: function(page) {
     return axios.get(BASE_URL+'recipeboard/'+page+'/');
   },
+  recipeLookup: function(post_id) {
+    return axios.get(BASE_URL+'recipe/'+post_id+'/');
+  }
 }
