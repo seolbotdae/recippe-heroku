@@ -15,6 +15,7 @@ from .recipepost import *
 from .report import *
 from .ingredients import *
 from .like import *
+from .photopost import *
 from .mail import *
 
 # Create your views here.
@@ -49,9 +50,12 @@ import json
         레시피 남은 재료 계산하기 view 추가
         레시피 게시글 검색, 정렬 view 추가
         레시피 게시글 좋아요 view 추가
-221117
-        레시피 댓글 추가, 수정, 삭제 view 추가
+221117  레시피 댓글 추가, 수정, 삭제 view 추가
         레시피 댓글 신고 view 추가
+        사진 게시판 view 추가
+        사진 게시글 조회 view 추가
+        사진 게시글 등록 view 추가
+        사진 게시글 삭제, 좋아요, 정렬, 신고 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -195,14 +199,17 @@ class RecipeListAPI(APIView):
         print(f"페이지 = {page}")
 
         recipeList = ControlRecipeList_b()
-        requestRes, rlist = recipeList.requestRecipeList(page)
+        requestRes, rlist, pageCnt = recipeList.requestRecipeList(page)
 
         serializer = RecipeListSerializer(rlist, many=True)
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif requestRes == 1:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        elif requestRes >= 1:
+            recipeDict = {}
+            recipeDict['recipeList'] = serializer.data
+            recipeDict['total_page'] = pageCnt
+            return Response(recipeDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
@@ -287,7 +294,7 @@ class RecipeLikeAPI(APIView):
         elif likeRes == 3:
             return Response(3, status=status.HTTP_200_OK)
         else:
-            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeQueryAPI(APIView):
     def post(self, request):
@@ -295,7 +302,7 @@ class RecipeQueryAPI(APIView):
         print(f"검색 정보 = {searchInfo}")
 
         search = ControlRecipeList_b()
-        searchRes, searchList = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
+        searchRes, searchList, pageCnt = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
                                                         searchInfo['keywordType'], searchInfo['keyword'],
                                                         searchInfo['page'])
 
@@ -303,7 +310,10 @@ class RecipeQueryAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif searchRes == 3:
             serializer = RecipeListSerializer(searchList, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            searchDict = {}
+            searchDict['searchList'] = serializer.data
+            searchDict['total_page'] = pageCnt
+            return Response(searchDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
