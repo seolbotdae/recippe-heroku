@@ -16,6 +16,6 @@ export default {
     return axios.post(BASE_URL+'signup/', info);
   },
   recipeList: function(page) {
-    return axios.get(BASE_URL+'/recipeboard/'+page+'/');
+    return axios.get(BASE_URL+'recipeboard/'+page+'/');
   },
 }
