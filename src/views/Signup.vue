@@ -87,6 +87,7 @@ export default {
           console.log("login", response)
           if(response.status == 200) {
             console.log("회원가입 성공")
+            localStorage.removeItem("email");
             router.push({name: 'login'});
           }
         }) 
