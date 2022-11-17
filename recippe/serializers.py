@@ -4,11 +4,12 @@ from rest_framework import serializers
 from .models import Ingredients, Units, User,  PhotoPost, RecipePost, Mail, LikeInfo, Comment, Refrigerator, Recipe_Ingredients, Report, TempEmail
 
 '''
-221105 유저 serializer 추가
-221105 이메일인증 serializer 추가
-221108 레시피게시판 serializer 추가
-221109 냉장고조회 serializer 추가
-221115 자신이 작성한 사진 게시글 serializer 추가
+221105  유저 serializer 추가
+221105  이메일인증 serializer 추가
+221108  레시피게시판 serializer 추가
+221109  냉장고조회 serializer 추가
+221115  자신이 작성한 사진 게시글 serializer 추가
+221117  쪽지함 조회 serializer 추가
 '''
 
 class ResultSerializer(serializers.ModelSerializer):
@@ -64,3 +65,8 @@ class MyLikeRecipePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = LikeInfo
         fields = ('like_id', 'post_type', 'nickname', 'post_id', 'recipe')
+
+class MyMailListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mail
+        fields = ('mail_id', 'nickname', 'receiver', 'title', 'contents', 'send_time', 'sender_check', 'receiver_check')

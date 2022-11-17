@@ -30,6 +30,7 @@ from .views import *
         사진 게시글 조회 링크 추가
         사진 게시글 등록 링크 추가
         사진 게시글 삭제, 좋아요, 정렬, 신고 링크 추가
+        쪽지함 조회 링크 추가 
 '''
 
 urlpatterns = [
@@ -87,6 +88,9 @@ urlpatterns = [
     path("updatecomment/", UpdateCommentAPI.as_view()),
     path("deletecomment/", DeleteCommentAPI.as_view()),
     path("reportcomment/", ReportCommentAPI.as_view()),
+
+    # Mail
+    path("inquiremail/", MailBoxAPI.as_view()),
 
 
 ]

@@ -57,6 +57,7 @@ import json
         사진 게시글 조회 view 추가
         사진 게시글 등록 view 추가
         사진 게시글 삭제, 좋아요, 정렬, 신고 view 추가
+        메일함 조회 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -760,3 +761,23 @@ class PhotoReportAPI(APIView):
             return Response(1, status=status.HTTP_200_OK)
         else:
             return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+
+class MailBoxAPI(APIView):
+    def post(self, request):
+        print("API : MailBoxAPI Start")
+        mail = json.loads(request.body)
+
+        mailInstance = ControlMailList_b()
+        result, mailList, pageCnt = mailInstance.requestMailList(mail['page'], mail['nickname'])
+
+        serializer = MyMailListSerializer(mailList, many = True)
+
+        if result == 0:
+            return Response(0, status=status.HTTP_404_NOT_FOUND)
+        elif result == 1:
+            mailDict = {}
+            mailDict['mailList'] = serializer.data
+            mailDict['total_page'] = pageCnt
+            return Response(mailDict, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
