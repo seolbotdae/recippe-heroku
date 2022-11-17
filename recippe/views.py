@@ -12,6 +12,9 @@ from .serializers import *
 from .authentication import *
 from .mypage import *
 from .recipepost import *
+from .report import *
+from .ingredients import *
+from .like import *
 
 # Create your views here.
 
@@ -37,6 +40,14 @@ import json
         사용자 작성 사진 게시글 view 추가
 221116  사용자 작성 레시피 게시글 view 추가
         사용자 작성 레시피 검색 view 추가
+        레시피 신고 view 추가
+        레시피 없는 재료 보여주기 view 추가
+        사용자 작성 레시피 정렬 view 추가
+        사용자 좋아요 게시글 조회 view 추가
+        사용자 댓글단 게시글 조회 view 추가
+        레시피 남은 재료 계산하기 view 추가
+        레시피 게시글 검색, 정렬 view 추가
+        레시피 게시글 좋아요 view 추가
 '''
 
 class LoginAPI(APIView):
@@ -189,7 +200,7 @@ class RecipeListAPI(APIView):
         elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipePostAPI(APIView):
     def get(self, request, postId):
@@ -204,6 +215,8 @@ class RecipePostAPI(APIView):
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
     def post(self, request):
         newRecipe = json.loads(request.body)
@@ -217,6 +230,8 @@ class RecipePostAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif insertRes == 3:
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeModifyAPI(APIView):
     def post(self, request):
@@ -230,6 +245,8 @@ class RecipeModifyAPI(APIView):
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif updateRes == 5:
             return Response(updateRecipe, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeDeleteAPI(APIView):
     def post(self, request):
@@ -243,6 +260,110 @@ class RecipeDeleteAPI(APIView):
             return Response(6, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif deleteRes == 7:
             return Response(7, status=status.HTTP_200_OK)
+        else:
+            return Response(8, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeLikeAPI(APIView):
+    def post(self, request):
+        likeInfo = json.loads(request.body)
+        print(f"좋아요 정보 = {likeInfo}")
+
+        like = ControlLike_b()
+        if likeInfo['task'] == "취소":
+            likeRes = like.cancelLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+        elif likeInfo['task'] == "등록":
+            likeRes = like.pressLike(likeInfo['nickname'], likeInfo['postType'], likeInfo['postId'])
+
+        if likeRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif likeRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        elif likeRes == 2:
+            return Response(2, status=status.HTTP_501_NOT_IMPLEMENTED)
+        elif likeRes == 3:
+            return Response(3, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeQueryAPI(APIView):
+    def post(self, request):
+        searchInfo = json.loads(request.body)
+        print(f"검색 정보 = {searchInfo}")
+
+        search = ControlRecipeList_b()
+        searchRes, searchList = search.queryRecipeList(searchInfo['searchType'], searchInfo['categories'],
+                                                        searchInfo['keywordType'], searchInfo['keyword'],
+                                                        searchInfo['page'])
+
+        if searchRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif searchRes == 3:
+            serializer = RecipeListSerializer(searchList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeSortAPI(APIView):
+    def post(self, request):
+        sortInfo = json.loads(request.body)
+        print(f"정렬 정보 = {sortInfo}")
+        
+        sort = ControlRecipeList_b()
+        sortRes, sortList = sort.arrangeRecipeList(sortInfo['arrangeBy'], sortInfo['page'])
+
+        if sortRes == 4:
+            return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif sortRes == 5:
+            serializer = RecipeListSerializer(sortList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(6, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeReportAPI(APIView):
+    def post(self, request):
+        reportInfo = json.loads(request.body)
+        print(f"레시피 게시글 삭제 정보 = {reportInfo}")
+
+        report = ControlReport_b()
+        reportRes = report.reportPost(reportInfo)
+
+        if reportRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif reportRes == 1:
+            return Response(1, status=status.HTTP_200_OK)
+        else:
+            return Response(2, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeUnExistIngredientsAPI(APIView):
+    def post(self, request):
+        requestInfo = json.loads(request.body)
+        print(f"없는 재료 보여주기 = {requestInfo}")
+
+        ueIngre = ControlIngredients_b()
+        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(requestInfo['nickname'], requestInfo['post_id'])
+
+        if ueIngreRes == 0:
+            return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif ueIngreRes == 1:
+            serializer = RecipeIngredientsSerializer(ueIngreList, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
+
+class RecipeDecreaseAPI(APIView):
+    def post(self, request):
+        requestInfo = json.loads(request.body)
+        print(f"남은 재료 계산하기 = {requestInfo}")
+
+        daIngre = ControlIngredients_b()
+        daIngreRes = daIngre.decreaseAmmounts(requestInfo['nickname'], requestInfo['post_id'])
+
+        if daIngreRes == 2:
+            return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif daIngreRes == 3:
+            return Response(3, status=status.HTTP_200_OK)
+        else:
+            return Response(4, status=status.HTTP_502_BAD_GATEWAY)
    
 class InquiryRefrigeratorAPI(APIView):
     def get(self, request, nickname):
@@ -392,6 +513,51 @@ class ArrangeMyRecipePostsAPI(APIView):
             print("API : 사용자 작성 레시피 정렬 성공 응답")
             result = RecipeListSerializer(data=result, many=True)
             result.is_valid()
+            return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMyLikePostsAPI(APIView):
+    def post(self, request):
+        print("API : InquiryMyLikePostsAPI Start")
+        inquiryTarget = json.loads(request.body)
+
+        postsInstance = ControlPost_b()
+        result, code = postsInstance.requestMyLikeList(inquiryTarget['nickname'], inquiryTarget['postType'])
+
+        if code == 0:
+            print("API : 사용자 좋아요 게시글 조회 실패 응답")
+            return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        elif code == 1:
+            if inquiryTarget['postType'] == 1:
+                result = RecipeListSerializer(data=result, many=True)
+                print("API : 사용자 좋아요 레시피 게시글 조회 성공 응답")
+                result.is_valid()
+                return Response(result.data, status=status.HTTP_200_OK)
+            elif inquiryTarget['postType'] == -1:
+                result = MyPhotoPostSerializer(data=result, many=True)
+                print("API : 사용자 좋아요 사진 게시글 조회 성공 응답")
+                result.is_valid()
+                return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            print("API : 알 수 없는 오류 응답")
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMyCommentPostsAPI(APIView):
+    def get(self, request, nickname):
+        print("API : InquiryMyCommentPostsAPI Start")
+        
+        postsInstance = ControlPost_b()
+        result, code = postsInstance.requestMyCommentList(nickname)
+
+        if code == 2:
+            print("API : 사용자 댓글단 게시글 조회 실패 응답")
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:    
+            result = RecipeListSerializer(data=result, many=True)
+            result.is_valid()
+            print("API : 사용자 댓글단 게시글 조회 성공 응답")
             return Response(result.data, status=status.HTTP_200_OK)
         else:
             print("API : 알 수 없는 오류 응답")

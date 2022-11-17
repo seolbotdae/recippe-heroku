@@ -15,6 +15,14 @@ from .views import *
         사용자 작성 사진 게시글 조회 링크 추가
 221116  사용자 레시피 게시글 조회 링크 추가
         사용자 레시피 게시글 검색 링크 추가
+        레시피 게시글 신고 링크 추가
+        레시피 없는 재료 보여주기 링크 추가
+        사용자 작성 레시피 조회, 검색, 정렬 링크 추가
+        사용자 좋아요 게시글 링크 추가
+        사용자 댓글단 게시글 링크 추가
+        레시피 남은 재료 계산하기 링크 추가
+        레시피 게시글 검색, 정렬 링크 추가
+        레기피 게시글 좋아요 링크 추가
 '''
 
 urlpatterns = [
@@ -30,9 +38,15 @@ urlpatterns = [
     # RecipePost
     path("recipeboard/<int:page>/", RecipeListAPI.as_view()),
     path("recipe/<int:postId>/", RecipePostAPI.as_view()),
-    path("recipeupload/", RecipePostAPI.as_view()),
-    path("recipeupdate/", RecipeModifyAPI.as_view()),
-    path("recipedelete/", RecipeDeleteAPI.as_view()),
+    path("uploadrecipe/", RecipePostAPI.as_view()),
+    path("updaterecipe/", RecipeModifyAPI.as_view()),
+    path("deleterecipe/", RecipeDeleteAPI.as_view()),
+    path("likerecipe/", RecipeLikeAPI.as_view()),
+    path("queryrecipe/", RecipeQueryAPI.as_view()),
+    path("sortrecipe/", RecipeSortAPI.as_view()),
+    path("reportrecipe/", RecipeReportAPI.as_view()),
+    path("unexistingredients/", RecipeUnExistIngredientsAPI.as_view()),
+    path("decreaseamount/", RecipeDecreaseAPI.as_view()),
 
     # Mypage
     path("inquiryrefrigerator/<str:nickname>/", InquiryRefrigeratorAPI.as_view()),
@@ -47,4 +61,9 @@ urlpatterns = [
     path("inquirymyrecipeposts/<str:nickname>/", InquiryMyRecipePostsAPI.as_view()),
     path("querymyrecipeposts/", QueryMyRecipePostsAPI.as_view()),
     path("arrangemyrecipeposts/", ArrangeMyRecipePostsAPI.as_view()),
+
+    # MyLikePost
+    path("inquirymylikeposts/", InquiryMyLikePostsAPI.as_view()),
+    path("inquirymycommentposts/<str:nickname>/", InquiryMyCommentPostsAPI.as_view())
+    
 ]
