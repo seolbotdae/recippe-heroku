@@ -60,6 +60,7 @@ export default {
     }
   },
   created() {
+    console.log("크리에이트 외않돌지?!?")
     if(this.router.query.nextPage == 0) {
       this.nextPage = "/signup";
     } else if(this.router.query.nextPage == 1) {
