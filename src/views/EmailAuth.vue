@@ -59,12 +59,12 @@ export default {
       next: null
     }
   },
-  mounted() {
+  created() {
     console.log("크리에이트 외않돌지?!?");
-    console.log("route", this.router.params.nextpage);
-    if(this.router.params.nextpage == 0) {
+    console.log("route", router.params.nextpage);
+    if(router.params.nextpage == 0) {
       this.next = "/signup";
-    } else if(this.router.params.nextpage == 1) {
+    } else if(router.params.nextpage == 1) {
       this.next = "/mypage/changePassword";
     }
     console.log("params 메시지 받은내용", this.next);
