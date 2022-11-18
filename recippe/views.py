@@ -781,3 +781,20 @@ class MailBoxAPI(APIView):
             return Response(mailDict, status=status.HTTP_200_OK)
         else:
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InquiryMailAPI(APIView):
+    def post(self, request):
+        prequest = json.loads(request.body)
+        print(prequest['mail_id'])
+        pass
+        mailInstance = ControlMail_b()
+        code, result= mailInstance.requestMail(prequest['mail_id'])
+
+     
+
+        if code == 0:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 1:
+            return Response(resultDict, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

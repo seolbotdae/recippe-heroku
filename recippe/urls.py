@@ -90,7 +90,8 @@ urlpatterns = [
     path("reportcomment/", ReportCommentAPI.as_view()),
 
     # Mail
-    path("inquiremail/", MailBoxAPI.as_view()),
-
+    path("inquiremaillist/", MailBoxAPI.as_view()),
+    path("inquiremail/", InquiryMailAPI.as_view()),
+    
 
 ]

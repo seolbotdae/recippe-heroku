@@ -216,7 +216,7 @@ class ControlMyRecipe_b():
     parameter       nickname:String, arrangeBy:String
     시퀀스 14
     정렬 기준 : 좋아요 순, 최신글 순, 시간 대비 누적 조회수 순
-    '''
+    ''' 
     def arrangeMyRecipeList(self, nickname, arrangeBy):
         print("내부 함수 : arrangeMyRecipeList Start")
         if arrangeBy == "좋아요 순":

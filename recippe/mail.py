@@ -50,4 +50,76 @@ class ControlMailList_b():
         
 
 class ControlMail_b():
-    pass
+    '''
+    수신, 발신한 특정 쪽지를 가져오는 메소드
+
+    mailId: int
+
+    return -> Mail
+    '''
+    def requestMail(self, mailId):
+        mail_id = mailId
+        try:
+            mailTarget = Mail.objects.get(mail_id = mailId)
+        
+            result, code = self.sendResult("쪽지 열람 성공.", mailTarget)
+        except:
+            result, code = self.sendResult("쪽지 열람 실패.", mailTarget)
+
+        return result, code 
+    '''
+    발신한 쪽지를 등록하는 메소드
+
+    mail: Mail
+
+    return -> int
+    '''
+    def insertMail(self, mail):
+        try:
+            serializer = MyMailListSerializer(mail)
+            serializer.is_valid()
+            serializer.save()
+            code, result = self.sendResult("쪽지 추가 성공.", mail)
+        except:
+            code, result = self.sendResult("쪽지 추가 실패.", mail)
+
+        return result, code
+
+    '''
+    특정 쪽지를 삭제하는 메소드
+
+    nickname: String
+    mailId: Mail
+
+    return -> int
+    '''
+    def deleteMail(self, nickname, mailId):
+        try:
+            m = Mail.objects.filter(nickname = nickname, mail_id = mailId)
+            m.delete()
+            result, code = self.sendResult("쪽지 삭제 성공.", None)
+        except:
+            result, code = self.sendResult("쪽지 삭제 실패.", None)
+
+    '''
+    result: int
+    mail: Mail
+
+    return void -> 바꿔야함.
+    '''
+    def sendResult(self, result, mail):
+        if result == "쪽지 열람 실패.":
+            return 0, mail
+        elif result == "쪽지 열람 성공.":
+            return 1, mail
+        elif result == "쪽지 추가 실패.":
+            return 2, mail
+        elif result == "쪽지 추가 성공.":
+            return 3, mail
+        elif result == "쪽지 삭제 실패.":
+            return 4, mail
+        elif result == "쪽지 삭제 성공.":
+            return 5, mail
+        else:
+            return 6, mail
+        
