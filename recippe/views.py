@@ -785,16 +785,43 @@ class MailBoxAPI(APIView):
 class InquiryMailAPI(APIView):
     def post(self, request):
         prequest = json.loads(request.body)
-        print(prequest['mail_id'])
-        pass
+        
         mailInstance = ControlMail_b()
-        code, result= mailInstance.requestMail(prequest['mail_id'])
-
-     
+        result, code= mailInstance.requestMail(prequest['mail_id']) 
 
         if code == 0:
             return Response(code, status=status.HTTP_404_NOT_FOUND)
         elif code == 1:
-            return Response(resultDict, status=status.HTTP_200_OK)
+            result = MyMailListSerializer(result)
+            print(result.data)
+            return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InsertMailAPI(APIView):
+    def post(self, request):
+        request = json.loads(request.body)
+
+        mailInstance = ControlMail_b()
+        result, code = mailInstance.insertMail(request)
+        
+        if code == 2:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:
+            return Response(code, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DeleteMailAPI(APIView):
+    def post(self, request):
+        request = json.loads(request.body)
+
+        mailInstance = ControlMail_b()
+        result, code = mailInstance.deleteMail(request['nickname'], request['mail_id'])
+
+        if code == 4:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 5:
+            return Response(code, status=status.HTTP_200_OK)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

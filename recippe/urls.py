@@ -92,6 +92,8 @@ urlpatterns = [
     # Mail
     path("inquiremaillist/", MailBoxAPI.as_view()),
     path("inquiremail/", InquiryMailAPI.as_view()),
-    
+    path("insertmail/", InsertMailAPI.as_view()),
+    path("deletemail/", DeleteMailAPI.as_view()),
+
 
 ]

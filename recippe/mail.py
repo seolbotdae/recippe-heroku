@@ -4,6 +4,7 @@ from .serializers import *
 
 '''
 221117  쪽지함 기능 requestMailList 함수 추가 (추가된 use case)
+221118  쪽지 열람, 보내기, 삭제 추가
 '''
 
 class ControlMailList_b():
@@ -60,8 +61,8 @@ class ControlMail_b():
     def requestMail(self, mailId):
         mail_id = mailId
         try:
-            mailTarget = Mail.objects.get(mail_id = mailId)
-        
+            mailTarget = Mail.objects.get(mail_id = mail_id)
+
             result, code = self.sendResult("쪽지 열람 성공.", mailTarget)
         except:
             result, code = self.sendResult("쪽지 열람 실패.", mailTarget)
@@ -76,12 +77,24 @@ class ControlMail_b():
     '''
     def insertMail(self, mail):
         try:
-            serializer = MyMailListSerializer(mail)
-            serializer.is_valid()
-            serializer.save()
-            code, result = self.sendResult("쪽지 추가 성공.", mail)
+            print(mail)
+            mailObject = Mail.objects.create(
+                mail_id = None,
+                receiver = mail['receiver'],
+                title = mail['title'],
+                contents = mail['contents'],
+                send_time = mail['send_time'],
+                sender_check = mail['sender_check'],
+                receiver_check = mail['receiver_check'],
+                nickname = User.objects.get(nickname = mail['nickname'])
+            )
+            print(mailObject)
+
+            mailObject.save()
+
+            result, code = self.sendResult("쪽지 추가 성공.", None)
         except:
-            code, result = self.sendResult("쪽지 추가 실패.", mail)
+            result, code = self.sendResult("쪽지 추가 실패.", None)
 
         return result, code
 
@@ -95,12 +108,24 @@ class ControlMail_b():
     '''
     def deleteMail(self, nickname, mailId):
         try:
-            m = Mail.objects.filter(nickname = nickname, mail_id = mailId)
-            m.delete()
+            mailObject = Mail.objects.get(mail_id = mailId)
+
+            if mailObject.receiver == nickname:
+                Mail.objects.update(receiver_check = True)
+            elif mailObject.nickname == nickname:
+                Mail.objects.update(sender_check = True)
+
+            
+            mailObject = Mail.objects.get(mail_id = mailId)
+            if mailObject.sender_check == True and mailObject.receiver_check == True:
+                mailObject.delete()
+            
+            
             result, code = self.sendResult("쪽지 삭제 성공.", None)
         except:
             result, code = self.sendResult("쪽지 삭제 실패.", None)
-
+        
+        return result, code
     '''
     result: int
     mail: Mail
@@ -109,17 +134,17 @@ class ControlMail_b():
     '''
     def sendResult(self, result, mail):
         if result == "쪽지 열람 실패.":
-            return 0, mail
+            return mail, 0
         elif result == "쪽지 열람 성공.":
-            return 1, mail
+            return mail, 1
         elif result == "쪽지 추가 실패.":
-            return 2, mail
+            return mail, 2
         elif result == "쪽지 추가 성공.":
-            return 3, mail
+            return mail, 3
         elif result == "쪽지 삭제 실패.":
-            return 4, mail
+            return mail, 4
         elif result == "쪽지 삭제 성공.":
-            return 5, mail
+            return mail, 5
         else:
-            return 6, mail
+            return mail, 6
         
