@@ -351,12 +351,11 @@ class RecipeReportAPI(APIView):
             return Response(2, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeUnExistIngredientsAPI(APIView):
-    def post(self, request):
-        requestInfo = json.loads(request.body)
-        print(f"없는 재료 보여주기 = {requestInfo}")
+    def get(self, request, nickname, post_id):
+        print(f"없는 재료 보여주기 = {nickname, post_id}")
 
         ueIngre = ControlIngredients_b()
-        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(requestInfo['nickname'], requestInfo['post_id'])
+        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(nickname, post_id)
 
         if ueIngreRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -367,12 +366,11 @@ class RecipeUnExistIngredientsAPI(APIView):
             return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeDecreaseAPI(APIView):
-    def post(self, request):
-        requestInfo = json.loads(request.body)
-        print(f"남은 재료 계산하기 = {requestInfo}")
+    def get(self, request, nickname, post_id):
+        print(f"남은 재료 계산하기 = {nickname, post_id}")
 
         daIngre = ControlIngredients_b()
-        daIngreRes = daIngre.decreaseAmmounts(requestInfo['nickname'], requestInfo['post_id'])
+        daIngreRes = daIngre.decreaseAmmounts(nickname, post_id)
 
         if daIngreRes == 2:
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

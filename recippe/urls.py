@@ -62,8 +62,8 @@ urlpatterns = [
     path("queryrecipe/", RecipeQueryAPI.as_view()),
     path("sortrecipe/", RecipeSortAPI.as_view()),
     path("reportrecipe/", RecipeReportAPI.as_view()),
-    path("unexistingredients/", RecipeUnExistIngredientsAPI.as_view()),
-    path("decreaseamount/", RecipeDecreaseAPI.as_view()),
+    path("unexistingredients/<str:nickname>/<int:post_id>/", RecipeUnExistIngredientsAPI.as_view()),
+    path("decreaseamount/<str:nickname>/<int:post_id>/", RecipeDecreaseAPI.as_view()),
 
     # Mypage
     path("inquiryrefrigerator/<str:nickname>/", InquiryRefrigeratorAPI.as_view()),
