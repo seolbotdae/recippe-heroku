@@ -313,7 +313,7 @@ class RecipeQueryAPI(APIView):
         elif searchRes == 3:
             serializer = RecipeListSerializer(searchList, many=True)
             searchDict = {}
-            searchDict['searchList'] = serializer.data
+            searchDict['recipeList'] = serializer.data
             searchDict['total_page'] = pageCnt
             return Response(searchDict, status=status.HTTP_200_OK)
         else:
