@@ -70,6 +70,7 @@ export default {
   created() {
     this.info.email = localStorage.getItem("email");
     console.log("로컬스토리지에서 이메일 받아오기", this.info.email);
+    localStorage.removeItem("email");
   },
   methods: {
     signup() {
@@ -87,7 +88,6 @@ export default {
           console.log("login", response)
           if(response.status == 200) {
             console.log("회원가입 성공")
-            localStorage.removeItem("email");
             router.push({name: 'login'});
           }
         }) 
