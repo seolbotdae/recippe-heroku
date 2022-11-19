@@ -16,10 +16,11 @@ class ControlIngredients_b():
 
             print(recipeIngredients)
             print(refrigerator)
-
+            
             for ingre in recipeIngredients:
                 if ingre not in refrigerator:
-                    ueIngre = Recipe_Ingredients.objects.get(nickname=nickname, name=ingre)
+                    ueIngre = Recipe_Ingredients.objects.get(post_id=postId, name=ingre)
+                    print(ueIngre)
                     ingredientsList.append(ueIngre)
             
             print(ingredientsList)
