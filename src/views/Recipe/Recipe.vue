@@ -4,7 +4,7 @@
     <v-data-table
       :headers="headers"
       :items="recipes"
-      :items-per-page="5"
+      :items-per-page="3"
       class="elevation-1"
     ></v-data-table>
     <v-btn to="/recipe/create">작성하기</v-btn>
@@ -19,30 +19,32 @@ export default {
     return {
       headers: [
         {
-          text: 'Dessert (100g serving)',
-          align: 'start',
-          sortable: false,
-          value: 'name',
+          text: 'id',
+          value: 'post_id',
         },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Iron (%)', value: 'iron' },
+        { text: 'title', value: 'title' },
+        { text: 'nickname', value: 'nickname' },
+        { text: 'spicy', value: 'degree_of_spicy' },
+        { text: 'like', value: 'like_count' },
+        { text: 'comment', value: 'comment_count' },
+        { text: 'view', value: 'views' },
+        { text: 'time', value: 'upload_time' },
       ],
       recipes: []
     }
   },
   mounted() {
+    const list = null;
     herokuAPI.recipeList(1)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            recipes = response.data;
-            console.log(recipes);
+            list = response.data;
           }
       })
+      this.recipes = list;
+      console.log(this.recipes);
   },
   methods: {
 
