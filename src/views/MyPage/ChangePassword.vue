@@ -22,10 +22,10 @@
                     <v-col>
                       <v-row justify="center">
                         <v-card-actions>
-                          <v-btn outlined width="100">취소</v-btn>
+                          <v-btn outlined width="100" to="/mypage">취소</v-btn>
                         </v-card-actions>
                         <v-card-actions>
-                          <v-btn outlined width="100">변경</v-btn>
+                          <v-btn outlined width="100" @click="PWchange()">변경</v-btn>
                         </v-card-actions>
                       </v-row>
                       
@@ -49,3 +49,16 @@
   }
 
 </style>
+
+<script>
+import herokuAPI from '@/api/heroku.js';
+import router from '@/router/index.js';
+
+export default {
+  methods: {
+    PWchange() {
+      console.log("change pw methods");
+    }
+  }
+}
+</script>

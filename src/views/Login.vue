@@ -77,7 +77,15 @@ export default {
           if(response.status == 200) {
             console.log("로그인 성공")
             console.log(response.data)
-            localStorage.setItem("UserInfo", response.data);
+            const userInfo = {
+              "nickname": response.data.nickname,
+              "uid": response.data.uid,
+              "password": response.data.password,
+              "email": response.data.email,
+              "auto_login": response.data.auto_login
+            }
+            console.log(userInfo)
+            localStorage.setItem("UserInfo", userInfo);
             router.push({name: 'home'});
           }
         }) 
