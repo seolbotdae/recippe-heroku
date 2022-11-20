@@ -39,12 +39,9 @@ export default {
             console.log("조회 성공");
             for(let i = 0; response.data.recipeList[i] != null; i++) {
               list.push(response.data.recipeList[i]);
-              console.log(list);
             }
-            console.log(list)
           }
       })
-    console.log("헤로쿠 응답 후")
     this.recipes = list;
   },
   methods: {
