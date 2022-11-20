@@ -77,7 +77,7 @@ export default {
           console.log("response.status", response.status);
           if(response.status == 200) {
             console.log("로그인 성공")
-            localStorage.setItem("UserInfo", loginInfo);
+            localStorage.setItem("UserInfo", response.data);
             router.push({name: 'home'});
           }
         }) 
