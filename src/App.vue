@@ -15,6 +15,7 @@ export default {
   }),
 
   created() {
+    console.log("빌드를 하고 올리면 돌아야지?")
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     console.log("App.vue created");
     if(UserInfo == null) {
