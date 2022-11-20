@@ -1,5 +1,9 @@
 <template>
   <v-container>
-    열람 화면
+    <v-row>
+      <v-col>
+        lookup page
+      </v-col>
+    </v-row>
   </v-container>
 </template>
