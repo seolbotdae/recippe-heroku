@@ -68,7 +68,11 @@ export default {
     }
   },
   created() {
-    this.info = localStorage.getItem("User");
+    const UserInfo = localStorage.getItem("UserInfo");
+    this.info.nick = UserInfo.nickname
+    this.info.id = UserInfo.uid
+    this.info.pw = UserInfo.password
+    this.info.email = UserInfo.email
     console.log("로컬스토리지에서 유저 정보 받아오기", this.info);
     this.nickname = this.info.nick;
     console.log("현재 닉네임 nickname에 저장", this.nickname);
