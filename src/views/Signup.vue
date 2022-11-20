@@ -53,7 +53,7 @@
 
 <script>
 import herokuAPI from '@/api/heroku.js';
-import router from '@/router/index.js'
+import router from '@/router/index.js';
 
 export default {
   data() {

@@ -73,11 +73,11 @@ export default {
       console.log(loginInfo);
       herokuAPI.login(loginInfo)
         .then(function (response) {
-          console.log("login", response);
           console.log("response.status", response.status);
           if(response.status == 200) {
             console.log("로그인 성공")
-            localStorage.setItem("UserInfo", loginInfo);
+            console.log(response.data)
+            localStorage.setItem("UserInfo", response.data);
             router.push({name: 'home'});
           }
         }) 
