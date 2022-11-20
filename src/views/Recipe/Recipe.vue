@@ -18,10 +18,7 @@ export default {
   data () {
     return {
       headers: [
-        {
-          text: 'id',
-          value: 'post_id',
-        },
+        { text: 'id', value: 'post_id' },
         { text: 'title', value: 'title' },
         { text: 'nickname', value: 'nickname' },
         { text: 'spicy', value: 'degree_of_spicy' },
@@ -34,17 +31,18 @@ export default {
     }
   },
   mounted() {
-    const list = null;
+    let list = [];
     herokuAPI.recipeList(1)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            list = response.data.recipeList;
+            for(let i = 0; response.data.recipeList[i] != null; i++) {
+              list.push(response.data.recipeList[i]);
+            }
           }
       })
-      this.recipes = list;
-      console.log(this.recipes);
+    this.recipes = list;
   },
   methods: {
 

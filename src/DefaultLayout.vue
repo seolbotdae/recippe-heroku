@@ -40,6 +40,7 @@
 
     <v-footer
     color="#f5efe6"
+    app
     >
       <div>푸터 위치입니다아</div>
     </v-footer>
