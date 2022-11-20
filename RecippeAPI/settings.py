@@ -135,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_WHITELIST = [
     'https://nawhead1.github.io/*',
     'https://nawhead1.github.io/',
-    'localhost:8080/',
-    'localhost:8080/*',
+    'http://localhost:8080/',
+    'http://localhost:8080/*',
                         ]
 CORS_ALLOW_CREDENTIALS = True
