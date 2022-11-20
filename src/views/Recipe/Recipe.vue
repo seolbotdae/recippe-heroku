@@ -31,21 +31,21 @@ export default {
     }
   },
   mounted() {
-    let list = null;
+    let list = [];
     herokuAPI.recipeList(1)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            list = response.data.recipeList;
+            for(let i = 0; response.data.recipeList[i] != null; i++) {
+              list.push(response.data.recipeList[i]);
+              console.log(list);
+            }
             console.log(list)
           }
       })
     console.log("헤로쿠 응답 후")
-    for(let i = 0; list[i] != null; i++) {
-      this.recipes.push(list[i]);
-      console.log(this.recipes);
-    }
+    this.recipes = list;
   },
   methods: {
 
