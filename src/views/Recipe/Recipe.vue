@@ -40,10 +40,11 @@ export default {
             list = response.data.recipeList;
           }
       })
-      for(let i = 0; list[i] != null; i++) {
-        this.recipes.push(list[i]);
-        console.log(this.recipes);
-      }
+      
+    for(let i = 0; list[i] != null; i++) {
+      this.recipes.push(list[i]);
+      console.log(this.recipes);
+    }
   },
   methods: {
 
