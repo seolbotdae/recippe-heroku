@@ -68,7 +68,7 @@ export default {
     }
   },
   created() {
-    const UserInfo = localStorage.getItem("UserInfo");
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     this.info.nick = UserInfo.nickname
     this.info.id = UserInfo.uid
     this.info.pw = UserInfo.password
