@@ -31,8 +31,12 @@
       <v-col offset="1" cols="10" class="py-2">
         <v-card color="#f5efe6" class="py-2">
           <v-card-title class="ml-10">계정 관리</v-card-title>
-          <v-card-text class="ml-15" @click.native="changeNi()">닉네임 변경</v-card-text>
-          <v-card-text class="ml-15" @click.native="changePW()">비밀번호 변경</v-card-text>
+          <v-card-actions class="ml-15">
+            <v-btn @click="changeNi()">닉네임 변경</v-btn>
+          </v-card-actions>
+          <v-card-actions class="ml-15">
+            <v-btn @click="changePW()">비밀번호 변경</v-btn>
+          </v-card-actions>
           
         </v-card>
       </v-col>
