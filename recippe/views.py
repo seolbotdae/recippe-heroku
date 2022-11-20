@@ -533,23 +533,23 @@ class ArrangeMyRecipePostsAPI(APIView):
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InquiryMyLikePostsAPI(APIView):
-    def post(self, request):
+    def get(self, request, nickname, postType):
         print("API : InquiryMyLikePostsAPI Start")
-        inquiryTarget = json.loads(request.body)
+        #inquiryTarget = json.loads(request.body)
 
         postsInstance = ControlPost_b()
-        result, code = postsInstance.requestMyLikeList(inquiryTarget['nickname'], inquiryTarget['postType'])
+        result, code = postsInstance.requestMyLikeList(nickname, postType)
 
         if code == 0:
             print("API : 사용자 좋아요 게시글 조회 실패 응답")
             return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         elif code == 1:
-            if inquiryTarget['postType'] == 1:
+            if postType == 1:
                 result = RecipeListSerializer(data=result, many=True)
                 print("API : 사용자 좋아요 레시피 게시글 조회 성공 응답")
                 result.is_valid()
                 return Response(result.data, status=status.HTTP_200_OK)
-            elif inquiryTarget['postType'] == -1:
+            elif postType == -1:
                 result = MyPhotoPostSerializer(data=result, many=True)
                 print("API : 사용자 좋아요 사진 게시글 조회 성공 응답")
                 result.is_valid()
@@ -761,12 +761,11 @@ class PhotoReportAPI(APIView):
             return Response(2, status=status.HTTP_502_BAD_GATEWAY)
 
 class MailBoxAPI(APIView):
-    def post(self, request):
+    def get(self, request, nickname, page):
         print("API : MailBoxAPI Start")
-        mail = json.loads(request.body)
 
         mailInstance = ControlMailList_b()
-        result, mailList, pageCnt = mailInstance.requestMailList(mail['page'], mail['nickname'])
+        result, mailList, pageCnt = mailInstance.requestMailList(page, nickname)
 
         serializer = MyMailListSerializer(mailList, many = True)
 
@@ -781,11 +780,11 @@ class MailBoxAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InquiryMailAPI(APIView):
-    def post(self, request):
+    def get(self, request, mail_id):
         prequest = json.loads(request.body)
         
         mailInstance = ControlMail_b()
-        result, code= mailInstance.requestMail(prequest['mail_id']) 
+        result, code= mailInstance.requestMail(mail_id) 
 
         if code == 0:
             return Response(code, status=status.HTTP_404_NOT_FOUND)
