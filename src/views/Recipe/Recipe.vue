@@ -38,9 +38,10 @@ export default {
         if(response.status == 200) {
             console.log("조회 성공");
             list = response.data.recipeList;
+            console.log(list)
           }
       })
-      
+    console.log("헤로쿠 응답 후")
     for(let i = 0; list[i] != null; i++) {
       this.recipes.push(list[i]);
       console.log(this.recipes);
