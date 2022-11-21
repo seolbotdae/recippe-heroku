@@ -56,7 +56,7 @@ const routes = [
             component: CreateR
           },
           {
-            path: 'lookup',
+            path: 'lookup/:id',
             name: 'lookupR',
             component: LookupR
           },

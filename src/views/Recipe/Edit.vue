@@ -1,7 +1,7 @@
 <template>
   <v-container>
     수정
-	<v-btn @click="editRecipe" style="width: 100%">게시글 수정</v-btn>
+		<v-btn @click="editRecipe" style="width: 100%">게시글 수정</v-btn>
   </v-container>
 </template>
 
