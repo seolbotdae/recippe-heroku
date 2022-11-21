@@ -313,7 +313,7 @@ class RecipeQueryAPI(APIView):
         elif searchRes == 3:
             serializer = RecipeListSerializer(searchList, many=True)
             searchDict = {}
-            searchDict['searchList'] = serializer.data
+            searchDict['recipeList'] = serializer.data
             searchDict['total_page'] = pageCnt
             return Response(searchDict, status=status.HTTP_200_OK)
         else:
@@ -351,12 +351,11 @@ class RecipeReportAPI(APIView):
             return Response(2, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeUnExistIngredientsAPI(APIView):
-    def post(self, request):
-        requestInfo = json.loads(request.body)
-        print(f"없는 재료 보여주기 = {requestInfo}")
+    def get(self, request, nickname, post_id):
+        print(f"없는 재료 보여주기 = {nickname, post_id}")
 
         ueIngre = ControlIngredients_b()
-        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(requestInfo['nickname'], requestInfo['post_id'])
+        ueIngreRes, ueIngreList = ueIngre.requestUnExistIngredients(nickname, post_id)
 
         if ueIngreRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -367,12 +366,11 @@ class RecipeUnExistIngredientsAPI(APIView):
             return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipeDecreaseAPI(APIView):
-    def post(self, request):
-        requestInfo = json.loads(request.body)
-        print(f"남은 재료 계산하기 = {requestInfo}")
+    def get(self, request, nickname, post_id):
+        print(f"남은 재료 계산하기 = {nickname, post_id}")
 
         daIngre = ControlIngredients_b()
-        daIngreRes = daIngre.decreaseAmmounts(requestInfo['nickname'], requestInfo['post_id'])
+        daIngreRes = daIngre.decreaseAmmounts(nickname, post_id)
 
         if daIngreRes == 2:
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -535,23 +533,23 @@ class ArrangeMyRecipePostsAPI(APIView):
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InquiryMyLikePostsAPI(APIView):
-    def post(self, request):
+    def get(self, request, nickname, postType):
         print("API : InquiryMyLikePostsAPI Start")
-        inquiryTarget = json.loads(request.body)
+        #inquiryTarget = json.loads(request.body)
 
         postsInstance = ControlPost_b()
-        result, code = postsInstance.requestMyLikeList(inquiryTarget['nickname'], inquiryTarget['postType'])
+        result, code = postsInstance.requestMyLikeList(nickname, postType)
 
         if code == 0:
             print("API : 사용자 좋아요 게시글 조회 실패 응답")
             return Response(code, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         elif code == 1:
-            if inquiryTarget['postType'] == 1:
+            if postType == 1:
                 result = RecipeListSerializer(data=result, many=True)
                 print("API : 사용자 좋아요 레시피 게시글 조회 성공 응답")
                 result.is_valid()
                 return Response(result.data, status=status.HTTP_200_OK)
-            elif inquiryTarget['postType'] == -1:
+            elif postType == -1:
                 result = MyPhotoPostSerializer(data=result, many=True)
                 print("API : 사용자 좋아요 사진 게시글 조회 성공 응답")
                 result.is_valid()
@@ -763,12 +761,11 @@ class PhotoReportAPI(APIView):
             return Response(2, status=status.HTTP_502_BAD_GATEWAY)
 
 class MailBoxAPI(APIView):
-    def post(self, request):
+    def get(self, request, nickname, page):
         print("API : MailBoxAPI Start")
-        mail = json.loads(request.body)
 
         mailInstance = ControlMailList_b()
-        result, mailList, pageCnt = mailInstance.requestMailList(mail['page'], mail['nickname'])
+        result, mailList, pageCnt = mailInstance.requestMailList(page, nickname)
 
         serializer = MyMailListSerializer(mailList, many = True)
 
@@ -783,18 +780,45 @@ class MailBoxAPI(APIView):
             return Response(2, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class InquiryMailAPI(APIView):
-    def post(self, request):
+    def get(self, request, mail_id):
         prequest = json.loads(request.body)
-        print(prequest['mail_id'])
-        pass
+        
         mailInstance = ControlMail_b()
-        code, result= mailInstance.requestMail(prequest['mail_id'])
-
-     
+        result, code= mailInstance.requestMail(mail_id) 
 
         if code == 0:
             return Response(code, status=status.HTTP_404_NOT_FOUND)
         elif code == 1:
-            return Response(resultDict, status=status.HTTP_200_OK)
+            result = MyMailListSerializer(result)
+            print(result.data)
+            return Response(result.data, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InsertMailAPI(APIView):
+    def post(self, request):
+        request = json.loads(request.body)
+
+        mailInstance = ControlMail_b()
+        result, code = mailInstance.insertMail(request)
+        
+        if code == 2:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 3:
+            return Response(code, status=status.HTTP_200_OK)
+        else:
+            return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class DeleteMailAPI(APIView):
+    def post(self, request):
+        request = json.loads(request.body)
+
+        mailInstance = ControlMail_b()
+        result, code = mailInstance.deleteMail(request['nickname'], request['mail_id'])
+
+        if code == 4:
+            return Response(code, status=status.HTTP_404_NOT_FOUND)
+        elif code == 5:
+            return Response(code, status=status.HTTP_200_OK)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
