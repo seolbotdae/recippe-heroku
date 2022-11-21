@@ -54,7 +54,6 @@
                 <p class="mb-0">size: {{ image.size/1024 }}KB</p>
               </v-card>
               <input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file">
-      
             </v-col>
           </v-row>
 
