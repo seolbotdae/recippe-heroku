@@ -141,10 +141,10 @@ class EmailFinalAPI(APIView):
 
 class SignUpAPI(APIView):
     def post(self, request):
-        print(request.data)
+        request = json.loads(request.body)
 
         signUp = ControlSignUp_b()
-        overlapRes = signUp.checkOverlap(request.data['uid'], request.data['nickname'])
+        overlapRes = signUp.checkOverlap(request['uid'], request['nickname'])
 
         if overlapRes == 0:
             return Response(0, status=status.HTTP_400_BAD_REQUEST)
@@ -153,7 +153,7 @@ class SignUpAPI(APIView):
         elif overlapRes == 2:
             return Response(2, status=status.HTTP_400_BAD_REQUEST)
         elif overlapRes == 3:
-            serializer = UserInfoSerializer(data=request.data)
+            serializer = UserInfoSerializer(data=request)
 
             if serializer.is_valid():
                 serializer.save()
@@ -180,10 +180,10 @@ class ChangePwAPI(APIView):
 #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공, 6->알수 없음
 class ChangeNicknameAPI(APIView):
     def post(self, request):
-        print(request.data)
+        request = json.loads(request.body)
 
         nicknameEdit = ControlEdittingInfo_b()
-        changeResult = nicknameEdit.changeNickname(request.data['nickname'], request.data['uid'])
+        changeResult = nicknameEdit.changeNickname(request['nickname'], request['uid'])
         
         if changeResult == 2:
             return Response(2, status=status.HTTP_400_BAD_REQUEST)
