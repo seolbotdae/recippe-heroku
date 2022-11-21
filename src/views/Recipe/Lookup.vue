@@ -4,6 +4,7 @@
       <v-col>
         lookup page
         <div> {{ requestRecipe.post_id }} </div>
+        <div> {{ isLiked }} </div>
         <v-btn @click="deleteRecipe" style="width: 100%">게시글 삭제</v-btn>
         <v-btn @click="likeRecipe('등록')" style="width: 100%">좋아요 등록</v-btn>
         <v-btn @click="likeRecipe('취소')" style="width: 100%">좋아요 삭제</v-btn>
@@ -18,7 +19,8 @@ import herokuAPI from '@/api/heroku.js';
 export default {
   data () {
     return {
-      requestRecipe: null
+      requestRecipe: null,
+      isLiked: null
     }
   },
   mounted() {
@@ -27,13 +29,15 @@ export default {
     if(pid == null) {
       console.log("ERROR");
     }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
-    herokuAPI.recipeLookup(pid)
+    herokuAPI.recipeLookup(pid, UserInfo.nickname)
       .then(function(response) {
-        console.log("응답 온거", response);
+        console.log("게시글 응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            vm.requestRecipe = response.data;
+            vm.requestRecipe = response.data.recipeInfo;
+            vm.isLiked = response.data.likeInfo;
           }
       })
   },

@@ -22,7 +22,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 이름 넣어주세요 -->
                         <v-card-title primary-title >
-                          {{ photoPost_info.nickname }}
+                          {{ requestPhoto.nickname }}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -40,7 +40,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 날짜 넣어주세요 -->
                         <v-card-title primary-title>
-                          {{ photoPost_info.upload_time }}
+                          {{ requestPhoto.upload_time }}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -96,7 +96,7 @@
 
             <!-- 좋아요 수 여기 있음 -->
             <v-row justify="center" class="mt-10 thumbs">
-              좋아요 수 {{ photoPost_info.like_count }}
+              좋아요 수 {{ requestPhoto.like_count }}
             </v-row>
             
         </v-card>
@@ -113,13 +113,8 @@ import router from '@/router/index.js';
 export default{
   data(){
     return{
-      photoPost_info: {
-        "post_id": null,
-        "photo_link": null,
-        "like_count": null,
-        "upload_time": null,
-        "nickname": null,
-      }
+      requestPhoto: null,
+      isLiked: null
     }
   },
   mounted() {
@@ -128,13 +123,15 @@ export default{
     if(pid == null) {
       console.log("ERROR");
     }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
-    herokuAPI.photoLookup(pid)
+    herokuAPI.photoLookup(pid, UserInfo.nickname)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            vm.photoPost_info = response.data;
+            vm.requestPhoto = response.data.photoInfo;
+            vm.isLiked = response.data.likeInfo;
           }
       })
   },
