@@ -76,8 +76,14 @@ export default {
           console.log("response.status", response.status);
           if(response.status == 200) {
             console.log("로그인 성공")
-            console.log(response.data)
-            const dataString = JSON.stringify(response.data)
+            const dataString = JSON.stringify({
+              "nickname": response.data.nickname,
+              "uid": response.data.uid,
+              "password": response.data.password,
+              "email": response.data.email,
+              "auto_login": this.info.auto_login,
+            });
+            console.log(dataString);
             localStorage.setItem("UserInfo", dataString);
             router.push({name: 'home'});
           }
