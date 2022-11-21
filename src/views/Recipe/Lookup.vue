@@ -21,7 +21,7 @@ export default {
       requestRecipe: null
     }
   },
-  async mounted() {
+  mounted() {
     let pid = this.$route.params.id;
     console.log("post_id", pid);
     if(pid == null) {

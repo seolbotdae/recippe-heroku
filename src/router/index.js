@@ -82,7 +82,7 @@ const routes = [
             component: CreateP
           },
           {
-            path: 'lookup',
+            path: 'lookup/:id',
             name: 'lookupP',
             component: LookupP
           },

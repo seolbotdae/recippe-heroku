@@ -8,7 +8,7 @@
       class="elevation-1"
     ></v-data-table>
     <v-btn to="/recipe/create">작성하기</v-btn>
-    <v-text-field v-model="recipeID" label="게시글 열람 테스트용"></v-text-field>
+    <v-text-field v-model="recipeID" label="레시피 게시글 열람 테스트용"></v-text-field>
     <v-btn @click="toLookup(recipeID)">아이디 전달</v-btn>
   </v-container>
 </template>

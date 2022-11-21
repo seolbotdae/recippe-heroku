@@ -42,4 +42,10 @@ export default {
   recipeUnLike: function(info) {
     return axios.post(BASE_URL+'likerecipe/', info);
   },
+  photoList: function(page) {
+    return axios.get(BASE_URL+'photoboard/'+page+'/');
+  },
+  photoLookup: function(post_id) {
+    return axios.get(BASE_URL+'photo/'+post_id+'/');
+  },
 }
