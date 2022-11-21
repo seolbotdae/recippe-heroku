@@ -8,6 +8,8 @@
       class="elevation-1"
     ></v-data-table>
     <v-btn to="/recipe/create">작성하기</v-btn>
+    <v-text-field v-model="recipeID" label="게시글 열람 테스트용"></v-text-field>
+    <v-btn></v-btn>
   </v-container>
 </template>
 
@@ -27,7 +29,8 @@ export default {
         { text: 'view', value: 'views' },
         { text: 'time', value: 'upload_time' },
       ],
-      recipes: []
+      recipes: [],
+      recipeID: null
     }
   },
   mounted() {
@@ -45,7 +48,11 @@ export default {
     this.recipes = list;
   },
   methods: {
-
+    toLookup(recipeID) {
+      router.push({
+        path: "/recipe/lookup/"+recipeID,
+      })
+    }
   }
 }
 </script>

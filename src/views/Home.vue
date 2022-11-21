@@ -13,5 +13,4 @@
 
 <script>
 
-export default {}
 </script>

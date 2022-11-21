@@ -18,10 +18,11 @@
                   <v-card-title class="pt-15 pl-15">새로운 닉네임</v-card-title>
                   
                   <v-col offset="2" cols="8">
-                    <v-text-field filled v-model="info.nick" label="새 닉네임" placeholder="새로운 닉네임 입력." class="pb-10"></v-text-field>
+                    <v-text-field filled v-model="user.nickname" label="새 닉네임" placeholder="새로운 닉네임 입력." class="pb-10"></v-text-field>
                   </v-col>
 
           
+
                   <v-row justify="center">
                     
                     <v-card-actions>
@@ -57,34 +58,32 @@ import router from '@/router/index.js';
 export default {
   data() {
     return {
-      info: {
-        email: null,
-        id: null,
-        nick: null,
-        pw: null,
-        pwcheck: null
+      user: {
+        email: '',
+        id: '',
+        nickname: '',
+        pw: '',
+        pwcheck: ''
       },
-      nickname: null
-    }
+      nickname: ''
+    };
   },
   created() {
-    console.log("크리에이티드 들어가지나요")
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-    this.info.nick = UserInfo.nickname
-    this.info.id = UserInfo.uid
-    this.info.pw = UserInfo.password
-    this.info.email = UserInfo.email
-    console.log("로컬스토리지에서 유저 정보 받아오기", this.info);
-    this.nickname = this.info.nick;
-    console.log("현재 닉네임 nickname에 저장", this.nickname);
+    this.user.nickname = UserInfo.nickname
+    this.user.id = UserInfo.uid
+    this.user.pw = UserInfo.password
+    this.user.email = UserInfo.email
+    this.nickname = this.user.nickname;
+    this.user.nickname = "";
   },
   methods: {
     NNchange() {
       const userInfo = JSON.stringify({
-        "nickname": this.info.nick,
-        "uid": this.info.id,
-        "password": this.info.pw,
-        "email": this.info.email,
+        "nickname": this.user.nickname,
+        "uid": this.user.id,
+        "password": this.user.pw,
+        "email": this.user.email,
         "auto_login": false,
       });
       console.log(userInfo);
@@ -103,3 +102,4 @@ export default {
     }
   }
 }
+</script>

@@ -82,10 +82,9 @@ export default {
         "auto_login": false,
       });
       console.log(signupInfo);
-      JSON.parse(signupInfo);
       herokuAPI.signup(signupInfo)
         .then(function (response) {
-          console.log("login", response)
+          console.log(response)
           if(response.status == 200) {
             console.log("회원가입 성공")
             router.push({name: 'login'});
