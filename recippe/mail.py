@@ -111,9 +111,9 @@ class ControlMail_b():
             mailObject = Mail.objects.get(mail_id = mailId)
 
             if mailObject.receiver == nickname:
-                Mail.objects.update(mail_id = mailId, receiver_check = True)
+                Mail.objects.filter(mail_id = mailId).update(receiver_check = True)
             elif mailObject.nickname == nickname:
-                Mail.objects.update(mail_id = mailId, sender_check = True)
+                Mail.objects.filter(mail_id = mailId).update(sender_check = True)
 
             
             mailObject = Mail.objects.get(mail_id = mailId)
