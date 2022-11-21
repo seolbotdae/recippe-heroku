@@ -5,6 +5,8 @@
         lookup page
         <div> {{ requestRecipe }} </div>
         <v-btn @click="deleteRecipe" style="width: 100%">게시글 삭제</v-btn>
+        <v-btn @click="likeRecipe('등록')" style="width: 100%">좋아요 등록</v-btn>
+        <v-btn @click="likeRecipe('취소')" style="width: 100%">좋아요 삭제</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -45,7 +47,31 @@ export default {
           }
         }) 
     },
-    
+    likeRecipe(task) {
+      let like_task = task;
+      const likeInfo = JSON.stringify({
+        "like_id": 0,
+        "nickname": "test",
+        "postType": 1,
+        "postId": 28,
+        "task": like_task
+      });
+      if(like_task === '등록') {
+        herokuAPI.recipeLike(likeInfo)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("좋아요 등록 성공");
+          }
+        })
+      } else {
+        herokuAPI.recipeUnLike(likeInfo)
+          .then(function (response) {
+            if(response.status == 200) {
+              console.log("좋아요 취소 성공");
+            }
+          })
+      }
+    }
   }
 }
 </script>
