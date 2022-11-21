@@ -42,4 +42,19 @@ export default {
   recipeUnLike: function(info) {
     return axios.post(BASE_URL+'likerecipe/', info);
   },
+  recipeSearch: function(info) {
+    return axios.post(BASE_URL+'queryrecipe/', info);
+  },
+  recipeSort: function(info) {
+    return axios.post(BASE_URL+'sortrecipe/', info);
+  },
+  recipeReport: function(info) {
+    return axios.post(BASE_URL+'reportrecipe/', info);
+  },
+  unExistIntredients: function(nickname, post_id) {
+    return axios.get(BASE_URL+'unexistingredients/'+nickname+'/'+post_id+'/');
+  },
+  decreaseAmount: function(nickname, post_id) {
+    return axios.get(BASE_URL+'decreaseamount/'+nickname+'/'+post_id+'/')
+  }
 }
