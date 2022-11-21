@@ -104,3 +104,37 @@ export default{
   
 }
 </script>
+
+<script>
+import herokuAPI from '@/api/heroku.js';
+import router from '@/router/index.js';
+
+export default {
+  data () {
+    return {
+      photo: [],
+      photoID: null
+    }
+  },
+  mounted() {
+    let vm = this;
+    herokuAPI.photoList(1)
+      .then(function(response) {
+        console.log("응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            for(let i = 0; response.data.photoList[i] != null; i++) {
+              vm.photo.push(response.data.photoList[i]);
+            }
+          }
+      })
+  },
+  methods: {
+    toLookup(photoID) {
+      router.push({
+        path: "/photo/lookup/"+photoID,
+      })
+    }
+  }
+}
+</script>

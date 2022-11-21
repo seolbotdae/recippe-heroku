@@ -23,7 +23,6 @@ import EditR from '@/views/Recipe/Edit';
 import PhotoP from '@/views/Photo/Photo';
 import CreateP from '@/views/Photo/Create';
 import LookupP from '@/views/Photo/Lookup';
-import EditP from '@/views/Photo/Edit';
 // 마이페이지 관련 화면
 import MyPageM from '@/views/MyPage/MyPage';
 import Refrigerator from '@/views/MyPage/Refrigerator';
@@ -82,14 +81,9 @@ const routes = [
             component: CreateP
           },
           {
-            path: 'lookup',
+            path: 'lookup/:id',
             name: 'lookupP',
             component: LookupP
-          },
-          {
-            path: 'edit',
-            name: 'editP',
-            component: EditP
           },
         ]
       },

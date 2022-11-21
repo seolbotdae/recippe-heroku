@@ -24,8 +24,8 @@ export default {
   recipeList: function(page) {
     return axios.get(BASE_URL+'recipeboard/'+page+'/');
   },
-  recipeLookup: function(post_id) {
-    return axios.get(BASE_URL+'recipe/'+post_id+'/');
+  recipeLookup: function(post_id, nickname) {
+    return axios.get(BASE_URL+'recipe/'+post_id+'/'+nickname+'/');
   },
   recipeAdd: function(info) {
     return axios.post(BASE_URL+'uploadrecipe/', info);
@@ -41,5 +41,26 @@ export default {
   },
   recipeUnLike: function(info) {
     return axios.post(BASE_URL+'likerecipe/', info);
+  },
+  recipeSearch: function(info) {
+    return axios.post(BASE_URL+'queryrecipe/', info);
+  },
+  recipeSort: function(info) {
+    return axios.post(BASE_URL+'sortrecipe/', info);
+  },
+  recipeReport: function(info) {
+    return axios.post(BASE_URL+'reportrecipe/', info);
+  },
+  unExistIntredients: function(nickname, post_id) {
+    return axios.get(BASE_URL+'unexistingredients/'+nickname+'/'+post_id+'/');
+  },
+  decreaseAmount: function(nickname, post_id) {
+    return axios.get(BASE_URL+'decreaseamount/'+nickname+'/'+post_id+'/')
+  },
+  photoList: function(page) {
+    return axios.get(BASE_URL+'photoboard/'+page+'/');
+  },
+  photoLookup: function(post_id, nickname) {
+    return axios.get(BASE_URL+'photo/'+post_id+'/'+nickname+'/');
   },
 }

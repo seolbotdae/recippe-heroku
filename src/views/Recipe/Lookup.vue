@@ -3,10 +3,14 @@
     <v-row>
       <v-col>
         lookup page
-        <div> {{ requestRecipe }} </div>
+        <div> {{ requestRecipe.post_id }} </div>
+        <div> {{ isLiked }} </div>
         <v-btn @click="deleteRecipe" style="width: 100%">게시글 삭제</v-btn>
         <v-btn @click="likeRecipe('등록')" style="width: 100%">좋아요 등록</v-btn>
         <v-btn @click="likeRecipe('취소')" style="width: 100%">좋아요 삭제</v-btn>
+        <v-btn @click="reportRecipe" style="width: 100%">게시글 신고</v-btn>
+        <v-btn @click="lookupUnExistIngredients" style="width: 100%">없는 재료 가져오기</v-btn>
+        <v-btn @click="remainAmmounts" style="width: 100%">남은 재료 계산하기</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -18,22 +22,25 @@ import herokuAPI from '@/api/heroku.js';
 export default {
   data () {
     return {
-      requestRecipe: null
+      requestRecipe: null,
+      isLiked: null
     }
   },
-  async mounted() {
+  mounted() {
     let pid = this.$route.params.id;
     console.log("post_id", pid);
     if(pid == null) {
       console.log("ERROR");
     }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
-    herokuAPI.recipeLookup(pid)
+    herokuAPI.recipeLookup(pid, UserInfo.nickname)
       .then(function(response) {
-        console.log("응답 온거", response);
+        console.log("게시글 응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
-            vm.requestRecipe = response.data;
+            vm.requestRecipe = response.data.recipeInfo;
+            vm.isLiked = response.data.likeInfo;
           }
       })
   },
@@ -48,15 +55,17 @@ export default {
         }) 
     },
     likeRecipe(task) {
-      let like_task = task;
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const likeInfo = JSON.stringify({
         "like_id": 0,
-        "nickname": "test",
+        "nickname": UserInfo.nickname,
         "postType": 1,
-        "postId": 28,
-        "task": like_task
+        "postId": vm.requestRecipe.post_id,
+        "task": task
       });
-      if(like_task === '등록') {
+      console.log(likeInfo)
+      if(task == '등록') {
         herokuAPI.recipeLike(likeInfo)
         .then(function (response) {
           if(response.status == 200) {
@@ -71,6 +80,37 @@ export default {
             }
           })
       }
+    },
+    reportRecipe() {
+      const reportInfo = JSON.stringify({
+        "id": 0,
+        "contents": "web test",
+        "post_type": 1,
+        "post_id": 46,
+        "reporter": "test"
+      });
+      herokuAPI.recipeReport(reportInfo)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("게시글 신고 성공");
+          }
+        })
+    },
+    lookupUnExistIngredients() {
+      herokuAPI.unExistIntredients("test", 43)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("없는 식재료 가져오기 성공")
+          }
+        })
+    },
+    remainAmmounts() {
+      herokuAPI.decreaseAmount("test", 43)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("남은 재료 계산하기 성공")
+          }
+        })
     }
   }
 }

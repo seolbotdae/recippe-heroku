@@ -63,19 +63,19 @@ export default {
         id: '',
         nickname: '',
         pw: '',
-        pwcheck: ''
+        pwcheck: '',
+        al: ''
       },
       nickname: ''
     };
   },
   created() {
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-    this.user.nickname = UserInfo.nickname
+    this.nickname = UserInfo.nickname
     this.user.id = UserInfo.uid
     this.user.pw = UserInfo.password
     this.user.email = UserInfo.email
-    this.nickname = this.user.nickname;
-    this.user.nickname = "";
+    this.user.al = UserInfo.auto_login
   },
   methods: {
     NNchange() {
@@ -86,13 +86,12 @@ export default {
         "email": this.user.email,
         "auto_login": false,
       });
-      console.log(userInfo);
-      JSON.parse(userInfo);
       herokuAPI.changeNN(userInfo)
         .then(function (response) {
           console.log("nnChange", response)
           if(response.status == 200) {
             console.log("닉넴변경 성공")
+            localStorage.setItem("UserInfo", userInfo);
             router.push({name: 'mypage'});
           }
         }) 
