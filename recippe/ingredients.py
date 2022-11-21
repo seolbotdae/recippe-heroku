@@ -39,7 +39,7 @@ class ControlIngredients_b():
             print(recipeIngredients)
             print(refrigerator)
 
-            for idx in range(len(refrigerator)):
+            for idx in range(len(recipeIngredients)):
                 Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx][0]).update(amount=refrigerator[idx][1]-recipeIngredients[idx][1])
 
             result = self.sendResult("남은 재료 계산하기 성공")
