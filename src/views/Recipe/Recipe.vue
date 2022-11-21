@@ -47,7 +47,6 @@ export default {
             for(let i = 0; response.data.recipeList[i] != null; i++) {
               vm.recipes.push(response.data.recipeList[i]);
             }
-            tp = response.data.total_page;
           }
       })
   },
