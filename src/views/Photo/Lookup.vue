@@ -3,8 +3,8 @@
   
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
-        <v-card height="md-800 xl-1000" color="#f5efe6">
-          <v-btn flat class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
+        <v-card height="800" color="#f5efe6">
+          <v-btn flat to="/photo" class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
           <!-- 사용자 정보, 작성일 -->
           
             <v-row>

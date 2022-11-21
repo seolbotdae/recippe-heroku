@@ -19,18 +19,18 @@
 
           <v-row justify="center">
             <v-col cols="8">
-              <v-card height="400" v-for="item in list" class="my-10">
+              <v-card height="400" v-for="item in photo" :key="item" class="my-10" @click="toLookup(item.post_id)">
                 <v-row>
                   <v-col class="d-flex justify-space-between">
                     <div class="pl-5">
-                      <v-card-title>{{item.title}}</v-card-title>
-                      <v-card-subtitle>{{item.date}}</v-card-subtitle> 
+                      <v-card-title>{{item.nickname}}</v-card-title>
+                      <v-card-subtitle>{{item.upload_time}}</v-card-subtitle> 
                     </div>
                     <div>
                       <v-icon class="pa-6" large>
                         mdi-thumb-up-outline
                       </v-icon>
-                      <span class="pr-6 like-count">{{item.like}}</span>
+                      <span class="pr-6 like-count">{{item.like_count}}</span>
                     </div>
                   </v-col>
                 </v-row>
@@ -75,34 +75,6 @@ export default {
     return {
       photo: [],
       photoID: null,
-      list : [
-        {
-          title: "hello1",
-          date :"2022/02/03",
-          like : 3
-        
-        },
-        {
-          title:"hello2",
-          date:"2020/03/04",
-          like : 3
-        },
-        {
-          title:"hello3",
-          date:"2020/03/04",
-          like : 3
-        },
-        {
-          title:"hello4",
-          date:"2020/03/04",
-          like : 3
-        },
-        {
-          title:"hello5",
-          date:"2020/03/04",
-          like : 3
-        }
-      ]
     };
   },
   mounted() {
