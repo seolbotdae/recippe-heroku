@@ -13,7 +13,6 @@ export default {
   data: () => ({
     
   }),
-
   created() {
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     console.log("App.vue created");

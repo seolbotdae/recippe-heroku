@@ -61,7 +61,7 @@ const routes = [
             component: LookupR
           },
           {
-            path: 'edit',
+            path: 'edit/:id',
             name: 'editR',
             component: EditR
           },
@@ -82,12 +82,12 @@ const routes = [
             component: CreateP
           },
           {
-            path: 'lookup',
+            path: 'lookup/:id',
             name: 'lookupP',
             component: LookupP
           },
           {
-            path: 'edit',
+            path: 'edit/:id',
             name: 'editP',
             component: EditP
           },
