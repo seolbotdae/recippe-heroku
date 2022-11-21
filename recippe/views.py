@@ -804,7 +804,8 @@ class InsertMailAPI(APIView):
         if code == 2:
             return Response(code, status=status.HTTP_404_NOT_FOUND)
         elif code == 3:
-            return Response(result, status=status.HTTP_200_OK)
+            serializer = MyMailListSerializer(result)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(code, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
