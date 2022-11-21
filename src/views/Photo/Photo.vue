@@ -67,9 +67,14 @@
 </style>
 
 <script>
-export default{
-  data(){
+import herokuAPI from '@/api/heroku.js';
+import router from '@/router/index.js';
+
+export default {
+  data() {
     return {
+      photo: [],
+      photoID: null,
       list : [
         {
           title: "hello1",
@@ -99,22 +104,6 @@ export default{
         }
       ]
     };
-  },
-  methods: {}
-  
-}
-</script>
-
-<script>
-import herokuAPI from '@/api/heroku.js';
-import router from '@/router/index.js';
-
-export default {
-  data () {
-    return {
-      photo: [],
-      photoID: null
-    }
   },
   mounted() {
     let vm = this;
