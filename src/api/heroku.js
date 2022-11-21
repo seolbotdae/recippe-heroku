@@ -38,5 +38,8 @@ export default {
   },
   recipeLike: function(info) {
     return axios.post(BASE_URL+'likerecipe/', info);
-  }
+  },
+  recipeUnLike: function(info) {
+    return axios.post(BASE_URL+'likerecipe/', info);
+  },
 }
