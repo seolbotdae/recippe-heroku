@@ -13,7 +13,6 @@
                   <v-row>
                     <v-col cols="3" class="py-0 my-0">
                       <v-card fill-height color="#f5efe6" flat>
-                        <!-- 작성자 넣어주세요 -->
                         <v-card-title primary-title style="color:#7895B2">
                           작성자
                         </v-card-title>
@@ -23,7 +22,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 이름 넣어주세요 -->
                         <v-card-title primary-title >
-                          김재환
+                          {{ requestPhoto.nickname }}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -31,7 +30,6 @@
                   <v-row>
                     <v-col cols="3" class="py-0 my-0">
                       <v-card fill-height color="#f5efe6" flat style="color:#7895B2">
-                        <!-- 작성일 넣어주세요 -->
                         <v-card-title>
                           작성일
                         </v-card-title>
@@ -42,7 +40,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 날짜 넣어주세요 -->
                         <v-card-title primary-title>
-                          2022/10/04 20:20:20
+                          {{ requestPhoto.upload_time }}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -98,7 +96,7 @@
 
             <!-- 좋아요 수 여기 있음 -->
             <v-row justify="center" class="mt-10 thumbs">
-              좋아요 수 1.1K
+              좋아요 수 {{ requestPhoto.like_count }}
             </v-row>
             
         </v-card>
@@ -107,6 +105,43 @@
   
   </v-container>
 </template>
+
+<script>
+import herokuAPI from '@/api/heroku.js';
+import router from '@/router/index.js';
+
+export default{
+  data(){
+    return{
+      requestPhoto: null,
+      isLiked: null
+    }
+  },
+  mounted() {
+    let pid = this.$route.params.id;
+    console.log("post_id", pid);
+    if(pid == null) {
+      console.log("ERROR");
+    }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    let vm = this;
+    herokuAPI.photoLookup(pid, UserInfo.nickname)
+      .then(function(response) {
+        console.log("응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            vm.requestPhoto = response.data.photoInfo;
+            vm.isLiked = response.data.likeInfo;
+          }
+      })
+  },
+  methods: {
+    onFileChange(e) {
+      
+    }
+  }
+}
+</script>
 
 <style>
 .back{

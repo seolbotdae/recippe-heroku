@@ -8,7 +8,7 @@
       class="elevation-1"
     ></v-data-table>
     <v-btn to="/recipe/create">작성하기</v-btn>
-    <v-text-field v-model="recipeID" label="게시글 열람 테스트용"></v-text-field>
+    <v-text-field v-model="recipeID" label="레시피 게시글 열람 테스트용"></v-text-field>
     <v-btn @click="toLookup(recipeID)">아이디 전달</v-btn>
     <v-btn @click="searchRecipeList">레시피 검색</v-btn>
     <v-btn @click="sortRecipeList">레시피 정렬</v-btn>
@@ -38,21 +38,18 @@ export default {
     }
   },
   mounted() {
-    let list = [];
-    let tp;
+    let vm = this;
     herokuAPI.recipeList(1)
       .then(function(response) {
-        console.log("응답 온거", response);
+        console.log("리스트 응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
             for(let i = 0; response.data.recipeList[i] != null; i++) {
-              list.push(response.data.recipeList[i]);
+              vm.recipes.push(response.data.recipeList[i]);
             }
             tp = response.data.total_page;
           }
       })
-    this.recipes = list;
-    this.total_page = tp;
   },
   methods: {
     toLookup(recipeID) {
