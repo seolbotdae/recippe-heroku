@@ -35,18 +35,17 @@ export default {
     }
   },
   mounted() {
-    let list = [];
+    let vm = this;
     herokuAPI.recipeList(1)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
             for(let i = 0; response.data.recipeList[i] != null; i++) {
-              list.push(response.data.recipeList[i]);
+              vm.recipes.push(response.data.recipeList[i]);
             }
           }
       })
-    this.recipes = list;
   },
   methods: {
     toLookup(recipeID) {

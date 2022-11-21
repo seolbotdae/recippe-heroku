@@ -20,18 +20,17 @@ export default {
     }
   },
   mounted() {
-    let list = [];
+    let vm = this;
     herokuAPI.photoList(1)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
             for(let i = 0; response.data.photoList[i] != null; i++) {
-              list.push(response.data.photoList[i]);
+              vm.photo.push(response.data.photoList[i]);
             }
           }
       })
-    this.photo = list;
   },
   methods: {
     toLookup(photoID) {

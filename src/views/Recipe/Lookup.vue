@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         lookup page
-        <div> {{ requestRecipe }} </div>
+        <div> {{ requestRecipe.post_id }} </div>
         <v-btn @click="deleteRecipe" style="width: 100%">게시글 삭제</v-btn>
         <v-btn @click="likeRecipe('등록')" style="width: 100%">좋아요 등록</v-btn>
         <v-btn @click="likeRecipe('취소')" style="width: 100%">좋아요 삭제</v-btn>
@@ -48,15 +48,17 @@ export default {
         }) 
     },
     likeRecipe(task) {
-      let like_task = task;
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const likeInfo = JSON.stringify({
         "like_id": 0,
-        "nickname": "test",
+        "nickname": UserInfo.nickname,
         "postType": 1,
-        "postId": 28,
-        "task": like_task
+        "postId": vm.requestRecipe.post_id,
+        "task": task
       });
-      if(like_task === '등록') {
+      console.log(likeInfo)
+      if(task == '등록') {
         herokuAPI.recipeLike(likeInfo)
         .then(function (response) {
           if(response.status == 200) {
