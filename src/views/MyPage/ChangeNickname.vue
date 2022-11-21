@@ -58,17 +58,18 @@ import router from '@/router/index.js';
 export default {
   data() {
     return {
-      nickname: null,
       info: {
         email: null,
         id: null,
         nick: null,
         pw: null,
         pwcheck: null
-      }
+      },
+      nickname: null
     }
   },
   created() {
+    console.log("크리에이티드 들어가지나요")
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     this.info.nick = UserInfo.nickname
     this.info.id = UserInfo.uid

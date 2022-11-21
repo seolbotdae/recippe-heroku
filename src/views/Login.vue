@@ -70,14 +70,21 @@ export default {
         "email": null,
         "auto_login": this.info.al,
       });
+      const auto_login = this.info.al;
       console.log(loginInfo);
       herokuAPI.login(loginInfo)
         .then(function (response) {
           console.log("response.status", response.status);
           if(response.status == 200) {
             console.log("로그인 성공")
-            console.log(response.data)
-            const dataString = JSON.stringify(response.data)
+            const dataString = JSON.stringify({
+              "nickname": response.data.nickname,
+              "uid": response.data.uid,
+              "password": response.data.password,
+              "email": response.data.email,
+              "auto_login": auto_login,
+            });
+            console.log(dataString);
             localStorage.setItem("UserInfo", dataString);
             router.push({name: 'home'});
           }
