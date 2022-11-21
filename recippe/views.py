@@ -216,18 +216,21 @@ class RecipeListAPI(APIView):
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
 class RecipePostAPI(APIView):
-    def get(self, request, postId):
+    def get(self, request, postId, nickname):
         print(f"게시글 번호 = {postId}")
 
         recipe = ControlRecipe_b()
-        requestRes, recipePost = recipe.requestRecipe(postId)
+        requestRes, recipePost, likeInfo = recipe.requestRecipe(postId, nickname)
 
         serializer = RecipeListSerializer(recipePost)
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            recipeInfo = {}
+            recipeInfo['recipeInfo'] = serializer.data
+            recipeInfo['likeInfo'] = likeInfo
+            return Response(recipeInfo, status=status.HTTP_200_OK)
         else:
             return Response(8, status=status.HTTP_502_BAD_GATEWAY)
 
@@ -682,16 +685,19 @@ class PhotoListAPI(APIView):
             return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
 class PhotoPostAPI(APIView):
-    def get(self, request, postId):
+    def get(self, request, postId, nickname):
         print(f"게시글 번호 = {postId}")
 
         photo = ControlPhoto_b()
-        requestRes, photoPost = photo.requestPhoto(postId)
+        requestRes, photoPost, likeInfo = photo.requestPhoto(postId, nickname)
 
         if requestRes == 0:
             return Response(0, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif requestRes == 1:
-            return Response(photoPost, status=status.HTTP_200_OK)
+            photoInfo = {}
+            photoInfo['photoInfo'] = photoPost
+            photoInfo['likeInfo'] = likeInfo
+            return Response(photoInfo, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 

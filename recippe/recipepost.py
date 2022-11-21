@@ -115,7 +115,7 @@ class ControlRecipeList_b():
             return 5, recipeList
 
 class ControlRecipe_b():
-    def requestRecipe(self, postId):
+    def requestRecipe(self, postId, nickname):
         print(postId)
         try:
             post = RecipePost.objects.get(post_id = postId)
@@ -123,10 +123,16 @@ class ControlRecipe_b():
             current_views = post.views
             post.views = current_views+1
             RecipePost.save(post)
+            isLiked = LikeInfo.objects.filter(post_id = postId, nickname = nickname, post_type=1)
+            print(isLiked)
+            if len(isLiked) == 0:
+                likeInfo = False
+            else: likeInfo = True
         except:
             result, recipePost = self.sendResult("레시피 게시글 조회 실패", None)
+            likeInfo = True
 
-        return result, recipePost
+        return result, recipePost, likeInfo
 
     def insertRecipe(self, newRecipe):
         recipe = RecipeListSerializer(data=newRecipe)

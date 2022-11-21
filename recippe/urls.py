@@ -45,7 +45,7 @@ urlpatterns = [
 
     # PhotoPost
     path("photoboard/<int:page>/", PhotoListAPI.as_view()),
-    path("photo/<int:postId>/", PhotoPostAPI.as_view()),
+    path("photo/<int:postId>/<str:nickname>/", PhotoPostAPI.as_view()),
     path("uploadphoto/", PhotoPostAPI.as_view()),
     path("deletephoto/", PhotoPostAPI.as_view()),
     path("sortphoto/", PhotoListAPI.as_view()),
@@ -54,7 +54,7 @@ urlpatterns = [
 
     # RecipePost
     path("recipeboard/<int:page>/", RecipeListAPI.as_view()),
-    path("recipe/<int:postId>/", RecipePostAPI.as_view()),
+    path("recipe/<int:postId>/<str:nickname>/", RecipePostAPI.as_view()),
     path("uploadrecipe/", RecipePostAPI.as_view()),
     path("updaterecipe/", RecipeModifyAPI.as_view()),
     path("deleterecipe/", RecipeDeleteAPI.as_view()),

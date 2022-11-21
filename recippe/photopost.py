@@ -55,15 +55,21 @@ class ControlPhotoList_b():
             return 3, photoList
 
 class ControlPhoto_b():
-    def requestPhoto(self, postId):
+    def requestPhoto(self, postId, nickname):
         try:
             post = PhotoPost.objects.get(post_id = postId)
             serializer = MyPhotoPostSerializer(post)
             result, photoPost = self.sendResult("사진 게시글 조회 성공", serializer.data)
+            isLiked = LikeInfo.objects.filter(post_id = postId, nickname = nickname, post_type=-1)
+            print(isLiked)
+            if len(isLiked) == 0:
+                likeInfo = False
+            else: likeInfo = True
         except:
             result, photoPost = self.sendResult("사진 게시글 조회 실패", None)
+            likeInfo = False
 
-        return result, photoPost
+        return result, photoPost, likeInfo
 
     def insertPhoto(self, newPhoto):
         photo = MyPhotoPostSerializer(data=newPhoto)

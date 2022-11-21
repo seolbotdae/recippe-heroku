@@ -107,13 +107,17 @@ class ControlMail_b():
     return -> int
     '''
     def deleteMail(self, nickname, mailId):
+        print(mailId)
         try:
-            mailObject = Mail.objects.get(mail_id = mailId)
+            mailObject = Mail.objects.filter(mail_id = mailId)
+            deleteTarget = mailObject[0]
 
-            if mailObject.receiver == nickname:
-                Mail.objects.filter(mail_id = mailId).update(receiver_check = True)
-            elif mailObject.nickname == nickname:
-                Mail.objects.filter(mail_id = mailId).update(sender_check = True)
+            if deleteTarget.receiver == nickname:
+                deleteTarget.receiver_check = True
+                deleteTarget.save()
+            elif deleteTarget.nickname == User.objects.get(nickname=nickname):
+                deleteTarget.sender_check = True
+                deleteTarget.save()
 
             
             mailObject = Mail.objects.get(mail_id = mailId)
