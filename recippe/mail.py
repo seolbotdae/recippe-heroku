@@ -92,7 +92,7 @@ class ControlMail_b():
 
             mailObject.save()
 
-            result, code = self.sendResult("쪽지 추가 성공.", None)
+            result, code = self.sendResult("쪽지 추가 성공.", mailObject)
         except:
             result, code = self.sendResult("쪽지 추가 실패.", None)
 

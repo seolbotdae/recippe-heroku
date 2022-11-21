@@ -781,7 +781,6 @@ class MailBoxAPI(APIView):
 
 class InquiryMailAPI(APIView):
     def get(self, request, mail_id):
-        #prequest = json.loads(request.body)
         
         mailInstance = ControlMail_b()
         result, code= mailInstance.requestMail(mail_id) 
