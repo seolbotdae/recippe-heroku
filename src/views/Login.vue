@@ -70,6 +70,7 @@ export default {
         "email": null,
         "auto_login": this.info.al,
       });
+      const auto_login = this.info.al;
       console.log(loginInfo);
       herokuAPI.login(loginInfo)
         .then(function (response) {
@@ -81,7 +82,7 @@ export default {
               "uid": response.data.uid,
               "password": response.data.password,
               "email": response.data.email,
-              "auto_login": this.info.auto_login,
+              "auto_login": auto_login,
             });
             console.log(dataString);
             localStorage.setItem("UserInfo", dataString);
