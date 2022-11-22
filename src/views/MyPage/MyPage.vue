@@ -15,6 +15,9 @@
       <v-col offset="1" cols="5">
         <v-card color="#f5efe6" class="py-2">
           <v-card-title class="pl-10">냉장고</v-card-title>
+          <v-card-actions class="pl-15">
+            <v-btn @click="requestRefri()">냉장고 조회</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
 
@@ -72,6 +75,11 @@ export default {
     requestML() {
       router.push({
         path: "/mail"
+      })
+    },
+    requestRefri() {
+      router.push({
+        path: "/mypage/refrigerator",
       })
     }
   }

@@ -3,6 +3,7 @@ import axios from "axios";
 const BASE_URL = "https://recippe-sg.herokuapp.com/"
 
 export default {
+  /* Authentication */
   login: function(User) {
     return axios.post(BASE_URL+'login/', User);
   },
@@ -21,6 +22,19 @@ export default {
   changePW: function(info) {
     return axios.post(BASE_URL+'changepw/', info);
   },
+
+  /* MyPage */
+  refrigeratorLookup: function(nickname) {
+    return axios.get(BASE_URL+'inquiryrefrigerator/'+nickname+'/');
+  },
+  refrigeratorDelete: function(info) {
+    return axios.post(BASE_URL+'deleterefrigerator/', info);
+  },
+  refrigeratorEdit: function(info) {
+    return axios.post(BASE_URL+'updaterefrigerator/', info);
+  },
+
+  /* RecipePost */
   recipeList: function(page) {
     return axios.get(BASE_URL+'recipeboard/'+page+'/');
   },
@@ -57,6 +71,8 @@ export default {
   decreaseAmount: function(nickname, post_id) {
     return axios.get(BASE_URL+'decreaseamount/'+nickname+'/'+post_id+'/')
   },
+
+  /* PhotoPost */
   photoList: function(page) {
     return axios.get(BASE_URL+'photoboard/'+page+'/');
   },
@@ -83,6 +99,8 @@ export default {
   photoReport: function(info) {
     return axios.post(BASE_URL+'reportphoto/', info);
   },
+
+  /* Mail */
   mailList: function(nickname, page) {
     return axios.get(BASE_URL+'inquiremaillist/'+nickname+'/'+page+'/');
   },
