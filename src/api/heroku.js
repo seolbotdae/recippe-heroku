@@ -83,4 +83,16 @@ export default {
   photoReport: function(info) {
     return axios.post(BASE_URL+'reportphoto/', info);
   },
+  mailList: function(nickname, page) {
+    return axios.get(BASE_URL+'inquiremaillist/'+nickname+'/'+page+'/');
+  },
+  mailLookup: function(mail_id) {
+    return axios.get(BASE_URL+'inquiremail/'+mail_id+'/');
+  },
+  mailSend: function(info) {
+    return axios.post(BASE_URL+'insertmail/', info);
+  },
+  mailDelete: function(info) {
+    return axios.post(BASE_URL+'deletemail/', info);
+  }
 }

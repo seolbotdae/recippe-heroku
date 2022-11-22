@@ -14,6 +14,7 @@ import Home from '@/views/Home';
 import Recipe from '@/views/Recipe';
 import Photo from '@/views/Photo';
 import MyPage from '@/views/MyPage';
+import Mail from '@/views/Mail';
 // 레시피 게시판 관련 화면
 import RecipeR from '@/views/Recipe/Recipe';
 import CreateR from '@/views/Recipe/Create';
@@ -28,6 +29,10 @@ import MyPageM from '@/views/MyPage/MyPage';
 import Refrigerator from '@/views/MyPage/Refrigerator';
 import ChangeNickname from '@/views/MyPage/ChangeNickname';
 import ChangePassword from '@/views/MyPage/ChangePassword';
+// 메일 관련 화면
+import MailBox from '@/views/Mail/Mail'
+import LookupM from '@/views/Mail/Lookup' 
+import CreateM from '@/views/Mail/Create'
 
 Vue.use(Router); // vue 라우터 사용
 const routes = [
@@ -111,6 +116,27 @@ const routes = [
             name: 'changePassword',
             component: ChangePassword
           },
+        ]
+      },
+      {
+        path: 'mail',
+        component: Mail,
+        children: [
+          {
+            path: '',
+            name: 'mail',
+            component: MailBox
+          },
+          {
+            path: 'lookup',
+            name: 'lookupM',
+            component: LookupM
+          },
+          {
+            path: 'create',
+            name: 'createM',
+            component: CreateM
+          }
         ]
       }
     ]

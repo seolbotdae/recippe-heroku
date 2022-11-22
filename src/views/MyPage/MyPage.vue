@@ -22,6 +22,9 @@
       <v-col cols="5">
         <v-card color="#f5efe6" class="py-2">
           <v-card-title class="pl-10">쪽지함</v-card-title>
+          <v-card-actions class="pl-15">
+            <v-btn @click="requestML()">쪽지 조회</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
       
@@ -64,6 +67,11 @@ export default {
     changeNi() {
       router.push({
         path: "/mypage/changeNickname",
+      })
+    },
+    requestML() {
+      router.push({
+        path: "/mail"
       })
     }
   }
