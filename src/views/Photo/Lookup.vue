@@ -153,11 +153,8 @@ export default{
   },
   beforeDestroy() {
     if(this.isLikedBefore != this.isLikedAfter) { // 좋아요 상태 바뀐 경우
-      if(this.isLikedBefore) { // 좋아요 취소
-
-      } else { // 좋아요 등록
-
-      }
+      if(this.isLikedBefore) task = "취소" // 좋아요 취소
+      else task = "등록" // 좋아요 등록
     }
   },
   methods: {
@@ -179,7 +176,7 @@ export default{
     likePhoto() {
       this.isLikedAfter = !this.isLikedAfter
       if(this.isLikedAfter) ++requestPhoto.like_count;
-      --requestPhoto.like_count;
+      else --requestPhoto.like_count;
     },
     // likePhoto() {
     //   let vm = this;
