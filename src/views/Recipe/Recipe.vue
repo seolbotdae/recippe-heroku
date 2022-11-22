@@ -52,6 +52,11 @@
             <v-icon dark>mdi-pencil-outline</v-icon>
           </v-btn>
 
+          <!-- 임시버늩 -->
+          <v-btn fab x-large color="primary" to="/recipe/edit">
+            <v-icon dark>mdi-pencil-outline</v-icon>
+          </v-btn>
+
           <!-- 음식 v card -->
           <v-card height="100" class="mx-5 mb-5" v-for="item in 20">
             <div class="d-flex align-center">
@@ -81,6 +86,8 @@
               </div>
             </div>
           </v-card>
+
+
 
           <!-- 페이지 이동 -->
           <v-pagination v-model="page" length="5" class="pb-10">
