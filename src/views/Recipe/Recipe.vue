@@ -25,7 +25,11 @@
           <div class="black-line mx-3"></div>
           <!-- 요리 검색 밑줄 -->
           <div class="category-search-dropdown mt-2">
-            <v-btn color="#f5efe6" depressed>카테고리 검색</v-btn>
+            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean">카테고리 검색</v-btn>
+            <!-- 카테고리 슬라이드 -->
+            <v-card height="200" color="#E8DFCA" v-if=categoryBoolean>
+
+            </v-card>
           </div>
         </v-card>
 
@@ -44,15 +48,15 @@
           </div>
 
           <!-- 음식 v card -->
-          <v-card height="100" class="mx-5">
+          <v-card height="100" class="mx-5 mb-5" v-for="item in 20" >
             <div class="d-flex align-center">
               <!-- 음식을 받아와서 넣으시면 됩니다. -->
               <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">김치볶음밥</span>
-              <v-icon color="red" v-if="hotGrade>=1">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="hotGrade>=2">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="hotGrade>=3">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="hotGrade>=4">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="hotGrade>=5">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item%5+1>=1">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item%5+1>=2">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item%5+1>=3">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item%5+1>=4">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item%5+1>=5">mdi-chili-mild</v-icon>
             </div>
             <div style="border: 0.5px solid #7895B2;" class="mx-5"></div>
             <div class="d-flex align-center justify-space-between">
@@ -72,6 +76,10 @@
               </div>
             </div>
           </v-card>
+
+          <!-- 페이지 이동 -->
+          <v-pagination v-model="page" length="5" class="pb-10">
+          </v-pagination>
         </v-card>
       </v-col>
     </v-row>
@@ -135,6 +143,8 @@ export default {
       },
       //맵기 단계
       hotGrade: 2,
+      //카테고리 슬라이드
+      categoryBoolean : false,
     }
   },
   components: {
@@ -203,6 +213,14 @@ export default {
     },
     methodToRunOnSelect(payload) {
       this.object = payload;
+    },
+    methodToChangeCategoryBoolean() {
+      if (this.categoryBoolean == true) {
+        this.categoryBoolean = false
+      }else{
+        this.categoryBoolean = true
+      }
+
     }
   }
 }
