@@ -64,6 +64,13 @@
               <v-col cols="2" class="d-flex align-end">
                 <v-row justify="left">
                   <div class=".buttons">
+                    <!-- 삭제 버튼 여기 있음 -->
+                    <v-btn icon x-large @click="deletePhoto">
+                      <v-icon x-large>mdi-email-arrow-right-outline</v-icon>
+                      <div>삭제</div>
+                    </v-btn>
+                    
+                    <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 쪽지 버튼 여기 있음 -->
                     <v-btn icon x-large>
                       <v-icon x-large>mdi-email-arrow-right-outline</v-icon>
@@ -72,7 +79,7 @@
                     
                     <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 신고 버튼 여기 있음 -->
-                    <v-btn icon x-large>
+                    <v-btn @click="reportPhoto" icon x-large>
                       <v-icon x-large>mdi-alert-octagon</v-icon>
                       <div>신고</div>
                     </v-btn>
@@ -87,7 +94,7 @@
             <v-row justify="center">
               <v-card color="#f5efe6" height="50" flat >
                 <!-- 좋아요 버튼 여기 있음 -->
-                <v-btn icon x-large>
+                <v-btn @click="likePhoto" icon x-large>
                   <v-icon x-large>mdi-thumb-up-outline</v-icon>
                   <div>좋아요</div>
                 </v-btn>
@@ -138,6 +145,74 @@ export default{
   methods: {
     onFileChange(e) {
       
+    },
+
+    deletePhoto() {
+      const deleteTarget = {
+        "post_id":20,
+        "photo_link":"web test",
+        "like_count":0,
+        "upload_time":"2022-11-22 04:49:01.705849",
+        "nickname":"test"
+      }
+      herokuAPI.photoDelete(deleteTarget) 
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("응답 정보", response.data);
+          }
+        })
+    },
+    likePhoto() {
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+      let task = ""
+      if(vm.isLiked) task = "취소"
+      else task = "등록"
+      const likeInfo = JSON.stringify({
+        "like_id": 0,
+        "nickname": UserInfo.nickname,
+        "postType": -1,
+        "postId": vm.requestPhoto.post_id,
+        "task": task
+      });
+      console.log(likeInfo)
+      if(task == '등록') {
+        herokuAPI.photoLike(likeInfo)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("좋아요 등록 성공");
+            vm.$router.go();
+            /* 얘는 그냥 화면 새로고침하는건데 
+                좋아요를 등록하거나 취소할 때마다 리프레쉬가 필요해서 일단 넣었음
+                후에 아이콘으로 등록취소를 가르던지 하던 맘대로 바꾸면댐 */
+          }
+        })
+      } else {
+        herokuAPI.photoUnLike(likeInfo)
+          .then(function (response) {
+            if(response.status == 200) {
+              console.log("좋아요 취소 성공");
+              vm.$router.go();
+            }
+          })
+      }
+    },
+    reportPhoto() {
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+      const reportInfo = JSON.stringify({
+        "id": 0,
+        "contents": "web test",
+        "post_type": 2,
+        "post_id": vm.requestPhoto.post_id,
+        "reporter": UserInfo.nickname
+      });
+      herokuAPI.photoReport(reportInfo)
+        .then(function (response) {
+          if(response.status == 200) {
+            console.log("게시글 신고 성공");
+          }
+        })
     }
   }
 }

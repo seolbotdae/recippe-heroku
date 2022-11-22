@@ -9,7 +9,7 @@
             <v-col offset="10">
               <span class="sort-base">Edit</span>
             
-              <v-btn class="ml-5">
+              <v-btn @click="sortPhotoList" class="ml-5">
                 <v-icon >
                   mdi-format-list-bulleted
                 </v-icon>
@@ -95,6 +95,24 @@ export default {
       router.push({
         path: "/photo/lookup/"+photoID,
       })
+    },
+    sortPhotoList() {
+      let list = [];
+      const sortInfo = JSON.stringify({
+        "arrangeBy": "좋아요 순",
+        "page": 1
+      });
+      herokuAPI.photoSort(sortInfo)
+        .then(function (response) {
+          console.log("응답 온거", response);
+          if(response.status == 200) {
+            console.log("정렬 성공");
+            for(let i = 0; response.data[i] != null; i++) {
+              list.push(response.data[i]);
+            }
+          }
+        })
+      this.recipes = list;
     }
   }
 }
