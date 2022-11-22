@@ -62,7 +62,7 @@
 
           <v-row>
             <v-col offset="5" col="2">
-              <v-btn x-large color="#7895B2">게시글 게시</v-btn>
+              <v-btn x-large color="#7895B2" @click="addPhoto">게시글 게시</v-btn>
             </v-col>
           </v-row>
 
@@ -74,6 +74,8 @@
 </template>
 
 <script>
+import herokuAPI from '@/api/heroku.js';
+
 export default{
   data(){
     return {
@@ -106,6 +108,25 @@ export default{
       this.preview = null;
       this.image_list = [];
       this.preview_list = [];
+    },
+
+    addPhoto() {
+      const newPhoto = JSON.stringify (
+        {
+	        "post_id":0,
+          "photo_link":"web test",
+          "like_count":0,
+          "upload_time":"",
+          "nickname":"test"
+        }
+      );
+      herokuAPI.photoAdd(newPhoto) 
+        .then(function (response) {
+          console.log("전송 정보",  newPhoto);
+          if(response.status == 200) {
+            console.log("응답 정보", response.data);
+          }
+        })
     }
   }
 }

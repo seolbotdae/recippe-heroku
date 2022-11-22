@@ -63,4 +63,24 @@ export default {
   photoLookup: function(post_id, nickname) {
     return axios.get(BASE_URL+'photo/'+post_id+'/'+nickname+'/');
   },
+  photoAdd: function(info) {
+    return axios.post(BASE_URL+'uploadphoto/', info);
+  },
+  photoDelete: function(info) {
+    return axios.delete(BASE_URL+'deletephoto/', {
+      data : info
+    });
+  },
+  photoSort: function(info) {
+    return axios.post(BASE_URL+'sortphoto/', info);
+  },
+  photoLike: function(info) {
+    return axios.post(BASE_URL+'likephoto/', info);
+  },
+  photoUnLike: function(info) {
+    return axios.post(BASE_URL+'likephoto/', info);
+  },
+  photoReport: function(info) {
+    return axios.post(BASE_URL+'reportphoto/', info);
+  },
 }
