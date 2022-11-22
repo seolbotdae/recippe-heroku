@@ -65,7 +65,7 @@
                 <v-row justify="left">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
-                    <v-btn v-if="isMine" icon x-large @click="deletePhoto">
+                    <v-btn v-if="isMine" icon x-large @click="showDialog">  <!--@click="deletePhoto"-->
                       <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
@@ -91,6 +91,18 @@
               </v-col>
             </v-row>
 
+            <!-- 팝업창 임시 -->
+            <v-dialog
+              max-width="500"
+              v-model="popupDialog"
+            >
+              <popup-dialog
+                @hide="hideDialog"
+                @submit="checkDialog"
+              />
+            </v-dialog>
+            <!-- 팝업창 임시 -->
+
             <v-row justify="center">
               <v-card color="#f5efe6" height="50" flat >
                 <!-- 좋아요 버튼 여기 있음 -->
@@ -110,17 +122,22 @@
         </v-card>
       </v-col>
     </v-row>
-  
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import PopupDialog from '@/components/popup.vue';
 
 export default{
+  components: {
+    PopupDialog
+  },
   data(){
     return{
+      popupDialog: false,
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
@@ -176,6 +193,17 @@ export default{
     }
   },
   methods: {
+    showDialog() {
+      this.popupDialog = true
+    },
+    hideDialog() {
+      this.popupDialog = false
+    },
+    checkDialog() {
+      console.log("check!!");
+      console.log("실행할 함수 돌려돌려 돌림판!");
+      this.hideDialog();
+    },
     deletePhoto() {
       let vm = this;
       vm.deletePost = true;

@@ -48,7 +48,7 @@
           </div>
 
           <!-- 글쓰기 아이콘 -->
-          <v-btn fab x-large color="primary" class="write-icon">
+          <v-btn fab to="/recipe/create" x-large color="primary" class="write-icon">
             <v-icon dark>mdi-pencil-outline</v-icon>
           </v-btn>
 
