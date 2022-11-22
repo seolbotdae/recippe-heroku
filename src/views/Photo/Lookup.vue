@@ -4,7 +4,7 @@
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
         <v-card height="md-800 xl-1000" color="#f5efe6">
-          <v-btn flat to="/photo" class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
+          <v-btn text to="/photo" class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
           <!-- 사용자 정보, 작성일 -->
           
             <v-row>
@@ -66,7 +66,7 @@
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
                     <v-btn icon x-large @click="deletePhoto">
-                      <v-icon x-large>mdi-email-arrow-right-outline</v-icon>
+                      <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
                     
