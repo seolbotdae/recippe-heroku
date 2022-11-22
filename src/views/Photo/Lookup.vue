@@ -56,7 +56,7 @@
                 lazy-src="https://picsum.photos/id/11/10/6"
                 fill-height
                 src="https://picsum.photos/id/11/500/300"
-                class="mt-10"
+                class="mt-2"
                 >
                 </v-img>
               </v-col>
