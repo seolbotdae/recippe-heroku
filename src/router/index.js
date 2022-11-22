@@ -28,6 +28,8 @@ import MyPageM from '@/views/MyPage/MyPage';
 import Refrigerator from '@/views/MyPage/Refrigerator';
 import ChangeNickname from '@/views/MyPage/ChangeNickname';
 import ChangePassword from '@/views/MyPage/ChangePassword';
+// 메일 관련 화면
+import MailBox from '@/views/Mail/Mail' 
 
 Vue.use(Router); // vue 라우터 사용
 const routes = [
