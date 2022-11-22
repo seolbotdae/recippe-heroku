@@ -1,7 +1,6 @@
 <template>
   <v-container>
-    레시피 게시글 작성 화면
-    <v-btn @click="addRecipe" style="width: 100%">게시글 등록</v-btn>
+    
   </v-container>
 </template>
 
