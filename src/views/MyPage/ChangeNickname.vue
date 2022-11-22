@@ -8,7 +8,7 @@
             <v-card color='#f5efe6' height="100" flat></v-card>
             <!-- 안쪽 하얀 배경 -->
             <v-row justify="center">
-              <v-col xl12 md10 cols="4" align-content="center">
+              <v-col cols="md-6 xl-4" align-content="center">
                 <v-card color='#fefefe' height="600" rounded="xl">
           
                   <v-card-title class="justify-center">닉네임 변경</v-card-title>

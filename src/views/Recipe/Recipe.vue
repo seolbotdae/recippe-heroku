@@ -1,23 +1,104 @@
 <template>
   <v-container>
-    레시피 기본화면
-    <v-data-table
-      :headers="headers"
-      :items="recipes"
-      :items-per-page="3"
-      class="elevation-1"
-    ></v-data-table>
-    <v-btn to="/recipe/create">작성하기</v-btn>
-    <v-text-field v-model="recipeID" label="레시피 게시글 열람 테스트용"></v-text-field>
-    <v-btn @click="toLookup(recipeID)">아이디 전달</v-btn>
-    <v-btn @click="searchRecipeList">레시피 검색</v-btn>
-    <v-btn @click="sortRecipeList">레시피 정렬</v-btn>
+    <v-row justify="center">
+      <v-col class="col-xl-8 col-md-10">
+        <!-- 요리 직접 검색과 카테고리 선택 -->
+        <v-card min-height="100" color="#f5efe6" class="mb-3">
+          <!-- 요리 검색 윗줄 -->
+          <div class="find-cook flex align-end mb-2">
+            <dropdown class="my-dropdown-toggle my-0 ml-5"
+              :options="search_standard" 
+              :selected="search_object" 
+              v-on:updateOption="methodToRunOnSelect" 
+              :placeholder="'검색 기준'"
+              :closeOnOutsideClick="boolean">
+            </dropdown>
+            <v-text-field
+              label="요리를 검색하세요"
+              hide-details="auto"
+              class="mx-5"
+            ></v-text-field>
+            <v-btn class="mx-3" color="#E8DFCA">
+              검색
+            </v-btn>
+          </div>
+          <div class="black-line mx-3"></div>
+          <!-- 요리 검색 밑줄 -->
+          <div class="category-search-dropdown mt-2">
+            <v-btn color="#f5efe6" depressed>카테고리 검색</v-btn>
+          </div>
+        </v-card>
+
+        <v-card min-height="1000" color="#f5efe6">
+          <!-- 상단 레시피 게시판 글씨랑 정렬기준 드롭다운 -->
+          <div class="recipe-top d-flex justify-space-between align-center pa-5">
+            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">레시피 게시판</span>
+            <!-- 드롭다운으로 대체할 예정 -->
+            <dropdown class="my-dropdown-toggle"
+              :options="arrayOfObjects" 
+              :selected="object" 
+              v-on:updateOption="methodToRunOnSelect" 
+              :placeholder="'정렬 기준'"
+              :closeOnOutsideClick="boolean">
+            </dropdown>
+          </div>
+
+          <!-- 음식 v card -->
+          <v-card height="100" class="mx-5">
+            <div class="d-flex align-center">
+              <!-- 음식을 받아와서 넣으시면 됩니다. -->
+              <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">김치볶음밥</span>
+              <v-icon color="red" v-if="hotGrade>=1">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="hotGrade>=2">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="hotGrade>=3">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="hotGrade>=4">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="hotGrade>=5">mdi-chili-mild</v-icon>
+            </div>
+            <div style="border: 0.5px solid #7895B2;" class="mx-5"></div>
+            <div class="d-flex align-center justify-space-between">
+              <div style="color:#7895B2" class="ml-10 py-3">
+                <!-- 날짜를 받아와서 넣으시면 됩니다. -->
+                <span class="mr-3">2022/06/07</span>
+                <!-- 이름을 받아와서 넣으시면 됩니다 -->
+                <span>홍길동</span>
+              </div>
+              <div class="mr-6">
+                <!-- 좋아요 받아와서 넣으시면 됩ㄴ디ㅏ. -->
+                <v-icon color="red">mdi-thumb-up-outline</v-icon> 1.1K
+                <!-- 댓글 가져와서 넣으시면 됩니다. -->
+                <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> 5m
+                <!-- 조회수 가져와서 넣으시면 됩니다. -->
+                <v-icon color="green" class="ml-2">mdi-eye-outline</v-icon> 1.5K
+              </div>
+            </div>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.find-cook{
+  display: flex;
+}
+
+.black-line{
+  border: 0.4px solid #7895B2;
+}
+
+.category-search-dropdown{
+  display: flex;
+  justify-content: center;
+}
+
+</style>
+
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import dropdown from 'vue-dropdowns';
 
 export default {
   data () {
@@ -34,8 +115,30 @@ export default {
       ],
       recipes: [],
       recipeID: null,
-      total_page: null
+      total_page: null,
+      //검색 기준
+      search_standard: [
+          {name: '요리 이름'},
+          {name: '작성자'}
+      ],
+      search_object: {
+        name: '검색 기준',
+      },
+      //정렬 기준 objects
+      arrayOfObjects: [
+        { name: '최근 순'},
+        { name: '조회 순'},
+        { name: '좋아요 순'}
+      ],
+      object: {
+        name: '정렬 기준',
+      },
+      //맵기 단계
+      hotGrade: 2,
     }
+  },
+  components: {
+    'dropdown': dropdown,
   },
   mounted() {
     let vm = this;
@@ -97,6 +200,9 @@ export default {
           }
         })
       this.recipes = list;
+    },
+    methodToRunOnSelect(payload) {
+      this.object = payload;
     }
   }
 }
