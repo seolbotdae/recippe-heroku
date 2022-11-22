@@ -47,8 +47,13 @@
             </dropdown>
           </div>
 
+          <!-- 글쓰기 아이콘 -->
+          <v-btn fab x-large color="primary" class="write-icon">
+            <v-icon dark>mdi-pencil-outline</v-icon>
+          </v-btn>
+
           <!-- 음식 v card -->
-          <v-card height="100" class="mx-5 mb-5" v-for="item in 20" >
+          <v-card height="100" class="mx-5 mb-5" v-for="item in 20">
             <div class="d-flex align-center">
               <!-- 음식을 받아와서 넣으시면 됩니다. -->
               <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">김치볶음밥</span>
@@ -98,6 +103,12 @@
 .category-search-dropdown{
   display: flex;
   justify-content: center;
+}
+
+.write-icon{
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
 }
 
 </style>

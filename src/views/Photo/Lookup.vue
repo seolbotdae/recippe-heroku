@@ -65,21 +65,21 @@
                 <v-row justify="left">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
-                    <v-btn icon x-large @click="deletePhoto">
+                    <v-btn v-if="isMine" icon x-large @click="deletePhoto">
                       <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
                     
                     <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 쪽지 버튼 여기 있음 -->
-                    <v-btn icon x-large>
+                    <v-btn v-if="!isMine" icon x-large>
                       <v-icon x-large>mdi-email-arrow-right-outline</v-icon>
                       <div>쪽지</div>
                     </v-btn>
                     
                     <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 신고 버튼 여기 있음 -->
-                    <v-btn @click="reportPhoto" icon x-large>
+                    <v-btn v-if="!isMine" @click="reportPhoto" icon x-large>
                       <v-icon x-large>mdi-alert-octagon</v-icon>
                       <div>신고</div>
                     </v-btn>
@@ -96,7 +96,8 @@
                 <!-- 좋아요 버튼 여기 있음 -->
                 <v-btn @click="likePhoto" icon x-large>
                   <v-icon x-large>mdi-thumb-up-outline</v-icon>
-                  <div>좋아요</div>
+                  <div v-if="!isLikedAfter">좋아요</div>
+                  <div v-if="isLikedAfter">좋아요 취소</div>
                 </v-btn>
               </v-card>
             </v-row>
@@ -121,7 +122,9 @@ export default{
   data(){
     return{
       requestPhoto: null,
-      isLiked: null
+      isLikedBefore: null,
+      isLikedAfter: null,
+      isMine: null
     }
   },
   mounted() {
@@ -138,15 +141,39 @@ export default{
         if(response.status == 200) {
             console.log("조회 성공");
             vm.requestPhoto = response.data.photoInfo;
-            vm.isLiked = response.data.likeInfo;
+            vm.isLikedBefore = response.data.likeInfo;
+            vm.isLikedAfter = vm.isLikedBefore;
+            if(vm.requestPhoto.nickname == UserInfo.nickname) {
+              vm.isMine = true;
+            } else {
+              vm.isMine = false;
+            }
           }
       })
   },
-  methods: {
-    onFileChange(e) {
-      
-    },
+  beforeDestroy() {
+    let vm = this;
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    let task = "";
+    if(vm.isLikedBefore != vm.isLikedAfter) { // 좋아요 상태 바뀐 경우
+      if(vm.isLikedBefore) task = "취소"; // 좋아요 취소
+      else task = "등록"; // 좋아요 등록
 
+      console.log(task);
+      const likeInfo = JSON.stringify({
+        "like_id": 0,
+        "nickname": UserInfo.nickname,
+        "postType": -1,
+        "postId": vm.requestPhoto.post_id,
+        "task": task
+      });
+      herokuAPI.photoLike(likeInfo)
+      .then(function (response) {
+        if(response.status == 200) console.log("좋아요 " + task + " 성공");
+      })
+    }
+  },
+  methods: {
     deletePhoto() {
       const deleteTarget = {
         "post_id":20,
@@ -162,40 +189,10 @@ export default{
           }
         })
     },
-    likePhoto() {
-      let vm = this;
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      let task = ""
-      if(vm.isLiked) task = "취소"
-      else task = "등록"
-      const likeInfo = JSON.stringify({
-        "like_id": 0,
-        "nickname": UserInfo.nickname,
-        "postType": -1,
-        "postId": vm.requestPhoto.post_id,
-        "task": task
-      });
-      console.log(likeInfo)
-      if(task == '등록') {
-        herokuAPI.photoLike(likeInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("좋아요 등록 성공");
-            vm.$router.go();
-            /* 얘는 그냥 화면 새로고침하는건데 
-                좋아요를 등록하거나 취소할 때마다 리프레쉬가 필요해서 일단 넣었음
-                후에 아이콘으로 등록취소를 가르던지 하던 맘대로 바꾸면댐 */
-          }
-        })
-      } else {
-        herokuAPI.photoUnLike(likeInfo)
-          .then(function (response) {
-            if(response.status == 200) {
-              console.log("좋아요 취소 성공");
-              vm.$router.go();
-            }
-          })
-      }
+    likePhoto() { // 좋아요 버튼 클릭시 동작
+      this.isLikedAfter = !this.isLikedAfter;
+      if(this.isLikedAfter) ++this.requestPhoto.like_count;
+      else --this.requestPhoto.like_count;
     },
     reportPhoto() {
       let vm = this;
