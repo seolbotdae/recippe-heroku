@@ -85,6 +85,10 @@ class ControlPhoto_b():
         try:
             deleteTarget = PhotoPost.objects.get(nickname=nickname, post_id=postId)
             deleteTarget.delete()
+            likeInfos = LikeInfo.objects.filter(post_id=postId, post_type=-1)
+            likeInfos.delete()
+            reports = Report.objects.filter(post_id=postId, post_type=2)
+            reports.delete()
 
             result = self.sendResult("사진 게시글 삭제 성공")
         except:

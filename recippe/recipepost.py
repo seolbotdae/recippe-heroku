@@ -182,6 +182,10 @@ class ControlRecipe_b():
         try:
             deleteTarget = RecipePost.objects.get(nickname=nickname, post_id=postId)
             deleteTarget.delete()
+            likeInfos = LikeInfo.objects.filter(post_id=postId, post_type=1)
+            likeInfos.delete()
+            reports = Report.objects.filter(post_id=postId, post_type=1)
+            reports.delete()
 
             result = self.sendResult("레시피 게시글 삭제 성공")
         except:
