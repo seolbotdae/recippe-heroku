@@ -193,7 +193,7 @@ export default{
           }
         })
     },
-    likePhoto() { // 좋아요 버튼 클릭시 동작
+    likePhoto() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
       this.isLikedAfter = !this.isLikedAfter;
       if(this.isLikedAfter) ++this.requestPhoto.like_count;
       else --this.requestPhoto.like_count;
