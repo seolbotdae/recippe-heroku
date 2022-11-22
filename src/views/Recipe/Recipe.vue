@@ -53,7 +53,7 @@
           </v-btn>
 
           <!-- 임시버늩 -->
-          <v-btn fab x-large color="primary" to="/recipe/edit">
+          <v-btn fab x-large color="primary" to="/recipe/edit" class="write-icon">
             <v-icon dark>mdi-pencil-outline</v-icon>
           </v-btn>
 
