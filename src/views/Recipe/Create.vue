@@ -10,7 +10,7 @@
           <div class="mt-5">
             <div class="line mx-5"></div>
 
-            <div class="px-10 d-flex align-center">
+            <div class="px-10 d-flex align-center my-text">
               <span>레시피 제목</span>
               <v-text-field
                 name="name"
@@ -22,7 +22,7 @@
             
             <div class="line mx-5"></div>
 
-            <div class="px-10 d-flex align-center">
+            <div class="px-10 d-flex align-center my-text">
               <span class="mr-14">레시피 종류</span>
 
               <dropdown class="my-dropdown-toggle"
@@ -36,7 +36,7 @@
 
             <div class="line mx-5"></div>
 
-            <div class="px-10 d-flex align-center">
+            <div class="px-10 d-flex align-center my-text">
               <span class="mr-14">매운맛 단계</span>
 
               <dropdown class="my-dropdown-toggle"
@@ -50,10 +50,24 @@
 
             <div class="line mx-5"></div>
 
-            <div class="px-10 d-flex align-center ingredients">
-              <span class="mr-14">재료 및 양</span>
-              <div class="d-flex"> 
-                <v-btn color="success pa-5">
+            <div class="px-10 d-flex wrap align-center ingredients" style="position:relative">
+              <span class="mr-14 my-text">재료 및 양</span>
+
+              <div class=ma-3>
+                <!-- 재료 나타날 v-for -->
+			          <span v-for="item in 30">
+			          	<span style="vertical-align: text-top" class="my-text">고등어 1마리</span>
+                  <v-btn small text color="success pa-5">
+                    <v-icon >mdi-close-box</v-icon>
+                  </v-btn>
+                  <br/>
+                  
+			          </span>
+              </div>
+              
+			        
+              <div class="d-flex">
+                <v-btn color="success pa-5" class="add-ingredient">
                   <v-icon>mdi-plus-circle-outline</v-icon>
                   <span>재료 추가하기</span>
                 </v-btn>
@@ -75,7 +89,7 @@
             background-color="white"
           ></v-textarea>
 
-          <div class="d-flex justify-end mr-5">
+          <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
             <v-btn color="#AEBDCA" class="mr-2">등록하기</v-btn>
           </div>
@@ -85,13 +99,23 @@
   </v-container>
 </template>
 
-<style>
+<style scoped>
 .line{
   border:1px solid #AEBDCA
 }
 
 .ingredients{
   min-height: 300px;
+}
+
+.add-ingredient{
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+}
+
+.my-text{
+  color: #42688e;
 }
 
 </style>

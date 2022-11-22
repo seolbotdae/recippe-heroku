@@ -33,6 +33,68 @@
 
 // Pagination
 
+<script>
+import herokuAPI from '@/api/heroku.js';
+
+export default{
+  data(){
+    return{
+      refrigerators: [],
+    }
+  },
+  mounted() {
+    /* 냉장고 조회 - 원래 mounted 에 있어야 하는 놈 
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    let vm = this;
+    herokuAPI.refrigeratorLookup(UserInfo.nickname)
+      .then(function(response) {
+        console.log("응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            for(let i = 0; response.data[i] != null; i++) {
+              vm.refrigerators.push(response.data[i]);
+            }
+          }
+      })*/
+      
+  },
+  methods: {
+    deleteRefrigerator() {
+      const deleteTarget = JSON.stringify (
+        {
+          "id": 3
+        }
+      );
+      herokuAPI.refrigeratorDelete(deleteTarget)
+        .then(function(response) {
+          console.log("응답 온거", response);
+          if(response.status == 200) {
+            console.log("삭제 성공");
+          }
+        })
+    },
+    updateRefrigerator() {
+      const edittedTarget = JSON.stringify({
+        "id": 1,
+        "amount": 1000,
+        "expiry_date": '2022-12-31',
+        "name": "kkochu",
+        "nickname": "test",
+        "unit": "g"
+      });
+      herokuAPI.refrigeratorEdit(edittedTarget)
+        .then(function(response) {
+          console.log("응답 온거", response);
+          if(response.status == 200) {
+            console.log("수정 성공");
+          }
+        })
+    },
+    
+  }
+}
+</script>
+
 <style>
   #title1{
     font-size: 2em;
