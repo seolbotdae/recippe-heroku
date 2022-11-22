@@ -124,7 +124,8 @@ export default{
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
-      isMine: null
+      isMine: null,
+      deletePost: false
     }
   },
   mounted() {
@@ -153,6 +154,7 @@ export default{
   },
   beforeDestroy() {
     let vm = this;
+    if (vm.deletePost) return;
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let task = "";
     if(vm.isLikedBefore != vm.isLikedAfter) { // 좋아요 상태 바뀐 경우
@@ -175,17 +177,19 @@ export default{
   },
   methods: {
     deletePhoto() {
+      let vm = this;
+      vm.deletePost = true;
       const deleteTarget = {
-        "post_id":20,
-        "photo_link":"web test",
-        "like_count":0,
-        "upload_time":"2022-11-22 04:49:01.705849",
-        "nickname":"test"
+        "post_id": vm.requestPhoto.post_id,
+        "photo_link": "",
+        "like_count": 0,
+        "upload_time": "",
+        "nickname": vm.requestPhoto.nickname
       }
       herokuAPI.photoDelete(deleteTarget) 
         .then(function (response) {
           if(response.status == 200) {
-            console.log("응답 정보", response.data);
+            router.push({name: 'photo'});
           }
         })
     },
