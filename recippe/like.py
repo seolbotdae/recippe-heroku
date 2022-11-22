@@ -12,8 +12,12 @@ class ControlLike_b():
         try:
             LikeInfo.objects.filter(post_type=postType, nickname=nickname, post_id=postId).delete()
             if postType == 1:
+                likes = LikeInfo.objects.filter(post_id=postId)
+                RecipePost.objects.filter(post_id=postId).update(like_count=len(likes))
                 resultMsg = "레시피 게시글 '좋아요' 취소 성공"
             elif postType == -1:
+                likes = LikeInfo.objects.filter(post_id=postId)
+                PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes))
                 resultMsg = "사진 게시글 '좋아요' 취소 성공"
         except:
             if postType == 1:
@@ -29,8 +33,12 @@ class ControlLike_b():
             newLike = LikeInfo.objects.create(post_type=postType, nickname=User.objects.get(nickname=nickname), post_id=postId)
             newLike.save()
             if postType == 1:
+                likes = LikeInfo.objects.filter(post_id=postId)
+                RecipePost.objects.filter(post_id=postId).update(like_count=len(likes))
                 resultMsg = "레시피 게시글 '좋아요' 등록 성공"
             elif postType == -1:
+                likes = LikeInfo.objects.filter(post_id=postId)
+                PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes))
                 resultMsg = "사진 게시글 '좋아요' 등록 성공"
         except:
             if postType == 1:
