@@ -4,9 +4,11 @@
       color="#f5efe6"
       app dense fixed
     >
-      <v-spacer />
-
-      <v-toolbar-title>레쉽피</v-toolbar-title>
+      <v-img
+        contain
+        src="@/fav.png"
+        max-height="40"
+      ></v-img>
 
       <v-spacer />
       <v-spacer />
