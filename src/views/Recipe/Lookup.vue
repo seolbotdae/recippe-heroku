@@ -53,7 +53,7 @@
               
               <div class="d-flex flex-column">
                 <span class="my-text ml-10 mr-16 pa-4">식재료 및 양</span>
-                <v-btn color="#AEBDCA" small class="ml-11" width="100">
+                <v-btn color="#AEBDCA" small class="ml-10" width="110">
                   재료 계산
                 </v-btn>
               </div>
@@ -73,18 +73,31 @@
             <div class="line mx-5"></div>
           </div>
 
-          <!-- 레시피 설명 입력란 -->
-          <!-- 여기 value를 바꾸시면 됩니다. -->
-          <v-textarea
-            outlined
-            class="mt-5 mx-5"
-            name="name"
-            label="레시피 설명을 입력하세요"
-            placeholder="레시피 설명을 입력하세요"
-			      value="고등어 손질하고 재료 다 넣어서 졸이면 됩니다. ^^"
-            height="300"
-            background-color="white"
-          ></v-textarea>
+          <!-- 레시피 내용 입력란 -->
+          <!-- 여기 레시피 내용을 바꾸시면 됩니다. -->
+          <v-card min-height="100" class="mx-5 mt-5">
+            <v-card-title primary-title>
+              레시피 내용
+            </v-card-title>
+            <v-card-text>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, debitis ipsa incidunt eum dolores qui voluptate labore ipsum reiciendis, a quaerat magnam itaque voluptates aut repellat vel, aliquid provident laudantium!
+              Eius molestiae, corrupti, mollitia et saepe neque numquam aperiam sint reprehenderit unde possimus nostrum, cum ducimus adipisci esse aliquam voluptas nobis. Iste quasi, suscipit fugit architecto eaque sapiente odio asperiores.
+              Praesentium consectetur repellendus magni perspiciatis nobis facere assumenda nemo temporibus odit quam rerum ducimus, aliquam recusandae eum pariatur adipisci unde, laborum cupiditate veritatis modi quidem! Vitae suscipit quibusdam omnis molestiae?
+              Alias quaerat odit placeat atque consectetur nisi. Hic mollitia eaque beatae aut quasi voluptas illo voluptatibus suscipit aperiam deleniti harum exercitationem voluptatum perferendis atque dicta praesentium itaque, quae rerum temporibus!
+              Ratione nesciunt perspiciatis quod error dignissimos minus commodi mollitia assumenda esse ducimus dolorum, hic beatae laboriosam nobis culpa? Eos, minima animi. A hic minima dolore iusto dolores molestias ad fugit!
+              Distinctio illum esse nesciunt eaque error dolor necessitatibus, quia ipsam. Est animi praesentium temporibus quasi eum, adipisci reprehenderit in assumenda quia doloremque itaque, expedita nam rem amet similique quo ea!
+              Commodi neque voluptas nulla nisi asperiores sint sit maxime distinctio doloribus unde! Sapiente impedit odio totam inventore explicabo perferendis sequi quos quo natus exercitationem, nesciunt enim, quas molestiae nostrum earum!
+              Adipisci, eaque, incidunt aliquid necessitatibus expedita, itaque aut reiciendis quibusdam odio nostrum quaerat! Placeat magnam suscipit magni ipsam illum voluptas tenetur ratione voluptates molestias ad iste expedita omnis, assumenda mollitia.
+            </v-card-text>
+          </v-card>
+
+          <!-- 좋아요 숫자 바꿔주세요 -->
+          <div class="d-flex justify-center mt-5">
+            <v-btn text icon x-large color="red">
+              <v-icon>mdi-thumb-up-outline</v-icon>
+              1.5k
+            </v-btn>
+          </div>
 
           <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
