@@ -91,18 +91,6 @@
               </v-col>
             </v-row>
 
-            <!-- 팝업창 임시 -->
-            <v-dialog
-              max-width="500"
-              v-model="popupDialog"
-            >
-              <popup-dialog
-                @hide="hideDialog"
-                @submit="checkDialog"
-              />
-            </v-dialog>
-            <!-- 팝업창 임시 -->
-
             <v-row justify="center">
               <v-card color="#f5efe6" height="50" flat >
                 <!-- 좋아요 버튼 여기 있음 -->
@@ -118,6 +106,26 @@
             <v-row justify="center" class="mt-10 thumbs">
               좋아요 수 {{ requestPhoto.like_count }}
             </v-row>
+
+            <!-- 팝업창 형식 -->
+            <v-dialog
+              max-width="300"
+              v-model="popupDialog"
+            >
+              <popup-dialog
+                headerTitle = "요리 사진 게시글 삭제"
+                btnTitle="취소"
+                btn2Title="삭제"
+                @hide="hideDialog"
+                @submit="checkDialog"
+              >
+                <template v-slot:body>
+                  <!-- 내용이 들어가는 부분입니다아 -->
+                  <div>삭제하시겠습니까?</div>
+                </template>
+              </popup-dialog>
+            </v-dialog>
+            <!-- 팝업창 형식 -->
             
         </v-card>
       </v-col>
@@ -193,15 +201,15 @@ export default{
     }
   },
   methods: {
-    showDialog() {
+    showDialog() { // 팝업창 보이기
       this.popupDialog = true
     },
-    hideDialog() {
+    hideDialog() { // 팝업창 숨기기
       this.popupDialog = false
     },
-    checkDialog() {
-      console.log("check!!");
-      console.log("실행할 함수 돌려돌려 돌림판!");
+    checkDialog() { // 팝업창 버튼 클릭시
+      // 확인 버튼 클릭시 동작 걸기
+      this.deletePhoto();
       this.hideDialog();
     },
     deletePhoto() {
