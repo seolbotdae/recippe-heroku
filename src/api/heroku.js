@@ -130,5 +130,19 @@ export default {
   },
   mailDelete: function(info) {
     return axios.post(BASE_URL+'deletemail/', info);
+  },
+
+  /* Comment */
+  commentAdd: function(info) {
+    return axios.post(BASE_URL+'addcomment/', info);
+  },
+  commentEdit: function(info) {
+    return axios.post(BASE_URL+'updatecomment/', info);
+  },
+  commentDelete: function(info) {
+    return axios.post(BASE_URL+'deletecomment/', info);
+  },
+  commentReport: function(info) {
+    return axios.post(BASE_URL+'reportcomment/', info);
   }
 }
