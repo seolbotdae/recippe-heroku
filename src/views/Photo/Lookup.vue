@@ -65,7 +65,7 @@
                 <v-row justify="left">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
-                    <v-btn v-if="isMine" icon x-large @click="deletePhoto">
+                    <v-btn v-if="isMine" icon x-large @click="showDialog">  <!--@click="deletePhoto"-->
                       <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
@@ -106,21 +106,46 @@
             <v-row justify="center" class="mt-10 thumbs">
               좋아요 수 {{ requestPhoto.like_count }}
             </v-row>
+
+            <!-- 팝업창 형식 -->
+            <v-dialog
+              max-width="300"
+              v-model="popupDialog"
+            >
+              <popup-dialog
+                headerTitle = "요리 사진 게시글 삭제"
+                btnTitle="취소"
+                btn2Title="삭제"
+                @hide="hideDialog"
+                @submit="checkDialog"
+              >
+                <template v-slot:body>
+                  <!-- 내용이 들어가는 부분입니다아 -->
+                  <div>삭제하시겠습니까?</div>
+                </template>
+              </popup-dialog>
+            </v-dialog>
+            <!-- 팝업창 형식 -->
             
         </v-card>
       </v-col>
     </v-row>
-  
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import PopupDialog from '@/components/popup.vue';
 
 export default{
+  components: {
+    PopupDialog
+  },
   data(){
     return{
+      popupDialog: false,
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
@@ -176,6 +201,17 @@ export default{
     }
   },
   methods: {
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false
+    },
+    checkDialog() { // 팝업창 버튼 클릭시
+      // 확인 버튼 클릭시 동작 걸기
+      this.deletePhoto();
+      this.hideDialog();
+    },
     deletePhoto() {
       let vm = this;
       vm.deletePost = true;

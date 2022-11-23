@@ -5,13 +5,14 @@
         <!-- 가장 바깥쪽 카드 -->
         <v-card min-height="1000" color="#f5efe6">
           <!-- 뒤로 돌아가기 버튼 -->
-          <v-btn text to="/photo" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
+          <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
           <!-- 게시글 정보 입력란 -->
           <div class="mt-5">
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex align-center my-text">
-              <span>레시피 제목</span>
+              <span class="mr-16">레시피 제목</span>
+              <v-divider vertical></v-divider>
               <v-text-field
                 name="name"
                 label="레시피 제목"
@@ -23,23 +24,23 @@
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex align-center my-text">
-              <span class="mr-14">레시피 종류</span>
-
-              <dropdown class="my-dropdown-toggle"
+              <span class="mr-16">레시피 종류</span>
+              <v-divider vertical></v-divider>
+              <dropdown class="my-dropdown-toggle ml-15"
               :options="recippeType" 
               :selected="recippeTypeObject" 
               v-on:updateOption="methodToRunOnSelect" 
               :placeholder="'레시피 종류'"
-              :closeOnOutsideClick="boolean">
-              </dropdown>
+              :closeOnOutsideClick="boolean"
+              ></dropdown>
             </div>
 
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex align-center my-text">
-              <span class="mr-14">매운맛 단계</span>
-
-              <dropdown class="my-dropdown-toggle"
+              <span class="mr-16">매운맛 단계</span>
+              <v-divider vertical></v-divider>
+              <dropdown class="my-dropdown-toggle ml-15"
               :options="hotLevel" 
               :selected="hotLevelObject" 
               v-on:updateOption="methodToRunOnSelect" 
@@ -51,8 +52,8 @@
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex wrap align-center ingredients" style="position:relative">
-              <span class="mr-14 my-text">재료 및 양</span>
-
+              <span class="ml-1 mr-14 my-text">식재료 및 양</span>
+              <v-divider vertical class="mr-11"></v-divider>
               <div class=ma-3>
                 <!-- 재료 나타날 v-for -->
 			          <span v-for="item in 30">
