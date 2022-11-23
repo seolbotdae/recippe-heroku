@@ -201,7 +201,7 @@ class ControlMyRecipe_b():
         print("내부 함수 : queryMyRecipeList Start")
 
         try:
-            recipePosts = RecipePost.objects.filter(nickname = nickname, title = keyword)
+            recipePosts = RecipePost.objects.filter(nickname = nickname, title__icontains = keyword)
 
             result, code = self.sendResult("사용자 작성 레시피 게시글 검색 성공.", recipePosts)
             print("내부 함수 : 사용자 작성 레시피 검색 성공")
