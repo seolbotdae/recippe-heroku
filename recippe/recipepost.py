@@ -282,9 +282,7 @@ class ControlComment_b():
         elif result == "댓글 수정 성공":
             print(result)
             return 3
-        elif result == "댓글 삭제 실패.":
-            print("sendResult : 댓글 삭제 실패")
+        elif result == "댓글 삭제 실패":
             return 4
-        elif result == "댓글 삭제 성공.":
-            print("sendResult : 댓글 삭제 성공")
+        elif result == "댓글 삭제 성공":
             return 5
