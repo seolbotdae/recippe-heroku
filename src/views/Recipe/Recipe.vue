@@ -86,7 +86,7 @@
             </dropdown>
           </div>
 
-          <!-- 글쓰기 아이콘 -->
+          <!-- 글쓰기 버튼 -->
           <v-btn fab to="/recipe/create" x-large color="primary" class="write-icon">
             <v-icon dark>mdi-pencil-outline</v-icon>
           </v-btn>

@@ -1,10 +1,63 @@
 <template>
   <v-container>
-    쪽지함 화면
-    <v-btn @click="toLookup" style="width: 100%">쪽지 Lookup 이동</v-btn>
-    <v-btn @click="toCreate" style="width: 100%">쪽지 Create 이동</v-btn>
+    <v-row justify="center">
+      <v-col class="col-xl-8 col-md-10">
+        <v-card min-height="800" color="#f5efe6" class="pa-4">
+          <div class="mailbox-title px-16 py-10">
+            쪽지함
+          </div>
+          <!-- 메일 구분 버튼 -->
+          <v-row>
+            <v-col offset="1" cols="10">
+              <v-card flat color="#f5efe6" class="mb-5">
+                <v-btn color="#E8DFCA" rounded style="width:48%; margin-right:1%">보낸 쪽지</v-btn>
+                <v-btn color="#E8DFCA" rounded style="width:48%; margin-left:1%">받은 쪽지</v-btn>
+              </v-card>
+            </v-col>
+          </v-row>
+
+          <!-- 불러오는 메일 v-for 입니다. -->
+          <v-card min-height="100" color="#fefefe" class="my-5 mx-16" v-for="i in 20">
+            <v-card-title primary-title class="mb-0">
+              영대 근처 맛집
+            </v-card-title>
+            
+            <div class="d-flex align-top justify-space-between mx-4" >
+              <span>설우혁 0203</span>
+              <span>2022/10/04 20:20:20</span>
+            </div>
+            
+            
+          </v-card>
+        </v-card>
+
+        <!-- 쪽지 추가 버튼 -->
+        <v-btn fab x-large color="#E8DFCA" class="write-btn">
+          <v-icon color="#7895B2">mdi-plus</v-icon>
+        </v-btn>
+
+      </v-col>
+    </v-row>
   </v-container>
 </template>
+
+<style>
+
+.mailbox-title{
+  font-size: 2.3em;
+}
+
+.my-text{
+  color:#7895B2;
+}
+
+.write-btn{
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
+}
+
+</style>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
