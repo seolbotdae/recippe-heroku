@@ -1,42 +1,38 @@
 <template>
-  <div>
-    
-    <v-row justify="center">
-      <v-col cols="10">
+  <v-card>
+    <!-- 제목 부분 -->
+    <v-card-title class="justify-center">
         {{ headerTitle }}
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="10">
-        <slot name="body">
+    </v-card-title>
+
+    <!-- 내용 부분 -->
+    <v-card-text class="text-center">
+      <slot name="body">
           {{ defaultContent }}
-        </slot>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="3">
-        <v-btn 
+      </slot>
+    </v-card-text>
+
+    <!-- 버튼 부분 -->
+    <v-card-actions class="justify-center mr-2 pb-4">
+      <v-btn 
+        color="#7895B2"
+        small
+        @click="$emit('hide')"
+      >
+        {{ btnTitle }}
+      </v-btn>
+      <template v-if="btn2">
+        <v-btn
           color="#7895B2"
           small
-          @click="$emit('hide')"
+          @click="$emit('submit')"
         >
-          {{ btnTitle }}
+          {{ btn2Title }}
         </v-btn>
-      </v-col>
-      <v-col  cols="3">
-        <template v-if="btn2">
-          <v-btn
-            color="#7895B2"
-            small
-            @click="$emit('submit')"
-          >
-            {{ btn2Title }}
-          </v-btn>
-        </template>
-      </v-col>
-    </v-row>
+      </template>
+    </v-card-actions>
 
-  </div>
+  </v-card>
 </template>
 
 <script>

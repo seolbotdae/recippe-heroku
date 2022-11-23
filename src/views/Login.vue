@@ -1,5 +1,6 @@
 <template>
   <v-container>
+
     <v-form ref="form">
       <v-row>
         <v-col cols="4" offset="4">
@@ -44,16 +45,42 @@
       </v-row>
 
     </v-form>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        headerTitle = "계정 정보 없음"
+        btnTitle="확인"
+        :btn2=false
+        @hide="hideDialog"
+        @submit="checkDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>아이디 또는 비밀번호를<br> 잘못 입력했습니다.</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+    <!-- 팝업창 형식 -->
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import PopupDialog from '@/components/popup.vue';
 
-export default {
-  data() {
-    return {
+export default{
+  components: {
+    PopupDialog
+  },
+  data(){
+    return{
+      popupDialog: false,
       info: {
         id: null,
         pw: null,
@@ -62,15 +89,26 @@ export default {
     }
   },
   methods: {
-    login() {
+    showDialog(){ // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideDialog(){ // 팝업창 숨기기
+      this.popupDialog = false
+    },
+    checkDialog(){ // 팝업창 버튼 클릭시
+      // 확인 버튼 클릭시 동작 걸기
+      this.hideDialog();
+    },
+    login(){
+      let vm = this;
       const loginInfo = JSON.stringify({
         "nickname": null,
-        "uid": this.info.id,
-        "password": this.info.pw,
+        "uid": vm.info.id,
+        "password": vm.info.pw,
         "email": null,
-        "auto_login": this.info.al,
+        "auto_login": vm.info.al,
       });
-      const auto_login = this.info.al;
+      const auto_login = vm.info.al;
       herokuAPI.login(loginInfo)
         .then(function (response) {
           if(response.status == 200) {
@@ -86,10 +124,13 @@ export default {
           }
         }) 
         .catch(function (e) {
-          console.log(e);
+          if(e.response.status == 400) {
+            console.log("400 error");
+            vm.showDialog();
+          }
         });
     },
-    signup() {
+    signup(){
       router.push({
         path: "/email-auth/0",
       })
