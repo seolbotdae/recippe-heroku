@@ -104,7 +104,7 @@
           <div class="mx-5 line"></div>
           
           <!-- 댓글 v-for 부분입니다. -->
-          <div v-for="item in 20">
+          <div v-for="item in 3">
             <div class="d-flex align-top justify-space-between">
               
               <!-- 사용자 정보 부분입니다 -->
