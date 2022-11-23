@@ -3,18 +3,43 @@
     쪽지함 화면
     <v-btn @click="toLookup" style="width: 100%">쪽지 Lookup 이동</v-btn>
     <v-btn @click="toCreate" style="width: 100%">쪽지 Create 이동</v-btn>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="LookupMail"
+    >
+      <popup-dialog
+        :headerTitle=1
+        btn1Title="확인"
+        :btn2=false
+        @hide="hideDialog"
+        @submit="checkDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>중복된 {{text}} 입니다.</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+    <!-- 팝업창 형식 -->
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import LookupMail from '@/components/lookupMail.vue';
 
-export default {
+export default{
+  components: {
+    LookupMail
+  },
   data () {
     return {
+      LookupMail: false,
       mails: [],
-      mailID: null,
       total_page: null,
     }
   },
@@ -34,6 +59,12 @@ export default {
       })
   },
   methods: {
+    showMail(){ // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideMail(){ // 팝업창 숨기기
+      this.popupDialog = false
+    },
     toLookup() {
       router.push({
         path: "/mail/lookup/",

@@ -55,8 +55,8 @@
       v-model="popupDialog"
     >
       <popup-dialog
-        headerTitle = {{text}} + "중복";
-        btnTitle="확인"
+        :headerTitle=title
+        btn1Title="확인"
         :btn2=false
         @hide="hideDialog"
         @submit="checkDialog"
@@ -84,7 +84,8 @@ export default{
   data() {
     return {
       popupDialog: false,
-      text: "아이디",
+      title: "",
+      text: "",
       info: {
         email: null,
         id: null,
@@ -111,6 +112,7 @@ export default{
       this.hideDialog();
     },
     signup() {
+      let vm = this;
       const signupInfo = JSON.stringify({
         "nickname": this.info.nick,
         "uid": this.info.id,
@@ -131,14 +133,17 @@ export default{
           if(e.response.status == 400) {
             console.log("400 error");
             vm.text = "아이디";
+            vm.title = "아이디 중복";
             vm.showDialog();
           } else if(e.response.status == 401) {
             console.log("401 error");
             vm.text = "닉네임";
+            vm.title = "닉네임 중복";
             vm.showDialog();
           } else if(e.response.status == 402) {
             console.log("402 error");
             vm.text = "아이디, 닉네임";
+            vm.title = "아이디, 닉네임 중복";
             vm.showDialog();
           }
         });

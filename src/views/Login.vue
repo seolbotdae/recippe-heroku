@@ -53,7 +53,7 @@
     >
       <popup-dialog
         headerTitle = "계정 정보 없음"
-        btnTitle="확인"
+        btn1Title="확인"
         :btn2=false
         @hide="hideDialog"
         @submit="checkDialog"

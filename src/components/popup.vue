@@ -2,13 +2,13 @@
   <v-card>
     <!-- 제목 부분 -->
     <v-card-title class="justify-center">
-        {{ headerTitle }}
+      {{ headerTitle }}
     </v-card-title>
 
     <!-- 내용 부분 -->
     <v-card-text class="text-center">
       <slot name="body">
-          {{ defaultContent }}
+        {{ defaultContent }}
       </slot>
     </v-card-text>
 
@@ -19,7 +19,7 @@
         small
         @click="$emit('hide')"
       >
-        {{ btnTitle }}
+        {{ btn1Title }}
       </v-btn>
       <template v-if="btn2">
         <v-btn
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-export default {
+export default{
   name: "Popup",
   data() {
     return {};
@@ -50,7 +50,7 @@ export default {
       type: String,
       default: "내용",
     },
-    btnTitle: {
+    btn1Title: {
       type: String,
       default: "닫기",
     },

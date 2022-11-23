@@ -7,7 +7,7 @@
     >
       <popup-dialog
         headerTitle = "제목 적는곳"
-        btnTitle="팝업창 끄는 버튼"
+        btn1Title="팝업창 끄는 버튼"
         btn2Title="동작하는 버튼"
         @hide="hideDialog"
         @submit="checkDialog"
