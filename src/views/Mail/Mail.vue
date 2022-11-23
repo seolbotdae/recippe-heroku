@@ -9,18 +9,17 @@
           </div>
 
           <!-- 불러오는 메일 v-for 입니다. -->
-          <v-card min-height="100" color="#fefefe" class="my-5 mx-16" v-for="item in mails" :key="item">
+          <v-card min-height="100" color="#fefefe" class="my-5 mx-16" @click="showMail(index)" v-for="(val,index) in mails" :key="val.mail_id">
             <v-card-title primary-title class="mb-0">
-              {{item.title}}
+              {{val.title}}
             </v-card-title>
             
             <div class="d-flex align-top justify-space-between mx-4" >
-              <span>보낸사람:{{item.nickname}}</span>
-              <span>받는사람:{{item.receiver}}</span>
-              <span>{{item.send_time}}</span>
+              <span>보낸사람:{{val.nickname}}</span>
+              <span>받는사람:{{val.receiver}}</span>
+              <span>{{val.send_time}}</span>
             </div>
-            
-            
+
           </v-card>
         </v-card>
 
@@ -34,21 +33,19 @@
 
     <!-- 팝업창 형식 -->
     <v-dialog
-      max-width="300"
+      max-width="500"
       v-model="LookupMail"
     >
-      <popup-dialog
-        :headerTitle=1
+      <lookup-mail
+        :mailTitle=openMail.title
+        :mailSender=openMail.nickname
+        :mailReceiver=openMail.receiver
+        :sendTime=openMail.send_time
+        :mailContents=openMail.contents
         btn1Title="확인"
         :btn2=false
-        @hide="hideDialog"
-        @submit="checkDialog"
-      >
-        <template v-slot:body>
-          <!-- 내용이 들어가는 부분입니다아 -->
-          <div>중복된 {{text}} 입니다.</div>
-        </template>
-      </popup-dialog>
+        @hide="hideMail"
+      />
     </v-dialog>
     <!-- 팝업창 형식 -->
 
@@ -86,6 +83,7 @@ export default{
     return {
       LookupMail: false,
       mails: [],
+      openMail: {},
       total_page: null,
     }
   },
@@ -105,11 +103,12 @@ export default{
       })
   },
   methods: {
-    showMail(){ // 팝업창 보이기
-      this.popupDialog = true
+    showMail(index){ // 팝업창 보이기
+      this.openMail = this.mails[index];
+      this.LookupMail = true;
     },
     hideMail(){ // 팝업창 숨기기
-      this.popupDialog = false
+      this.LookupMail = false;
     },
     toCreate() {
       router.push({

@@ -6,16 +6,19 @@
     </v-card-title>
     
     <v-card-text class="text-end">
-      {{ mailSender }}
+      발신자 : {{ mailSender }}
     </v-card-text>
     <v-card-text class="text-end">
-      {{ sendTime }}
+      수신자 : {{ mailReceiver }}
+    </v-card-text>
+    <v-card-text class="text-end">
+      작성시간 : {{ sendTime }}
     </v-card-text>
 
     <!-- 내용 부분 -->
     <v-card-text class="text-center">
       <slot name="body">
-        {{ mailContent }}
+        {{ mailContents }}
       </slot>
     </v-card-text>
 
@@ -90,11 +93,15 @@ export default{
       type: String,
       default: "작성자",
     },
+    mailReceiver: {
+      type: String,
+      default: "수신자",
+    },
     sendTime: {
       type: String,
       default: "작성 시간",
     },
-    mailContent: {
+    mailContents: {
       type: String,
       default: "내용",
     }
@@ -116,6 +123,7 @@ export default{
     },
     deletePopup(){
       this.titlePopup = "쪽지 삭제";
+      this.content = "쪽지를 삭제하시겠습니까?";
       this.titleBtn1 = "취소";
       this.titleBtn2 = "삭제";
       this.btn2 = true;
