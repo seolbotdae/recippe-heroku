@@ -12,7 +12,8 @@
 
             <!-- value 를 변수로 채워주시면 됩니다. -->
             <div class="px-10 d-flex align-center">
-              <span class="my-text">레시피 제목</span>
+              <span class="my-text mr-16">레시피 제목</span>
+              <v-divider vertical></v-divider>
               <v-text-field
                 name="name"
                 label="레시피 제목"
@@ -26,9 +27,9 @@
 
             <!-- script에 recippeTypeObject 를 바꾸시면 됩니다. -->
             <div class="px-10 d-flex align-center">
-              <span class="mr-14 my-text">레시피 종류</span>
-
-              <dropdown class="my-dropdown-toggle"
+              <span class="mr-16 my-text">레시피 종류</span>
+              <v-divider vertical></v-divider>
+              <dropdown class="my-dropdown-toggle ml-15"
               :options="recippeType" 
               :selected="recippeTypeObject" 
               v-on:updateOption="methodToRunOnSelect" 
@@ -41,9 +42,9 @@
 
             <!-- script에 recippeTypeObject 를 바꾸시면 됩니다. -->
             <div class="px-10 d-flex align-center">
-              <span class="mr-14 my-text">매운맛 단계</span>
-
-              <dropdown class="my-dropdown-toggle"
+              <span class="mr-16 my-text">매운맛 단계</span>
+              <v-divider vertical></v-divider>
+              <dropdown class="my-dropdown-toggle ml-14"
               :options="hotLevel" 
               :selected="hotLevelObject" 
               v-on:updateOption="methodToRunOnSelect" 
@@ -55,8 +56,8 @@
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex wrap align-center ingredients" style="position:relative">
-              <span class="mr-14 my-text">재료 및 양</span>
-
+              <span class="ml-1 mr-14 my-text">식재료 및 양</span>
+              <v-divider vertical class="mr-11"></v-divider>
               <div class=ma-3>
                 <!-- 재료 나타날 v-for -->
                 <!-- 재료를 바꾸시면 됩니다. -->
