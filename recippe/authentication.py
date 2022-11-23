@@ -183,13 +183,12 @@ class ControlSignUp_b():
         nickCheck = User.objects.filter(nickname=nickname)
         
         # 수집된 데이터의 크기에 따라 중복 확인
-        if len(idCheck) > 0 and len(nickCheck) == 0:
-            code = self.sendResult("중복된 아이디")
-        elif len(idCheck) == 0 and len(nickCheck) > 0:
+        if len(idCheck) > 0:
+            if len(nickCheck) > 0: code = self.sendResult("아이디, 닉네임 모두 중복")
+            else: code = self.sendResult("중복된 아이디")
+        elif len(nickCheck) > 0:
             code = self.sendResult("중복된 닉네임")
-        elif len(idCheck) > 0 and len(nickCheck) > 0:
-            code = self.sendResult("아이디, 닉네임 모두 중복")
-        elif len(idCheck) == 0 and len(nickCheck) == 0:
+        else:
             code = self.sendResult("중복되지 않은 아이디, 닉네임")
 
         return code
