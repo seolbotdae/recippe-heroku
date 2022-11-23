@@ -33,6 +33,24 @@ export default {
   refrigeratorEdit: function(info) {
     return axios.post(BASE_URL+'updaterefrigerator/', info);
   },
+  myphotosLookup: function(nickname) {
+    return axios.get(BASE_URL+'inquirymyphotoposts/'+nickname+'/');
+  },
+  myrecipesLookup: function(nickname) {
+    return axios.get(BASE_URL+'inquirymyrecipeposts/'+nickname+'/');
+  },
+  myrecipesSearch: function(info) {
+    return axios.post(BASE_URL+'querymyrecipeposts/', info);
+  },
+  myrecipesSort: function(info) {
+    return axios.post(BASE_URL+'arrangemyrecipeposts/', info);
+  },
+  mylikeposts: function(nickname, postType) {
+    return axios.get(BASE_URL+'inquirymylikeposts/'+nickname+'/'+postType+'/');
+  },
+  mycommentposts: function(nickname) {
+    return axios.get(BASE_URL+'inquirymycommentposts/'+nickname+'/');
+  },
 
   /* RecipePost */
   recipeList: function(page) {
