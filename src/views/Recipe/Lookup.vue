@@ -126,15 +126,15 @@
               <div class="d-flex my-3 mr-7">
                 <div>
 
-                  <v-btn text icon small v-if="!is_owner">
+                  <v-btn @click="reportComment" text icon small v-if="!is_owner">
                     <v-icon>mdi-alert-outline</v-icon>
                   </v-btn>
                   
                   <div v-if="is_owner">
-                    <v-btn text icon small color="blue">
+                    <v-btn @click="editComment" text icon small color="blue">
                       <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
-                    <v-btn text icon small color="red">
+                    <v-btn @click="deleteComment" text icon small color="red">
                       <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
                   </div>
@@ -150,7 +150,7 @@
           <!-- 댓글 등록 부분입니다. -->
           <div class="d-flex align-top jusify-left my-comment-write">
             <div class="mx-7 my-3 my-comment-commenter ">
-              <v-btn color="#AEBDCA">등록</v-btn>
+              <v-btn @click="addComment" color="#AEBDCA">등록</v-btn>
             </div>
 
           <!-- 댓글 부분 댓글 내용부분입니다. -->
@@ -204,6 +204,7 @@
 </style>
 
 <script>
+import heroku from '@/api/heroku.js';
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
 
@@ -326,6 +327,66 @@ export default {
     methodToRunOnSelect(payload) {
       this.object = payload;
     },
+    addComment() {
+      const NewComment = JSON.stringify({
+        "comment_id" : 0,
+	      "comments" : "web test",
+	      "comment_time" : 0,
+	      "nickname" : "test",
+	      "post_id" : 2
+      });
+      herokuAPI.commentAdd(NewComment)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 등록 성공");
+          }
+        })
+    },
+    editComment() {
+      const EditComment = JSON.stringify({
+        "comment_id" : 14,
+	      "comments" : "web test edit",
+	      "comment_time" : 0,
+	      "nickname" : "test",
+	      "post_id" : 2
+      });
+      herokuAPI.commentEdit(EditComment)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 수정 성공");
+          }
+        })
+    },
+    deleteComment() {
+      const deleteInfo = JSON.stringify({
+        "comment_id": 14,
+        "nickname": "test"
+      });
+      herokuAPI.commentDelete(deleteInfo)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 삭제 성공");
+          }
+        })
+    },
+    reportComment() {
+      const reportInfo = JSON.stringify({
+	      "contents" : "web comment test",
+	      "post_type" : -1,
+	      "post_id" : 2,
+	      "reporter" : "test"
+      })
+      herokuAPI.commentReport(reportInfo)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 신고 성공");
+          }
+        })
+    }
   }
 }
 </script>
