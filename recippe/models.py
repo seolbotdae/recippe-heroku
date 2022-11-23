@@ -27,7 +27,7 @@ class User(models.Model):
 class PhotoPost(models.Model):
     post_id = models.AutoField(primary_key=True, null=False)
     nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="author", related_name="photopost_user")
-    photo_link = models.CharField(max_length=200, null=False)
+    photo_link = models.TextField(null=False)
     like_count = models.IntegerField(null=False, default=0)
     upload_time = models.DateTimeField(auto_now=False, auto_now_add=True, null=False)
 
