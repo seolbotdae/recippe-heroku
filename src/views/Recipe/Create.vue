@@ -5,7 +5,7 @@
         <!-- 가장 바깥쪽 카드 -->
         <v-card min-height="1000" color="#f5efe6">
           <!-- 뒤로 돌아가기 버튼 -->
-          <v-btn text to="/photo" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
+          <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
           <!-- 게시글 정보 입력란 -->
           <div class="mt-5">
             <div class="line mx-5"></div>
