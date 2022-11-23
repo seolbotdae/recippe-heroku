@@ -211,19 +211,19 @@ export default {
   components: {
     'dropdown': dropdown,
   },
-  // mounted() {
-  //   let vm = this;
-  //   herokuAPI.recipeList(1)
-  //     .then(function(response) {
-  //       console.log("리스트 응답 온거", response);
-  //       if(response.status == 200) {
-  //           console.log("조회 성공");
-  //           for(let i = 0; response.data.recipeList[i] != null; i++) {
-  //             vm.recipes.push(response.data.recipeList[i]);
-  //           }
-  //         }
-  //     })
-  // },
+  mounted() {
+    let vm = this;
+    herokuAPI.recipeList(1)
+      .then(function(response) {
+        console.log("리스트 응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            for(let i = 0; response.data.recipeList[i] != null; i++) {
+              vm.recipes.push(response.data.recipeList[i]);
+            }
+          }
+      })
+  },
   methods: {
     toLookup(recipeID) {
       router.push({

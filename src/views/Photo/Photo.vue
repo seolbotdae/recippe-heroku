@@ -4,16 +4,16 @@
       <v-col class="col-xl-8 col-md-10">
         <v-card min-height="800" color="#f5efe6">
 
-          <!-- 정렬 아이콘 -->
+          <!-- 정렬 기준 -->
           <v-row>
-            <v-col offset="10">
-              <span class="sort-base">Edit</span>
-            
-              <v-btn @click="sortPhotoList" class="ml-5">
-                <v-icon >
-                  mdi-format-list-bulleted
-                </v-icon>
-              </v-btn>
+            <v-col offset="9">
+              <dropdown class="my-dropdown-toggle my-5 "
+              :options="search_standard" 
+              :selected="search_object" 
+              v-on:updateOption="methodToRunOnSelect" 
+              :placeholder="'검색 기준'"
+              :closeOnOutsideClick="boolean">
+            </dropdown>
             </v-col>
           </v-row>
 
@@ -44,10 +44,14 @@
                     ></v-img>
                   </v-col>
                 </v-row>
-                  
+                
                 
                 
               </v-card>
+
+              <!-- 페이지 이동 -->
+              <v-pagination v-model="page" length="5" class="pb-10">
+              </v-pagination>
             </v-col>
           </v-row>
         </v-card>
@@ -69,12 +73,20 @@
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import dropdown from 'vue-dropdowns';
 
 export default {
   data() {
     return {
       photo: [],
       photoID: null,
+      search_standard: [
+          {name: '최근 순'},
+          {name: '좋아요 순'}
+      ],
+      search_object: {
+        name: '정렬 기준',
+      },
     };
   },
   mounted() {
@@ -89,6 +101,9 @@ export default {
             }
           }
       })
+  },
+  components: {
+    'dropdown': dropdown,
   },
   methods: {
     toLookup(photoID) {
@@ -113,7 +128,10 @@ export default {
           }
         })
       this.recipes = list;
-    }
+    },
+    methodToRunOnSelect(payload) {
+      this.object = payload;
+    },
   }
 }
 </script>
