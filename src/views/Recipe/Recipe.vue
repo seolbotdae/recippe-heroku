@@ -5,7 +5,7 @@
         <!-- 요리 직접 검색과 카테고리 선택 -->
         <v-card min-height="100" color="#f5efe6" class="mb-3">
           <!-- 요리 검색 윗줄 -->
-          <div class="find-cook flex align-end mb-2">
+          <div class="find-cook flex align-end mb-2" v-if="!categoryBoolean">
             <dropdown class="my-dropdown-toggle my-0 ml-5"
               :options="search_standard" 
               :selected="search_object" 
@@ -22,13 +22,52 @@
               검색
             </v-btn>
           </div>
-          <div class="black-line mx-3"></div>
+          <div class="black-line mx-3" v-if="!categoryBoolean"></div>
           <!-- 요리 검색 밑줄 -->
-          <div class="category-search-dropdown mt-2">
-            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean">카테고리 검색</v-btn>
+          <div class="category-search-dropdown mt-2 flex-column">
+            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean" v-if=!categoryBoolean>카테고리 검색</v-btn>
+            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean" v-if=categoryBoolean>키워드 검색</v-btn>
             <!-- 카테고리 슬라이드 -->
-            <v-card height="200" color="#E8DFCA" v-if=categoryBoolean>
+            <v-card fill-height color="#E8DFCA" v-if=categoryBoolean>
+              <v-card min-height="100" class="my-5 mx-5">
+                <v-card-title primary-title class="my-text ml-5">
+                  재료
+                </v-card-title>
+                <v-radio-group v-model="value" row class="mt-0 ml-10">
+                  <v-radio label="육류" value="육류"></v-radio>
+                  <v-radio label="어류" value="어류"></v-radio>
+                  <v-radio label="채소류" value="채소류"></v-radio>
+                  <v-radio label="과일류" value="과일류"></v-radio>
+                </v-radio-group>
+              </v-card>
 
+              <v-card min-height="100" class="my-5 mx-5">
+                <v-card-title primary-title class="my-text ml-5">
+                  조리법
+                </v-card-title>
+                <v-radio-group v-model="value" row class="mt-0 ml-10">
+                  <v-radio label="구이" value="구이"></v-radio>
+                  <v-radio label="볶음" value="볶음"></v-radio>
+                  <v-radio label="조림" value="조림"></v-radio>
+                  <v-radio label="튀김" value="튀김"></v-radio>
+                </v-radio-group>
+              </v-card>
+
+              <v-card min-height="100" class="my-5 mx-5">
+                <v-card-title primary-title class="my-text ml-5">
+                  매운맛 단계
+                </v-card-title>
+                <v-radio-group v-model="value" row class="mt-0 ml-10">
+                  <v-radio label="1단계" value="1단계"></v-radio>
+                  <v-radio label="2단계" value="2단계"></v-radio>
+                  <v-radio label="3단계" value="3단계"></v-radio>
+                  <v-radio label="4단계" value="4단계"></v-radio>
+                  <v-radio label="5단계" value="5단계"></v-radio>
+                </v-radio-group>
+              </v-card>
+              <div class="d-flex justify-end ma-5">
+                <v-btn color="#7895B2">검색</v-btn>
+              </div>
             </v-card>
           </div>
         </v-card>
@@ -118,6 +157,10 @@
   right: 5%;
 }
 
+.my-text{
+  color:#7895B2;
+}
+
 </style>
 
 
@@ -168,19 +211,19 @@ export default {
   components: {
     'dropdown': dropdown,
   },
-  mounted() {
-    let vm = this;
-    herokuAPI.recipeList(1)
-      .then(function(response) {
-        console.log("리스트 응답 온거", response);
-        if(response.status == 200) {
-            console.log("조회 성공");
-            for(let i = 0; response.data.recipeList[i] != null; i++) {
-              vm.recipes.push(response.data.recipeList[i]);
-            }
-          }
-      })
-  },
+  // mounted() {
+  //   let vm = this;
+  //   herokuAPI.recipeList(1)
+  //     .then(function(response) {
+  //       console.log("리스트 응답 온거", response);
+  //       if(response.status == 200) {
+  //           console.log("조회 성공");
+  //           for(let i = 0; response.data.recipeList[i] != null; i++) {
+  //             vm.recipes.push(response.data.recipeList[i]);
+  //           }
+  //         }
+  //     })
+  // },
   methods: {
     toLookup(recipeID) {
       router.push({
@@ -232,6 +275,7 @@ export default {
     methodToRunOnSelect(payload) {
       this.object = payload;
     },
+    // 카테고리 검색 슬라이드 버튼 함수
     methodToChangeCategoryBoolean() {
       if (this.categoryBoolean == true) {
         this.categoryBoolean = false
