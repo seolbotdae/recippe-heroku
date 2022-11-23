@@ -124,7 +124,7 @@ class SignUpAPI(APIView):
         elif overlapRes == 1:
             return Response(overlapRes, status=status.HTTP_401_UNAUTHORIZED)
         elif overlapRes == 2:
-            return Response(overlapRes, status=status.HTTP_400_BAD_REQUEST)
+            return Response(overlapRes, status=status.HTTP_402_PAYMENT_REQUIRED)
         elif overlapRes == 3:
             serializer = UserInfoSerializer(data=request)
 
