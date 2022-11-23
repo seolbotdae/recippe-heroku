@@ -114,7 +114,7 @@
             >
               <popup-dialog
                 headerTitle = "요리 사진 게시글 삭제"
-                btnTitle="취소"
+                btn1Title="취소"
                 btn2Title="삭제"
                 :btn2=true
                 @hide="hideDialog"
