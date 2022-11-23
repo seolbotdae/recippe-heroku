@@ -2,36 +2,6 @@ from django.urls import path, include
 
 from .views import *
 
-'''
-221105  로그인 과정 위해 login/ 링크 추가, 
-221107  이메일 과정 위해 fistcheck/, secondcheck/ 링크 추가, 
-221105  자동로그인 해제 위해 cancelAutoLogin/ 링크 추가,
-221106  최종 회원가입 위해 signup/ 링크 추가,
-221107  비밀번호 변경 위해 changepw/ 링크 추가,
-221109  냉장고 조회 위해 inquiryrefrigerator/ 링크 추가
-221114  레시피 조회, 등록, 수정, 삭제 링크 추가
-221115  냉장고 재료 삭제 링크 추가
-        냉장고 재료 변경 링크 추가
-        사용자 작성 사진 게시글 조회 링크 추가
-221116  사용자 레시피 게시글 조회 링크 추가
-        사용자 레시피 게시글 검색 링크 추가
-        레시피 게시글 신고 링크 추가
-        레시피 없는 재료 보여주기 링크 추가
-        사용자 작성 레시피 조회, 검색, 정렬 링크 추가
-        사용자 좋아요 게시글 링크 추가
-        사용자 댓글단 게시글 링크 추가
-        레시피 남은 재료 계산하기 링크 추가
-        레시피 게시글 검색, 정렬 링크 추가
-        레기피 게시글 좋아요 링크 추가
-221117
-        레시피 댓글 추가, 수정, 삭제 링크 추가
-        레시피 댓글 신고 링크 추가
-221117  사진 게시판 조회 링크 추가
-        사진 게시글 조회 링크 추가
-        사진 게시글 등록 링크 추가
-        사진 게시글 삭제, 좋아요, 정렬, 신고 링크 추가
-        쪽지함 조회 링크 추가 
-'''
 
 urlpatterns = [
     # Authentication
@@ -94,6 +64,4 @@ urlpatterns = [
     path("inquiremail/<int:mail_id>/", InquiryMailAPI.as_view()),
     path("insertmail/", InsertMailAPI.as_view()),
     path("deletemail/", DeleteMailAPI.as_view()),
-
-
 ]

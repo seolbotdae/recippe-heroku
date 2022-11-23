@@ -2,21 +2,17 @@ from .models import *
 
 from .serializers import *
 
-'''
-221116  없는 재료 보여주기 추가
-        남은 재료 계산하기 추가
-'''
+
 
 class ControlIngredients_b():
     def requestUnExistIngredients(self, nickname, postId):
         try:
+            # 레시피 재료의 이름들, 냉장고(사용자 보유 재료)의 이름들
             recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId).values_list('name', flat=True)
             refrigerator = Refrigerator.objects.filter(nickname=nickname).values_list('name', flat=True)
             ingredientsList = []
-
-            print(recipeIngredients)
-            print(refrigerator)
             
+            # 레시피의 재료중 냉장고에 없는것만 리스트에 저장
             for ingre in recipeIngredients:
                 if ingre not in refrigerator:
                     ueIngre = Recipe_Ingredients.objects.get(post_id=postId, name=ingre)
@@ -33,12 +29,11 @@ class ControlIngredients_b():
 
     def decreaseAmmounts(self, nickname, postId):
         try:
+            # 레시피 재료의 이름, 총 양들, 냉장고의 이름, 총 양들
             recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId).values_list('name', 'amount').order_by('name')
             refrigerator = Refrigerator.objects.filter(nickname=nickname).values_list('name', 'amount').order_by('name')
 
-            print(recipeIngredients)
-            print(refrigerator)
-
+            # 재료 감산 후 업데이트
             for idx in range(len(recipeIngredients)):
                 Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx][0]).update(amount=refrigerator[idx][1]-recipeIngredients[idx][1])
 

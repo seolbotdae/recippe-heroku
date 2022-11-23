@@ -2,18 +2,13 @@ from .models import *
 
 from .serializers import *
 
-'''
-221117  사진 게시판 class 추가
-        사진 게시글 조회 추가
-        사진 게시글 등록 추가
-        사진 게시글 삭제, 좋아요, 정렬, 신고 추가
-'''
 
 class ControlPhotoList_b():
     def requestPhotoList(self, page):
         try:
+            # 사진 게시판 최근 순으로 조회
             posts = PhotoPost.objects.order_by('upload_time').reverse()
-            postlist = posts[0+20*(page-1):20+20*(page-1)]
+            postlist = posts[0+20*(page-1):20+20*(page-1)] # 1페이지당 20개
             result, photoList = self.sendResult("사진 게시판 조회 성공", postlist)
             pageCnt = int(len(posts)/20) + 1
         except:
@@ -23,6 +18,7 @@ class ControlPhotoList_b():
         return result, photoList, pageCnt
 
     def arrangePhotoList(self, arrangeBy, page):
+        # 정렬 기준에 따라 다른 처리
         if arrangeBy == "최근 순":
             try:
                 posts = PhotoPost.objects.filter().order_by('upload_time').reverse()
@@ -57,6 +53,7 @@ class ControlPhotoList_b():
 class ControlPhoto_b():
     def requestPhoto(self, postId, nickname):
         try:
+            # postId 에 맞는 게시글과, 사용자가 좋아요를 누른 게시글인지 확인
             post = PhotoPost.objects.get(post_id = postId)
             serializer = MyPhotoPostSerializer(post)
             result, photoPost = self.sendResult("사진 게시글 조회 성공", serializer.data)
@@ -72,6 +69,7 @@ class ControlPhoto_b():
         return result, photoPost, likeInfo
 
     def insertPhoto(self, newPhoto):
+        # 사진 게시글 정보 생성 후 저장
         photo = MyPhotoPostSerializer(data=newPhoto)
         if photo.is_valid():
             photo.save()
@@ -82,6 +80,8 @@ class ControlPhoto_b():
         return result, newPhoto
 
     def deletePhoto(self, nickname, postId):
+        # 사용자의 게시글 중에서 postId 에 해당하는 게시글 삭제
+        # 이때 게시글과 관련된 좋아요와 신고 정보도 같이 삭제
         try:
             deleteTarget = PhotoPost.objects.get(nickname=nickname, post_id=postId)
             deleteTarget.delete()

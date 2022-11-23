@@ -1,14 +1,8 @@
 from rest_framework.generics import get_object_or_404
-
 from django.core.mail import EmailMessage
-from django.db.models import Q
-
 from .models import *
-
 from .serializers import *
-
 import random
-
 import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -18,6 +12,7 @@ from googleapiclient import errors
 from email.message import EmailMessage
 import base64
 
+# Gmail API 를 이용한 메일보내기
 def gmail_authenticate():
     SCOPES = ['https://mail.google.com/']
     creds = None
@@ -32,7 +27,6 @@ def gmail_authenticate():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
-
 def create_message(sender, to, subject, message_text):
     message = EmailMessage()
     message["From"] = sender
@@ -40,7 +34,6 @@ def create_message(sender, to, subject, message_text):
     message["Subject"] = subject
     message.set_content(message_text)
     return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode('utf8')}
-    
 def send_message(service, user_id, message):
     try:
         message = service.users().messages().send(userId=user_id, body=message).execute()
@@ -49,83 +42,90 @@ def send_message(service, user_id, message):
     except errors.HttpError as error:
         print('An error occurred: %s' % error)
 
-'''
-221105 로그인 class 추가
-221105 이메일인증 class 추가
-221105 로그아웃 class 추가
-221106 이메일인증 finishCheck 추가, 이메일전송코드 추가
-221106 최종 회원가입 class 추가
-221107 비밀번호 변경 class 추가
-'''
+
+
+        
 
 class ControlLogin_b():
     def checkLogin(self, id, pw):
         try:
+            # DB 에서 id 로 등록된 유저 있는지 확인
             dbCheck = User.objects.get(uid=id)
             serializer = UserInfoSerializer(dbCheck)
-            print(serializer)
+            print("Userinfo : ", serializer)
 
+            # 가져온 데이터의 pw 가 입력한 pw 와 같은지 확인
             if serializer.data['password'] == pw:
                 code, serializer = self.sendResult("로그인 성공", dbCheck)
             else:
-                code, serializer = self.sendResult("로그인 실패_비번", dbCheck)
+                code, serializer = self.sendResult("잘못된 비밀번호", None)
         except:
-            code, serializer = self.sendResult("로그인 실패_아이디", None)
+            # DB 에 id 로 등록된 유저 없음
+            code, serializer = self.sendResult("존재하지 않는 아이디", None)
+            
         return code, serializer
 
     def sendResult(self, result, userInfo=None):
-        if result == "로그인 성공":
-            print(result, userInfo)
-            return 2, userInfo
-        elif result == "로그인 실패_비번":
+        if result == "잘못된 비밀번호":
             print(result, userInfo)
             return 0, userInfo
-        elif result == "로그인 실패_아이디":
+        elif result == "존재하지 않는 아이디":
             print(result, userInfo)
             return 1, userInfo
+        elif result == "로그인 성공":
+            print(result, userInfo)
+            return 2, userInfo
 
 class ControlLogout_b():
     def cancelAutoLogin(self, nickname):
-        # 앞의 nickname은 db의 nickname 뒤의 nickname은 매개변수 
+        # 입력된 nickname 을 닉네임으로 갖는 유저 정보 DB 에서 가져옴 
         dbCheck = get_object_or_404(User, nickname = nickname)
-        print("첫번째 디비 체크")
-        dbCheck.auto_login = 0
+        print("자동로그인 해제")
+        dbCheck.auto_login = 0 # 유저의 자동로그인 해제
         dbCheck.save()
 
+        # 제대로 해제되었는지 확인
         dbCheck = get_object_or_404(User, nickname = nickname)
-        print("두번쨰 디비 체크")
+        print("해제 체크")
         if dbCheck.auto_login == 0:
-            return self.sendResult("자동로그인 해제 성공")
+            return self.sendResult("로그아웃 성공")
         else:
-            return self.sendResult("자동로그인 해제 실패")
+            return self.sendResult("로그아웃 실패")
         
     def sendResult(self, result):
-        if result == "자동로그인 해제 성공":
-            print(result)
-            return 1
-        elif result == "자동로그인 해제 실패":
+        if result == "로그아웃 실패":
             print(result)
             return 0
+        elif result == "로그아웃 성공":
+            print(result)
+            return 1
 
 class ControlEmailVerification_b():
     def startCheck(self, request):
+        # 6자리 난수 생성
         code = random.randrange(100000, 1000000)
         request['code'] = code
         print(request['code'])
 
+        # 임시로 이메일과 난수코드 저장
+        # 저장 전 이미 기존에 이메일 전송을 요청한 적이 있는지 확인
         tempEmail = TempEmail.objects.filter(email=request['email'])
         if len(tempEmail) == 0:
+            # 요청한적 없다면 저장
             tempEmail = TempEmail.objects.create(email = request['email'], code = request['code'])
             TempEmail.save(tempEmail)
         else:
+            # 요청한적 있다면 난수코드만 업데이트
             tempEmail.update(code=request['code'])
-            
+
+        # 제대로 저장됐는지 확인   
         if TempEmail.objects.get(email = request['email']).email == request['email']:
             return "이메일 등록 성공"
         else:
             return "이메일 등록 실패"
         
     def sendCode(self, email, code):
+        # Gamil API 를 이용한 이메일 발송
         service = gmail_authenticate()
         message = create_message("레쉽피", email, "테스트", str(code))
         result =  send_message(service, "recippesg@gmail.com", message)
@@ -137,22 +137,24 @@ class ControlEmailVerification_b():
     def finishCheck(self, request):
         try:
             print(request['email'])
+            # DB 에 저장했던 이메일과 난수코드 가져옴
             codeCheck = TempEmail.objects.get(email = request['email'])
 
+            # 유저가 입력한 코드와 비교
             if codeCheck.code == request['code']:
-                result = self.sendResult("이메일 인증 최종 완료")
+                code = self.sendResult("이메일 인증 최종 완료")
                 codeCheck.delete()
 
                 deleteCheck = TempEmail.objects.filter(email=request['email'])
                 if len(deleteCheck) > 0:
-                    result = self.sendResult("알 수 없는 오류")
-                return result
+                    code = self.sendResult("알 수 없는 오류")
+                return code
             else:
-                result = self.sendResult("잘못된 코드")
-                return result
+                code = self.sendResult("잘못된 코드")
+                return code
         except:
-            result = self.sendResult("존재하지 않는 이메일 입력")
-            return result
+            code = self.sendResult("존재하지 않는 이메일 입력")
+            return code
             
     def sendResult(self, result):
         if result == "이메일 전송 실패":
@@ -171,24 +173,26 @@ class ControlEmailVerification_b():
             print(result)
             return 4
         else:
-            print(result)
+            print("알 수 없는 오류")
             return 6
 
 class ControlSignUp_b():
     def checkOverlap(self, id, nickname):
+        # 입력된 아이디, 닉네임 별로 DB 에 저장되어있는 데이터 수집
         idCheck = User.objects.filter(uid=id)
         nickCheck = User.objects.filter(nickname=nickname)
-
+        
+        # 수집된 데이터의 크기에 따라 중복 확인
         if len(idCheck) > 0 and len(nickCheck) == 0:
-            result = self.sendResult("중복된 아이디")
+            code = self.sendResult("중복된 아이디")
         elif len(idCheck) == 0 and len(nickCheck) > 0:
-            result = self.sendResult("중복된 닉네임")
+            code = self.sendResult("중복된 닉네임")
         elif len(idCheck) > 0 and len(nickCheck) > 0:
-            result = self.sendResult("아이디, 닉네임 모두 중복")
+            code = self.sendResult("아이디, 닉네임 모두 중복")
         elif len(idCheck) == 0 and len(nickCheck) == 0:
-            result = self.sendResult("중복되지 않은 아이디, 닉네임")
+            code = self.sendResult("중복되지 않은 아이디, 닉네임")
 
-        return result
+        return code
 
     def sendResult(self, result):
         if result == "중복된 아이디":
@@ -206,10 +210,12 @@ class ControlSignUp_b():
 
 class ControlEdittingInfo_b():
     def changePassword(self, nickname, pw):
+        # 기존 유저 정보 들고와서 비밀번호 변경 후 저장
         beforePw = User.objects.get(nickname=nickname)
         beforePw.password = pw
         beforePw.save()
 
+        # 제대로 저장됐는지 확인
         afterPw = User.objects.get(nickname=nickname)
         if afterPw.password == pw:
             result = self.sendResult("비밀번호 변경 성공")
@@ -227,20 +233,21 @@ class ControlEdittingInfo_b():
         except:
             return 0
         
-    # 닉네임 중복시 -1 원래 닉네임과 동일 할 시 0 성공시 1
     def changeNickname(self, new_nickname, id):
-        # 오류
+        # 중복된 닉네임
         if self.checkOverlap(new_nickname) == 1:
             result = self.sendResult("중복되는 닉네임이 있습니다.")
-        # 된거
+        # 중복되지 않음
         elif self.checkOverlap(new_nickname) == 0:
             try:
+                # 변경된 닉네임 저장
                 userObject = User.objects.filter(uid = id)
                 old_nickname = userObject[0].nickname
 
                 user = User.objects.create(nickname=new_nickname, uid=userObject[0].uid, password=userObject[0].password, email=userObject[0].email, auto_login=userObject[0].auto_login)
                 User.save(user)
 
+                # 기존의 닉네임을 사용하던 기존의 데이터들도 모두 변경
                 objectList = [Comment, LikeInfo, Mail, PhotoPost, RecipePost, Refrigerator, Report]
                 try:
                     object = get_object_or_404(User, nickname = old_nickname)
@@ -257,7 +264,6 @@ class ControlEdittingInfo_b():
         
         return result
 
-    #  2-> 중복, 3-> 변경 실패, 4-> 디비 오류, 5->변경 성공
     def sendResult(self, result):
         if result == "비밀번호 변경 실패":
             return 0

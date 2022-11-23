@@ -1,22 +1,13 @@
-from rest_framework.generics import get_object_or_404
-
 from .models import *
-
 from .serializers import *
 
-'''
-221109  레시피 class 추가
-221114  레시피 수정 함수 추가
-221116  레시피 검색, 정렬 함수 추가
-221117  레시피 게시판 댓글 작성 추가
-        레시피 게시판 댓글 수정 추가
-        레시피 게시판 댓글 삭제 추가
-'''
 
 class ControlRecipeList_b():
     def requestRecipeList(self, page):
         try:
+            # 기본 기준인 최근 순으로 데이터 가져옴
             posts = RecipePost.objects.order_by('upload_time').reverse()
+            # 1페이지당 20개
             postlist = posts[0+20*(page-1):20+20*(page-1)]
             result, recipeList = self.sendResult("레시피 게시판 조회 성공", postlist)
             pageCnt = int(len(posts)/20) + 1
@@ -27,8 +18,10 @@ class ControlRecipeList_b():
         return result, recipeList, pageCnt
 
     def queryRecipeList(self, searchType, categories, keywordType, keyword, page):
+        # 검색 방법에 따라 다른 절차
         if searchType == "카테고리":
             try:
+                # 카테고리들을 가져온 후 DB 에서 검색
                 categories = categories.split("-")
                 posts = RecipePost.objects.filter(category__in = categories).order_by('upload_time').reverse()
                 postlist = posts[0+20*(page-1):20+20*(page-1)]
@@ -38,8 +31,10 @@ class ControlRecipeList_b():
                 result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
                 pageCnt = 0
         elif searchType == "타이핑":
+            # 타이핑 검색 시 기준 선택 가능
             if keywordType == "요리 이름":
                 try:
+                    # 이름이 포함 + 최근순
                     posts = RecipePost.objects.filter(title__icontains=keyword).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
@@ -49,6 +44,7 @@ class ControlRecipeList_b():
                     pageCnt = 0
             elif keywordType == "작성자":
                 try:
+                    # 작성자가 작성함 + 최근순
                     posts = RecipePost.objects.filter(nickname=keyword).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
@@ -58,6 +54,7 @@ class ControlRecipeList_b():
                     pageCnt = 0
             elif keywordType == "재료":
                 try:
+                    # 재료를 포함함 + 최근순
                     ids = Recipe_Ingredients.objects.filter(name=keyword).values_list('post_id', flat=True)
                     posts = RecipePost.objects.filter(post_id__in = ids).order_by('upload_time').reverse()
                     postlist = posts[0+20*(page-1):20+20*(page-1)]
@@ -70,6 +67,7 @@ class ControlRecipeList_b():
         return result, recipeList, pageCnt
                 
     def arrangeRecipeList(self, arrangeBy, page):
+        # 정렬 기준에 따라 다른 처리
         if arrangeBy == "최근 순":
             try:
                 posts = RecipePost.objects.filter().order_by('upload_time').reverse()
@@ -117,12 +115,15 @@ class ControlRecipeList_b():
 class ControlRecipe_b():
     def requestRecipe(self, postId, nickname):
         print(postId)
+        # 요청한 Id 에 맞는 레시피 게시글 조회
         try:
             post = RecipePost.objects.get(post_id = postId)
             result, recipePost = self.sendResult("레시피 게시글 조회 성공", post)
+            # 조회수 1 증가
             current_views = post.views
             post.views = current_views+1
             RecipePost.save(post)
+            # 사용자가 좋아요를 누른 게시글인지 확인
             isLiked = LikeInfo.objects.filter(post_id = postId, nickname = nickname, post_type=1)
             print(isLiked)
             if len(isLiked) == 0:
@@ -138,14 +139,17 @@ class ControlRecipe_b():
         recipe = RecipeListSerializer(data=newRecipe)
         print(recipe)
 
+        # 레시피 게시글 저장
         if recipe.is_valid():
             recipe.save()
             posts = RecipePost.objects.filter(nickname=recipe.data['nickname']).order_by('upload_time').reverse()
             nr = posts[0]
-
+            
+            # 레시피 게시글을 저장할 때에는 레시피에 포함된 식재료들도(Recipe_Ingredients) 저장을 해주어야함
             if newRecipe['Recipe_Ingredients'] != None:
                 recipe_ingredients = newRecipe['Recipe_Ingredients']
                 for ingre in recipe_ingredients:
+                    # 저장된 레시피 게시글의 Id 가져오기
                     postid = nr.post_id
                     ingre['post_id'] = postid
                     ingre = RecipeIngredientsSerializer(data=ingre)
@@ -160,11 +164,13 @@ class ControlRecipe_b():
 
     def updateRecipe(self, updatedRecipe):
         try:
+            # 레시피 게시글의 정보 업데이트
             RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(title=updatedRecipe['title'])
             RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(category=updatedRecipe['category'])
             RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(degree_of_spicy=updatedRecipe['degree_of_spicy'])
             RecipePost.objects.filter(post_id=updatedRecipe['post_id']).update(description=updatedRecipe['description'])
 
+            # 기존의 재료들 삭제하고 새로 업데이트된 재료들을 저장
             Recipe_Ingredients.objects.filter(post_id=updatedRecipe['post_id']).delete()
             update_ingredients = updatedRecipe['Recipe_Ingredients']
             for uingre in update_ingredients:
@@ -180,6 +186,7 @@ class ControlRecipe_b():
 
     def deleteRecipe(self, nickname, postId):
         try:
+            # 레시피 게시글 정보 가져와서 삭제 + 관련된 좋아요, 신고 정보도 삭제 + 재료의 경우 자동으로 삭제됨
             deleteTarget = RecipePost.objects.get(nickname=nickname, post_id=postId)
             deleteTarget.delete()
             likeInfos = LikeInfo.objects.filter(post_id=postId, post_type=1)
@@ -220,59 +227,35 @@ class ControlRecipe_b():
             return 7
 
 class ControlComment_b():
-    '''
-    댓글 등록 메소드
-    comment: Comment
-
-    return int
-    '''
     def insertComment(self, comment):
-        print("내부 함수 : insertComment Start")
         try:            
+            # 댓글 정보 생성 후 저장
             comment = CommentSerializer(data = comment)
             comment.is_valid()
             comment.save()
 
-            code = self.sendResult("댓글 등록 성공.")
-            print("내부 함수 : 댓글 등록 성공")
+            code = self.sendResult("댓글 등록 성공")
         except:
-            code = self.sendResult("댓글 등록 실패.")
-            print("내부 함수 : 댓글 등록 실패")
+            code = self.sendResult("댓글 등록 실패")
         
         return code
 
-
-    '''
-    게시글 정보 업데이트 메소드
-    comment: Comment
-
-    return int
-    '''
     def updateComment(self, comment):
-        print("내부 함수 : updateComment Start")
         try:            
+            # 기존의 댓글 정보 DB 에서 가져온 후 내용 수정
             Comment.objects.filter(
                 comment_id = comment['comment_id']
             ).update(comments = comment['comments'])
 
-            code = self.sendResult("댓글 수정 성공.")
-            print("내부 함수 : 댓글 수정 성공")
+            code = self.sendResult("댓글 수정 성공")
         except:
-            code = self.sendResult("댓글 수정 실패.")
-            print("내부 함수 : 댓글 수정 실패")
+            code = self.sendResult("댓글 수정 실패")
         
         return code
 
-    '''
-    댓글 삭제 메소드
-    nickname: String
-    commentId: int
-
-    return int
-    '''
     def deleteComment(self, nickname, commentId):
-        print("내부 함수 : deleteComment Start")
         try:            
+            # 기존 정보 가져온 후 삭제
             d = Comment.objects.get(
                 nickname = nickname,
                 comment_id = commentId
@@ -280,32 +263,24 @@ class ControlComment_b():
             
             d.delete()
 
-            code = self.sendResult("댓글 삭제 성공.")
-            print("내부 함수 : 댓글 삭제 성공")
+            code = self.sendResult("댓글 삭제 성공")
         except:
-            code = self.sendResult("댓글 삭제 실패.")
-            print("내부 함수 : 댓글 삭제 실패")
+            code = self.sendResult("댓글 삭제 실패")
         
         return code 
 
-    '''
-    sendResult
-    result: int
-
-    void-> 바꿈
-    '''
     def sendResult(self, result):
-        if result == "댓글 등록 실패.":
-            print("sendResult : 댓글 등록 실패")
+        if result == "댓글 등록 실패":
+            print(result)
             return 0
-        elif result == "댓글 등록 성공.":
-            print("sendResult : 댓글 등록 성공")
+        elif result == "댓글 등록 성공":
+            print(result)
             return 1
-        elif result == "댓글 수정 실패.":
-            print("sendResult : 댓글 수정 실패")
+        elif result == "댓글 수정 실패":
+            print(result)
             return 2
-        elif result == "댓글 수정 성공.":
-            print("sendResult : 댓글 수정 성공")
+        elif result == "댓글 수정 성공":
+            print(result)
             return 3
         elif result == "댓글 삭제 실패.":
             print("sendResult : 댓글 삭제 실패")
@@ -313,5 +288,3 @@ class ControlComment_b():
         elif result == "댓글 삭제 성공.":
             print("sendResult : 댓글 삭제 성공")
             return 5
-        else:
-            return 6

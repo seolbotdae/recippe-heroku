@@ -1,10 +1,6 @@
 from django.db import models
 
-'''
-수정일 : 220929
-전반적인 데이터 모델 작업
-사실상 새로운 모델
-'''
+
 # 데이터
 # 식재료 데이터
 class Ingredients(models.Model):

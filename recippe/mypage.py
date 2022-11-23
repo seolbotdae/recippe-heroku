@@ -1,55 +1,29 @@
 from .models import *
-# subquery 임포트
-from django.db.models import Subquery
 
 from .serializers import *
-# json 임포트
-import json
-'''
-221107  냉장고 조회 class 추가
-221109  냉장고 조회 함수 작업중
-221114  냉장고 조회 함수 작업 완료
-        냉장고 재료 추가 함수 작업중
-221115  냉장고 재료 추가 함수 작업 완료.
-        냉장고 재료 삭제 함수 작업 완료.
-        냉장고 재료 변경 함수 작업 완료.
-        사용자 작성 사진 게시글 조회 완료.
-221116  사용자 작성 레시피 게시글 조회 완료.
-        사용자 작성 레시피 게시글 검색, 정렬 완료.
-        사용자 좋아요 게시글 조회 완료.
-        사용자 댓글단 게시글 조회 완료.
 
-'''
+
 
 class ControlRefrigerator_b():
-    '''
-    냉장고 조회 함수
-
-    parameter       nickname:String 
-    return type     List<Refrigerator>
-    로 변경해야함.  
-    '''
     def requestRefrigerator(self, nickname):
-        print("내부 함수 : request Refrigerator start")
         try:
+            # 요청받은 닉네임의 사용자가 등록한 식재료 DB 에서 가져옴
             ingredientsList = Refrigerator.objects.filter(nickname = nickname)
 
             if ingredientsList.exists():
-                result, code = self.sendResult("냉장고 조회 성공.", ingredientsList)
-                print("내부 함수 : 냉장고 조회 성공")
+                result, code = self.sendResult("냉장고 조회 성공", ingredientsList)
             else:
-                result, code = self.sendResult("냉장고에 식재료가 없습니다.", None)
-                print("내부 함수 : 냉장고 식재료 없음")
+                result, code = self.sendResult("냉장고에 식재료가 없음", None)
         except:
-            result, code = self.sendResult("냉장고 조회 실패.", None)
-            print("내부 함수 : 냉장고 조회 실패")
+            result, code = self.sendResult("냉장고 조회 실패", None)
+
         return result, code
 
     def insertRefrigerator(self, refrigerator):
-        print(f"내부 함수 : insert Refrigerator start")
         userRequest = refrigerator
 
         try:
+            # 받은 식재료 정보 생성 후 저장
             refriObject = Refrigerator.objects.create(amount = userRequest['amount'],
                 expiry_date = userRequest['expiry_date'],
                 name = Ingredients.objects.get(name = userRequest['name']),
@@ -58,42 +32,26 @@ class ControlRefrigerator_b():
                 
             refriObject.save()
 
-            result, code = self.sendResult("냉장고 재료 추가 성공.", None)
-            print("내부 함수 : 냉장고 정보 추가 성공")
+            result, code = self.sendResult("냉장고 재료 추가 성공", None)
         except:
-            result, code = self.sendResult("냉장고 재료 추가 실패.", None)
-            print("내부 함수 : 냉장고 정보 추가 실패")
+            result, code = self.sendResult("냉장고 재료 추가 실패", None)
+
         return result, code
 
-    '''
-    냉장고 삭제 함수
-
-    parameter       id:Integer
-    return type     None
-    로 변경해야함.
-    '''
-    def deleteRefrigerator(self, id, nickname, name):
-        print("내부 함수 : deleteRefrigerator Start")
+    def deleteRefrigerator(self, id):
         try:
+            # id 를 갖는 재료 삭제
             deleteTarget = Refrigerator.objects.get(id = id)
             deleteTarget.delete()
-            result, code = self.sendResult("냉장고 재료 삭제에 성공했습니다.", None)
-            print("내부 함수 : 냉장고 재료 삭제 성공")
+            result, code = self.sendResult("냉장고 재료 삭제 성공", None)
         except:
-            result, code = self.sendResult("냉장고 재료 삭제에 실패했습니다.", None)
-            print("내부 함수 : 냉장고 재료 삭제 실패")
+            result, code = self.sendResult("냉장고 재료 삭제 실패", None)
 
         return result, code
-    '''
-    냉장고 변경 함수
 
-    parameter       refrigerator:Refrigerator
-    return type     None
-    로 변경해야함.
-    '''
     def updateRefrigerator(self, refrigerator):
-        print("내부 함수 : updateRefrigerator Start")
         try:
+            # 수정된 정보들로 업데이트
             test = Refrigerator.objects.get(id = refrigerator["id"])
             Refrigerator.objects.filter(id = refrigerator["id"]).update(
                 name = Ingredients.objects.get(name= refrigerator['name']),
@@ -102,192 +60,132 @@ class ControlRefrigerator_b():
                 expiry_date = refrigerator["expiry_date"]
             )
 
-            result, code = self.sendResult("냉장고 재료 변경 성공.", None)
-            print("내부 함수 : 냉장고 재료정보 변경 성공")
+            result, code = self.sendResult("냉장고 재료 변경 성공", None)
         except:
-            result, code = self.sendResult("냉장고 재료 변경 실패.", None)
-            print("내부 함수: 냉장고 재료정보 변경 실패")
+            result, code = self.sendResult("냉장고 재료 변경 실패", None)
 
         return result, code
 
     def sendResult(self, result, refrigerator):
-        if result == "냉장고 조회 실패.":
-            print("sendResult : 냉장고 조회 실패")
+        if result == "냉장고 조회 실패":
+            print(result)
             return refrigerator, 0
-        elif result == "냉장고에 식재료가 없습니다.":
-            print("sendResult : 냉장고 식재료 없음")
+        elif result == "냉장고에 식재료가 없음":
+            print(result)
             return refrigerator, 1
-        elif result == "냉장고 조회 성공.":
-            print("sendResult : 냉장고 조회 성공")
+        elif result == "냉장고 조회 성공":
+            print(result)
             return refrigerator, 2
-
-        elif result == "냉장고 재료 추가 실패.":
-            print("sendResult : 냉장고 재료 추가 실패")
+        elif result == "냉장고 재료 추가 실패":
+            print(result)
             return refrigerator, 3
-        elif result == "냉장고 재료 추가 성공.":
-            print("sendResult : 냉장고 재료 추가 성공")
+        elif result == "냉장고 재료 추가 성공":
+            print(result)
             return refrigerator, 4
-
-        elif result == "냉장고 재료 삭제에 실패했습니다.":
-            print("sendResult : 냉장고 재료 삭제 실패")  
+        elif result == "냉장고 재료 삭제 실패":
+            print(result)
             return refrigerator, 5
-        elif result == "냉장고 재료 삭제에 성공했습니다.":
-            print("sendResult : 냉장고 재료 삭제 성공")
+        elif result == "냉장고 재료 삭제 성공":
+            print(result)
             return refrigerator, 6
-
-        elif result == "냉장고 재료 변경 실패.":
-            print("sendResult : 냉장고 재료 변경 실패")
+        elif result == "냉장고 재료 변경 실패":
+            print(result)
             return refrigerator, 7
-        elif result == "냉장고 재료 변경 성공.":
-            print("sendResult : 냉장고 재료 변경 성공")
+        elif result == "냉장고 재료 변경 성공":
+            print(result)
             return refrigerator, 8
-        
-        else:
-            print("sendResult : 알 수 없는 오류")
-            return refrigerator, 9
 
 class ControlMyPhoto_b():
     def requestMyPhotoList(self, nickname):
-        print("내부 함수 : requestMyPhotoList Start")
-
         try:
+            # 사용자의 닉네임으로 등록된 게시글 조회
             photoList = PhotoPost.objects.filter(nickname = nickname)
         
-            result, code = self.sendResult("사용자 작성 사진 게시글 조회 성공.", photoList)
-            print("내부 함수 : 사용자 작성 사진 게시글 조회 성공")
+            result, code = self.sendResult("사용자 작성 사진 게시글 조회 성공", photoList)
         except:
-            result, code = self.sendResult("사용자 작성 사진 게시글 조회 실패.", None)
-            print("내부 함수 : 사용자 작성 사진 게시글 조회 실패.")
+            result, code = self.sendResult("사용자 작성 사진 게시글 조회 실패", None)
 
         return result, code 
     
     def sendResult(self, result, photoList):
-        if result == "사용자 작성 사진 게시글 조회 실패.":
-            print("sendResult : 사진게시글 조회 실패 응답")
+        if result == "사용자 작성 사진 게시글 조회 실패":
+            print(result)
             return photoList, 0
-        elif result == "사용자 작성 사진 게시글 조회 성공.":
-            print("sendResult : 사용자 작성 사진 게시글 조회 성공")
+        elif result == "사용자 작성 사진 게시글 조회 성공":
+            print(result)
             return photoList, 1
-        else:
-            print("sendResult : 뭔 일인교..?")
-            return photoList, 2
 
 class ControlMyRecipe_b():
-    '''
-    return type     List<RecipePost>
-    parameter       nickname:String
-    시퀀스 12
-    '''
     def requestMyRecipeList(self, nickname):
-        print("내부 함수 : requestMyRecipeList Start")
-
         try:
+            # 사용자의 닉네임으로 등록된 게시글 조회
             recipePosts = RecipePost.objects.filter(nickname = nickname)
 
-            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 성공.", recipePosts)
-            print("내부 함수 : 사용자 작성 레시피 게시글 조회 성공")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 성공", recipePosts)
         except:
-            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 실패.", None)
-            print("내부 함수: 사용자 작성 레시피 게시글 조회 실패")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 조회 실패", None)
             
         return result, code
 
-    '''
-    return type     List<RecipePost>
-    parameter       nickname:String, keyword:String
-    시퀀스 13
-    '''
     def queryMyRecipeList(self, nickname, keyword):
-        print("내부 함수 : queryMyRecipeList Start")
-
         try:
+            # 사용자의 닉네임으로 등록되어있으며, 키워드를 타이틀에 포함하는 게시글 검색
             recipePosts = RecipePost.objects.filter(nickname = nickname, title__icontains = keyword)
 
-            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 성공.", recipePosts)
-            print("내부 함수 : 사용자 작성 레시피 검색 성공")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 성공", recipePosts)
         except:
-            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 실패.", None)
-            print("내부 함수 : 사용자 작성 레시피 검색 실패")
+            result, code = self.sendResult("사용자 작성 레시피 게시글 검색 실패", None)
         
         return result, code
-    
-    '''
-    return type     List<RecipePost>
-    parameter       nickname:String, arrangeBy:String
-    시퀀스 14
-    정렬 기준 : 좋아요 순, 최신글 순, 시간 대비 누적 조회수 순
-    ''' 
+
     def arrangeMyRecipeList(self, nickname, arrangeBy):
-        print("내부 함수 : arrangeMyRecipeList Start")
+        # 정렬 기준에 따라 다른 처리 + 사용자의 닉네임으로 등록된 게시글들만을 조회
         if arrangeBy == "좋아요 순":
             try:
                 orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-like_count')
-                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 좋아요 순 정렬 성공")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공", orderedPosts)
             except:
-                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 좋아요 순 정렬 실패")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패", orderedPosts)
         elif arrangeBy == "최신글 순":
             try:
                 orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-upload_time')
                 print(orderedPosts)
-                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 최신글 순 정렬 성공")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공", orderedPosts)
             except:
-                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 최신글 순 정렬 실패")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패", orderedPosts)
         elif arrangeBy == "조회수 순":
             try:
                 orderedPosts = RecipePost.objects.filter(nickname = nickname).order_by('-views')
-                result, code = self.sendResult("사용자 작성 레시피 정렬 성공.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 조회수 순 정렬 성공")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 성공", orderedPosts)
             except:
-                result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", orderedPosts)
-                print("내부 함수 : 사용자 작성 레시피 조회수 순 정렬 실패")
+                result, code = self.sendResult("사용자 작성 레시피 정렬 실패", orderedPosts)
         else:
-            result, code = self.sendResult("사용자 작성 레시피 정렬 실패.", None)
-            print("내부 함수 : 사용자 작성 레시피 정렬 기준 오류")
+            result, code = self.sendResult("사용자 작성 레시피 정렬 실패", None)
     
         return result, code
-    '''
-    return type     response
-    parameter       result:Integer, recipeList:List<RecipePost>
-    '''
+
     def sendResult(self, result, recipeList):
-        if result == "사용자 작성 레시피 게시글 조회 실패.":
-            print("sendResult : 사용자 작성 레시피 게시글 조회 실패")
+        if result == "사용자 작성 레시피 게시글 조회 실패":
+            print(result)
             return recipeList, 0
-        elif result == "사용자 작성 레시피 게시글 조회 성공.":
-            print("sendResult : 사용자 작성 레시피 게시글 조회 성공")
+        elif result == "사용자 작성 레시피 게시글 조회 성공":
+            print(result)
             return recipeList, 1
-        
-        elif result == "사용자 작성 레시피 게시글 검색 실패.":
-            print("sendResult : 사용자 작성 레시피 게시글 검색 실패")
+        elif result == "사용자 작성 레시피 게시글 검색 실패":
+            print(result)
             return recipeList, 2
-        elif result == "사용자 작성 레시피 게시글 검색 성공.":
-            print("sendResult : 사용자 작성 레시피 게시글 검색 성공")
+        elif result == "사용자 작성 레시피 게시글 검색 성공":
+            print(result)
             return recipeList, 3
-
-        elif result == "사용자 작성 레시피 정렬 실패.":
-            print("sendResult : 사용자 작성 레시피 정렬 실패")
+        elif result == "사용자 작성 레시피 정렬 실패":
+            print(result)
             return recipeList, 4
-        elif result == "사용자 작성 레시피 정렬 성공.":
-            print("sendResult : 사용자 작성 레시피 정렬 성공")
+        elif result == "사용자 작성 레시피 정렬 성공":
+            print(result)
             return recipeList, 5
-
-        else:
-            print("sendResult : 알 수 없는 오류")
-            return None, 6
             
 class ControlPost_b():
-    '''
-    nickname: String
-    postType: Int
-    List<Post>
-    '''
     def requestMyLikeList(self, nickname, postType):
-        print("내부 함수 : requestMyLikeList Start")
-        
         # 레시피 좋아요 찾는 분기
         if postType == 1:
             try:
@@ -298,11 +196,9 @@ class ControlPost_b():
                     targetList.append(i.post_id)
                 
                 likeRecipes = RecipePost.objects.filter(post_id__in = targetList)
-                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likeRecipes)
-                print("내부 함수 : 사용자 좋아요 레시피 게시글 조회 성공")
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공", likeRecipes)
             except:
-                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
-                print("내부 함수 : 사용자 좋아요 레시피 게시글 조회 실패")
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패", None)
         # 사진 좋아요 찾는 분기
         elif postType == -1:
             try:
@@ -313,62 +209,43 @@ class ControlPost_b():
                     targetList.append(i.post_id)
 
                 likePhotos = PhotoPost.objects.filter(post_id__in = targetList)
-                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공.", likePhotos)
-                print("내부 함수 : 사용자 좋아요 사진 게시글 조회 성공")
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 성공", likePhotos)
             except:
-                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
-                print("내부 함수 : 사용자 좋아요 사진 게시글 조회 실패")
+                result, code = self.sendResult("사용자 좋아요 게시글 조회 실패", None)
         # 아무 분기도 아닌 경우
         else:
-            result, code = self.sendResult("사용자 좋아요 게시글 조회 실패.", None)
-            print("내부 함수 : 사용자 postType 오류")
+            result, code = self.sendResult("사용자 좋아요 게시글 조회 실패", None)
        
         return result, code
-    '''
-    nickname: String
-    List<RecipePost>
-    '''
+
     def requestMyCommentList(self, nickname):
-        print("내부 함수 : requestMyCommentList Start")
         try:
+            # 댓글 작성한 시간을 역순으로 하여 조회
             postTarget = Comment.objects.filter(nickname=nickname).order_by("-comment_time").values("post_id")
             targetList = []
 
             for i in postTarget:
                 targetList.append(i['post_id'])
 
+            # 댓글들의 데이터에 포함된 post_id 로 댓글이 작성된 게시글 리스트들 조회
             commentPosts = RecipePost.objects.filter(post_id__in = targetList)
             
-            result, code = self.sendResult("사용자 댓글단 게시글 조회 성공.", commentPosts)
-            print("내부 함수 : 사용자 댓글단 게시글 조회 성공")
-
+            result, code = self.sendResult("사용자 댓글단 게시글 조회 성공", commentPosts)
         except:
-            result, code = self.sendResult("사용자 댓글단 게시글 조회 실패.", None)
-            print("내부 함수 : 사용자 댓글단 게시글 조회 실패")
+            result, code = self.sendResult("사용자 댓글단 게시글 조회 실패", None)
 
         return result, code
-    '''
-    result : int
-    postList: List<Post>
-    '''
+
     def sendResult(self, result, postList):
-
-        if result == "사용자 좋아요 게시글 조회 실패.":
-            print("sendResult : 사용자 좋아요 게시글 조회 실패")
+        if result == "사용자 좋아요 게시글 조회 실패":
+            print(result)
             return postList, 0
-        elif result == "사용자 좋아요 게시글 조회 성공.":
-            print("sendResult : 사용자 좋아요 게시글 조회 성공")
+        elif result == "사용자 좋아요 게시글 조회 성공":
+            print(result)
             return postList, 1
-
-        elif result == "사용자 댓글단 게시글 조회 실패.":
-            print("sendResult : 사용자 댓글단 게시글 조회 실패")
+        elif result == "사용자 댓글단 게시글 조회 실패":
+            print(result)
             return postList, 2
-        elif result == "사용자 댓글단 게시글 조회 성공.":
-            print("sendResult : 사용자 댓글단 게시글 조회 성공")
+        elif result == "사용자 댓글단 게시글 조회 성공":
+            print(result)
             return postList, 3
-
-        else:
-            print("sendResult : 알 수 없는 오류")
-            return postList, 4
-
-
