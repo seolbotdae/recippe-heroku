@@ -48,22 +48,49 @@
         </v-col>
       </v-row>
     </v-form>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        headerTitle = {{text}} + "중복";
+        btnTitle="확인"
+        :btn2=false
+        @hide="hideDialog"
+        @submit="checkDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>중복된 {{text}} 입니다.</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+    <!-- 팝업창 형식 -->
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import PopupDialog from '@/components/popup.vue';
 
-export default {
+export default{
+  components: {
+    PopupDialog
+  },
   data() {
     return {
+      popupDialog: false,
+      text: "아이디",
       info: {
         email: null,
         id: null,
         nick: null,
         pw: null,
-        pwcheck: null
+        pwcheck: null,
       }
     }
   },
@@ -73,6 +100,16 @@ export default {
     localStorage.removeItem("email");
   },
   methods: {
+    showDialog(){ // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideDialog(){ // 팝업창 숨기기
+      this.popupDialog = false
+    },
+    checkDialog(){ // 팝업창 버튼 클릭시
+      // 확인 버튼 클릭시 동작 걸기
+      this.hideDialog();
+    },
     signup() {
       const signupInfo = JSON.stringify({
         "nickname": this.info.nick,
@@ -91,7 +128,19 @@ export default {
           }
         }) 
         .catch(function (e) {
-          console.log(e);
+          if(e.response.status == 400) {
+            console.log("400 error");
+            vm.text = "아이디";
+            vm.showDialog();
+          } else if(e.response.status == 401) {
+            console.log("401 error");
+            vm.text = "닉네임";
+            vm.showDialog();
+          } else if(e.response.status == 402) {
+            console.log("402 error");
+            vm.text = "아이디, 닉네임";
+            vm.showDialog();
+          }
         });
     },
   }
