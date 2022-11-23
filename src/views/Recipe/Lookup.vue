@@ -92,17 +92,81 @@
           </v-card>
 
           <!-- 좋아요 숫자 바꿔주세요 -->
-          <div class="d-flex justify-center mt-5">
+          <div class="d-flex justify-center my-5">
             <v-btn text icon x-large color="red">
               <v-icon>mdi-thumb-up-outline</v-icon>
               1.5k
             </v-btn>
           </div>
 
-          <div class="d-flex justify-end mr-5 pb-5">
-            <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
-            <v-btn color="#AEBDCA" class="mr-2">등록하기</v-btn>
+          <!-- 댓글 개수 바꿔주세요 -->
+          <div class="my-text ml-7">댓글 3개</div>
+          <div class="mx-5 line"></div>
+          
+          <!-- 댓글 v-for 부분입니다. -->
+          <div v-for="item in 20">
+            <div class="d-flex align-top justify-space-between">
+              
+              <!-- 사용자 정보 부분입니다 -->
+              <div class="d-flex align-top jusify-left">
+                <div class="mx-7 my-3 my-comment-commenter">
+                  <h3 class="my-text">고독한 미식가</h3>
+                  <p class="ma-0 my-text">2022/10/28 18:03:12</p>
+                </div>
+  
+              <!-- 댓글 부분 댓글 내용부분입니다. -->
+                <div class="my-comment my-text ma-3">
+                  음식이 친절하고 사장님이 맛있어요 ^^
+                </div>
+              </div>
+              
+              
+  
+              <!-- is_owner 변수 사용 예시같이 작성자일 경우 주의 버튼 삭제, 연필과 쓰레기통만 뜨게 해주세요. 밑에 있으니 바꿔보세요.-->
+              <div class="d-flex my-3 mr-7">
+                <div>
+
+                  <v-btn text icon small v-if="!is_owner">
+                    <v-icon>mdi-alert-outline</v-icon>
+                  </v-btn>
+                  
+                  <div v-if="is_owner">
+                    <v-btn text icon small color="blue">
+                      <v-icon>mdi-pencil-outline</v-icon>
+                    </v-btn>
+                    <v-btn text icon small color="red">
+                      <v-icon>mdi-trash-can-outline</v-icon>
+                    </v-btn>
+                  </div>
+                  
+                </div>
+              </div>
+  
+              
+            </div>
+            <div class="mx-5 line"></div>  
           </div>
+
+          <!-- 댓글 등록 부분입니다. -->
+          <div class="d-flex align-top jusify-left my-comment-write">
+            <div class="mx-7 my-3 my-comment-commenter ">
+              <v-btn color="#AEBDCA">등록</v-btn>
+            </div>
+
+          <!-- 댓글 부분 댓글 내용부분입니다. -->
+            <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
+              <div class="my-text mb-0 ma-3">
+                <v-textarea
+                  outlined
+                  background-color="white"
+                  label="댓글을 입력해 주세요."
+                  class="mb-0"
+                >
+                </v-textarea>
+              </div>
+            </v-card>
+          </div>
+          
         </v-card>
       </v-col>
     </v-row>
@@ -127,6 +191,16 @@
 .my-text{
   color: #42688e;
 }
+
+.my-comment-commenter{
+  width: 200px;
+}
+
+.my-comment{
+  max-width:500px;
+}
+
+
 </style>
 
 <script>
@@ -157,6 +231,7 @@ export default {
         name: '3단계',
       },
       hotLevel:4,
+      is_owner:false,
     }
   },
   components: {
