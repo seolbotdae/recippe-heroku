@@ -5,15 +5,19 @@
       app dense fixed
     >
 
-      <div style="width:100%" class="d-flex justify-space-between">
-        <v-img
-          contain
-          max-width="40"
-          src="@/fav.png"
-        ></v-img>
-
-        <v-btn @click="showDialog">로그아웃</v-btn>
-      </div>
+      <!-- 윗단 -->
+      <v-col offset="2" cols="8">
+        <div style="width:100%" class="d-flex justify-space-between align-center">
+          <v-img
+            contain
+            max-width="40"
+            src="@/fav.png"
+            class="ml-9"
+          ></v-img>
+  
+          <v-btn text @click="showDialog" class="mr-6 my-text">로그아웃</v-btn>
+        </div>
+      </v-col>
       
 
       <v-spacer />
@@ -21,15 +25,19 @@
       <template v-slot:extension>
         <v-row>
           <v-spacer />
+          <v-divider vertical inset style="height:20px"></v-divider>
           <v-col>
-            <v-btn to="/recipe" style="width: 100%">레시피 게시판</v-btn>
+            <v-btn to="/recipe" text style="width: 100%" class="my-text my-vertical-line">레시피 게시판</v-btn>
           </v-col>
+          <v-divider vertical inset style="height:20px"></v-divider>
           <v-col>
-            <v-btn to="/photo" style="width: 100%">요리 사진 게시판</v-btn>
+            <v-btn to="/photo" text style="width: 100%" class="my-text my-vertical-line">요리 사진 게시판</v-btn>
           </v-col>
+          <v-divider vertical inset style="height:20px"></v-divider>
           <v-col>
-            <v-btn to="/mypage" style="width: 100%">마이페이지</v-btn>
+            <v-btn to="/mypage" text style="width: 100%" class="my-text my-vertical-line">마이페이지</v-btn>
           </v-col>
+          <v-divider vertical inset style="height:20px"></v-divider>
           <v-spacer />
         </v-row>
       </template>
@@ -45,7 +53,7 @@
       v-model="popupDialog"
     >
       <popup-dialog
-        headerTitle = "로그아웃"
+        headerTitle="로그아웃"
         btnTitle="취소"
         btn2Title="확인"
         @hide="hideDialog"
@@ -61,6 +69,17 @@
 
   </v-card>
 </template>
+
+<style scoped>
+.my-text{
+  color: #7895B2;
+}
+
+.my-vertical-line{
+  margin-top: -15px;
+  color: #7895B2;
+}
+</style>
 
 <script>
 import router from '@/router/index.js';
