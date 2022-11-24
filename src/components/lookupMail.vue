@@ -68,6 +68,7 @@
 
 <script>
 import PopupDialog from '@/components/popup.vue';
+import herokuAPI from '@/api/heroku.js';
 
 export default{
   name: "LookupMail",
@@ -88,6 +89,10 @@ export default{
     mailTitle: {
       type: String,
       default: "쪽지 제목",
+    },
+    mailID: {
+      type: Number,
+      default: "쪽지 id",
     },
     mailSender: {
       type: String,
@@ -115,11 +120,15 @@ export default{
     },
     checkDialog(){ // 팝업창 버튼 클릭시
       // 확인 버튼 클릭시 동작 걸기
-      // 쪽지 삭제 로직
+      this.deleteMail();
       this.hideDialog();
     },
-    deleteMail(){
-      console.log("메일 삭제 로직");
+    deleteFailPopup(){
+      this.titlePopup = "쪽지 삭제 실패";
+      this.content = "쪽지 삭제에 실패했습니다.";
+      this.titleBtn1 = "확인";
+      this.btn2 = false;
+      this.showDialog();
     },
     deletePopup(){
       this.titlePopup = "쪽지 삭제";
@@ -128,6 +137,42 @@ export default{
       this.titleBtn2 = "삭제";
       this.btn2 = true;
       this.showDialog();
+    },
+    emitMethod(){
+      this.$emit('update');
+      this.$emit('hide');
+    },
+    deleteMail(){
+      let vm = this;
+      console.log("메일 삭제 로직");
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+      const deleteTarget = JSON.stringify (
+        {
+          "mail_id" : this.mailID,
+          "nickname" : UserInfo.nickname,
+          "receiver" : "bye",
+          "title" : "web test",
+          "contents" : "web test",
+          "send_time" : "",
+          "sender_check" : 0,
+          "receiver_check" : 0
+        }
+      );
+      herokuAPI.mailDelete(deleteTarget) 
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("if 응답 정보", response.data);
+            vm.emitMethod();
+          }
+        })
+        .catch(function (e) {
+          if(e.response.status == 400) {
+            console.log("400 error");
+            vm.deletePopup();
+            vm.showDialog();
+          }
+        });
     },
   }
 };
