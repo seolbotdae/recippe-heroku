@@ -4,11 +4,14 @@
       color="#f5efe6"
       app dense fixed
     >
-      <v-img
-        contain
-        src="@/fav.png"
-        max-height="40"
-      ></v-img>
+      <v-btn to="/">
+        <v-img
+          contain
+          src="@/fav.png"
+          max-height="40"
+          to="/"
+        />
+      </v-btn>
 
       <v-spacer />
       <v-spacer />

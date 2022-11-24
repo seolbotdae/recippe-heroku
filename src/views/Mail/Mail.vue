@@ -9,7 +9,7 @@
           </div>
 
           <!-- 불러오는 메일 v-for 입니다. -->
-          <v-card min-height="100" color="#fefefe" class="my-5 mx-16" @click="showMail(index)" v-for="(val,index) in mails" :key="val.mail_id">
+          <v-card min-height="100" color="#fefefe" class="my-5 mx-16" @click="showMailLookup(index)" v-for="(val,index) in mails" :key="val.mail_id">
             <v-card-title primary-title class="mb-0">
               {{val.title}}
             </v-card-title>
@@ -24,14 +24,14 @@
         </v-card>
 
         <!-- 쪽지 추가 버튼 -->
-        <v-btn fab x-large color="#E8DFCA" class="write-btn">
+        <v-btn fab x-large color="#E8DFCA" class="write-btn" @click="showMailCreate()">
           <v-icon color="#7895B2">mdi-plus</v-icon>
         </v-btn>
 
       </v-col>
     </v-row>
 
-    <!-- 팝업창 형식 -->
+    <!-- 쪽지 열람 팝업창 -->
     <v-dialog
       max-width="500"
       v-model="LookupMail"
@@ -45,11 +45,20 @@
         :mailContents=openMail.contents
         btn1Title="확인"
         :btn2=false
-        @hide="hideMail"
+        @hide="hideMailLookup"
         @update="updateList"
       />
     </v-dialog>
-    <!-- 팝업창 형식 -->
+
+    <!-- 쪽지 작성 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="CreateMail"
+    >
+      <lookup-mail @hide="hideMailCreate">
+        <slot name="body" />
+      </lookup-mail>
+    </v-dialog>
 
   </v-container>
 </template>
@@ -76,6 +85,7 @@
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 import LookupMail from '@/components/lookupMail.vue';
+import CreateMail from '@/components/createMail.vue';
 
 export default{
   components: {
@@ -84,6 +94,7 @@ export default{
   data () {
     return {
       LookupMail: false,
+      CreateMail: false,
       mails: [],
       openMail: {},
       total_page: null,
@@ -105,12 +116,18 @@ export default{
       })
   },
   methods: {
-    showMail(index){ // 팝업창 보이기
+    showMailLookup(index){ // 팝업창 보이기
       this.openMail = this.mails[index];
       this.LookupMail = true;
     },
-    hideMail(){ // 팝업창 숨기기
+    hideMailLookup(){ // 팝업창 숨기기
       this.LookupMail = false;
+    },
+    showMailCreate(){
+      this.CreateMail = true;
+    },
+    hideMailCreate(){ // 팝업창 숨기기
+      this.CreateMail = false;
     },
     updateList(){ // 쪽지 목록 업데이트
       this.$router.go();
