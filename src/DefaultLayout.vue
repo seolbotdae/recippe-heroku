@@ -13,8 +13,9 @@
             max-width="40"
             src="@/fav.png"
             class="ml-9"
-          ></v-img>
-  
+          >
+            <v-btn plain retain-focus-on-click v-ripple="false" to="/recipe"></v-btn>
+          </v-img>
           <v-btn text @click="showDialog" class="mr-6 my-text">로그아웃</v-btn>
         </div>
       </v-col>
