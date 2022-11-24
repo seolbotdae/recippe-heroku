@@ -122,7 +122,7 @@ export default{
             localStorage.setItem("UserInfo", dataString);
             router.push({name: 'home'});
           }
-        }) 
+        })
         .catch(function (e) {
           if(e.response.status == 400) {
             console.log("400 error");

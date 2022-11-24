@@ -38,6 +38,7 @@
     >
       <lookup-mail
         :mailTitle=openMail.title
+        :mailID=openMail.mail_id
         :mailSender=openMail.nickname
         :mailReceiver=openMail.receiver
         :sendTime=openMail.send_time
@@ -45,6 +46,7 @@
         btn1Title="확인"
         :btn2=false
         @hide="hideMail"
+        @update="updateList"
       />
     </v-dialog>
     <!-- 팝업창 형식 -->
@@ -109,6 +111,9 @@ export default{
     },
     hideMail(){ // 팝업창 숨기기
       this.LookupMail = false;
+    },
+    updateList(){ // 쪽지 목록 업데이트
+      this.$router.go();
     },
     toCreate() {
       router.push({
