@@ -3,20 +3,20 @@
     <v-layout>
       <v-col offset="1" cols="10">
         <v-card color="#f5efe6" class="py-2">
-          <v-card-title class="pl-10">나의 활동</v-card-title>
+          <v-card-title class="pl-10 my-text">나의 활동</v-card-title>
           <v-card-actions class="pl-15">
-            <v-btn @click="requestMyPhoto()">내가 올린 사진</v-btn>
+            <v-btn text @click="requestMyPhoto()" color="#7895B2">내가 올린 사진</v-btn>
           </v-card-actions>
           <v-card-actions class="pl-15">
-            <v-btn @click="requestMyRecipe()">내가 쓴 레시피</v-btn>
-            <v-btn @click="searchMyRecipe()">내가 쓴 레시피 검색</v-btn>
-            <v-btn @click="sortMyRecipe()">내가 쓴 레시피 정렬</v-btn>
+            <v-btn text @click="requestMyRecipe()" color="#7895B2">내가 쓴 레시피</v-btn>
+            <v-btn text @click="searchMyRecipe()" color="#7895B2">내가 쓴 레시피 검색</v-btn>
+            <v-btn text @click="sortMyRecipe()" color="#7895B2">내가 쓴 레시피 정렬</v-btn>
           </v-card-actions>
           <v-card-actions class="pl-15">
-            <v-btn @click="lookupMyLikeList()">좋아요 누른 게시글</v-btn>
+            <v-btn text @click="lookupMyLikeList()" color="#7895B2">좋아요 누른 게시글</v-btn>
           </v-card-actions>
           <v-card-actions class="pl-15">
-            <v-btn @click="lookupMyCommentList()">댓글 단 레시피</v-btn>
+            <v-btn text @click="lookupMyCommentList()" color="#7895B2">댓글 단 레시피</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -25,9 +25,9 @@
     <v-layout>
       <v-col offset="1" cols="5">
         <v-card color="#f5efe6" class="py-2">
-          <v-card-title class="pl-10">냉장고</v-card-title>
+          <v-card-title class="pl-10 my-text">냉장고</v-card-title>
           <v-card-actions class="pl-15">
-            <v-btn @click="requestRefri()">냉장고 조회</v-btn>
+            <v-btn text @click="requestRefri()" color="#7895B2">냉장고 조회</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -35,9 +35,9 @@
 
       <v-col cols="5">
         <v-card color="#f5efe6" class="py-2">
-          <v-card-title class="pl-10">쪽지함</v-card-title>
+          <v-card-title class="pl-10 my-text">쪽지함</v-card-title>
           <v-card-actions class="pl-15">
-            <v-btn @click="requestML()">쪽지 조회</v-btn>
+            <v-btn text @click="requestML()" color="#7895B2">쪽지 조회</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -47,12 +47,12 @@
     <v-layout>
       <v-col offset="1" cols="10" class="py-2">
         <v-card color="#f5efe6" class="py-2">
-          <v-card-title class="ml-10">계정 관리</v-card-title>
+          <v-card-title class="ml-10 my-text">계정 관리</v-card-title>
           <v-card-actions class="ml-15">
-            <v-btn @click="changeNi()">닉네임 변경</v-btn>
+            <v-btn text @click="changeNi()" color="#7895B2">닉네임 변경</v-btn>
           </v-card-actions>
           <v-card-actions class="ml-15">
-            <v-btn @click="changePW()">비밀번호 변경</v-btn>
+            <v-btn text @click="changePW()" color="#7895B2">비밀번호 변경</v-btn>
           </v-card-actions>
           
         </v-card>
@@ -65,6 +65,9 @@
 </template>
 
 <style>
+.my-text{
+  color: #7895B2;
+}
 
 </style>
 
