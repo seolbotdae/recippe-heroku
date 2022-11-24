@@ -4,18 +4,17 @@
       color="#f5efe6"
       app dense fixed
     >
-      <v-img
-        contain
-        src="@/fav.png"
-        max-height="40"
-      ></v-img>
 
-      <v-spacer />
-      <v-spacer />
-      <v-spacer />
-      <v-spacer />
+      <div style="width:100%" class="d-flex justify-space-between">
+        <v-img
+          contain
+          max-width="40"
+          src="@/fav.png"
+        ></v-img>
 
-      <v-btn @click="showDialog">로그아웃</v-btn>
+        <v-btn @click="showDialog">로그아웃</v-btn>
+      </div>
+      
 
       <v-spacer />
 
@@ -39,13 +38,6 @@
     <v-main>
       <router-view />
     </v-main>
-
-    <v-footer
-    color="#f5efe6"
-    app
-    >
-      <div>푸터 위치입니다아</div>
-    </v-footer>
 
     <!-- 팝업창 형식 -->
     <v-dialog
