@@ -1,26 +1,34 @@
 <template>
   <v-card>
-    <!-- 제목 부분 -->
-    <v-card-title class="justify-start">
-      {{ mailTitle }}
-    </v-card-title>
+    <!-- 상단 부분 -->
+    <div class="d-flex justify-lg-space-between align-start pa-3">
+      <!-- 제목 부분 -->
+      <v-card-title>
+        {{ mailTitle }}
+      </v-card-title>
+      <!-- 발신자, 작성시간 부분 -->
+      <div class="v-flex">
+        <div class="text-start">
+          발신자 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ mailSender }} 
+        </div>
+        <div class="text-start">
+          수신자 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ mailReceiver }}
+        </div>
+        <div class="text-start">
+          작성시간 &nbsp;&nbsp;&nbsp;&nbsp; {{ sendTime }}
+        </div>    
+      </div>
+    </div>
     
-    <v-card-text class="text-end">
-      발신자 : {{ mailSender }}
-    </v-card-text>
-    <v-card-text class="text-end">
-      수신자 : {{ mailReceiver }}
-    </v-card-text>
-    <v-card-text class="text-end">
-      작성시간 : {{ sendTime }}
-    </v-card-text>
 
+    <v-card class="ma-4">
+      <v-card-text class="text-left">
+        <slot name="body">
+          {{ mailContents }} 
+        </slot>
+      </v-card-text>
+    </v-card>
     <!-- 내용 부분 -->
-    <v-card-text class="text-center">
-      <slot name="body">
-        {{ mailContents }}
-      </slot>
-    </v-card-text>
 
     <!-- 버튼 부분 -->
     <v-card-actions class="justify-center mr-2 pb-4">
