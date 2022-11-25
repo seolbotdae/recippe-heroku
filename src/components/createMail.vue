@@ -1,12 +1,46 @@
 <template>
-  <v-card>
+  <v-card class="overflow-y-auto">
     <!-- 제목 부분 -->
     <v-card-title class="justify-start">
       쪽지 보내기
     </v-card-title>
     
     <v-card-text>
-      <slot name="body"></slot>
+      <v-form>
+        <span>받는 사람</span>
+        <div>
+          <v-text-field
+            v-if="receiverFixed"
+            v-model="mailReceiver"
+            disabled
+            outlined
+          ></v-text-field>
+          <v-text-field
+            v-else
+            label="받을 사람의 닉네임을 작성하세요"
+            v-model="mailReceiver"
+            outlined
+          ></v-text-field>
+        </div>
+      
+        <span>제목</span>
+        <div>
+          <v-text-field
+            label="쪽지의 제목을 작성하세요"
+            v-model="mailTitle"
+            outlined
+          ></v-text-field>
+        </div>
+
+        <span>내용</span>
+        <div>
+          <v-textarea
+            label="쪽지의 내용을 작성하세요"
+            v-model="mailContents"
+            outlined
+          ></v-textarea>
+        </div>
+      </v-form>
     </v-card-text>
 
     <!-- 버튼 부분 -->
@@ -22,7 +56,7 @@
         <v-btn
           color="#7895B2"
           small
-          @click="reportPopup"
+          @click="sendMail"
         >
           보내기
         </v-btn>
@@ -35,16 +69,15 @@
       v-model="popupDialog"
     >
       <popup-dialog
-        :headerTitle=titlePopup
-        :btn1Title=titleBtn1
-        :btn2Title=titleBtn2
-        :btn2=btn2
+        headerTitle="쪽지 등록 실패"
+        btn1Title="확인"
+        :btn2=false
         @hide="hideDialog"
         @submit="checkDialog"
       >
         <template v-slot:body>
           <!-- 내용이 들어가는 부분입니다아 -->
-          <div> {{ content }} </div>
+          <div> 쪽지 전송에 실패했습니다. </div>
         </template>
       </popup-dialog>
     </v-dialog>
@@ -65,14 +98,16 @@ export default{
   data() {
     return {
       popupDialog: false,
-      titlePopup: "",
-      titleBtn1: "",
-      titleBtn2: "",
-      btn2: false,
-      content: ""
+      mailReceiver: "",
+      mailTitle: "",
+      mailContents: ""
     };
   },
   props: {
+    receiverFixed: {
+      type: Boolean,
+      default: false,
+    },
     receiver: {
       type: String,
       default: "",
@@ -85,58 +120,41 @@ export default{
     hideDialog(){ // 팝업창 숨기기
       this.popupDialog = false
     },
-    checkDialog(){ // 팝업창 버튼 클릭시
-      // 확인 버튼 클릭시 동작 걸기
-      this.reportPost();
-      this.hideDialog();
-    },
-    reportFailPopup(){
-      this.titlePopup = "신고 등록 실패";
-      this.content = "신고 등록에 실패했습니다.";
-      this.titleBtn1 = "확인";
-      this.btn2 = false;
-      this.showDialog();
-    },
-    reportPopup(){
-      this.titlePopup = "신고 등록";
-      this.content = "신고를 등록하시겠습니까?";
-      this.titleBtn1 = "취소";
-      this.titleBtn2 = "신고하기";
-      this.btn2 = true;
-      this.showDialog();
-    },
     emitMethod(){
       this.$emit('update');
       this.$emit('hide');
     },
-    reportPost(){ // 쪽지 보내기 로직으로 수정하기
+    sendMail(){ 
       let vm = this;
-      console.log("메일 삭제 로직");
+      console.log("메일 등록 로직");
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const deleteTarget = JSON.stringify (
+      const sendMail = JSON.stringify (
         {
-          "mail_id" : this.mailID,
+          "mail_id" : null,
           "nickname" : UserInfo.nickname,
-          "receiver" : "bye",
-          "title" : "web test",
-          "contents" : "web test",
+          "receiver" : vm.mailReceiver,
+          "title" : vm.mailTitle,
+          "contents" : vm.mailContents,
           "send_time" : "",
           "sender_check" : 0,
           "receiver_check" : 0
         }
       );
-      herokuAPI.mailDelete(deleteTarget) 
+      herokuAPI.mailSend(sendMail) 
         .then(function (response) {
-          console.log("응답 정보", response);
+          console.log("response", response);
           if(response.status == 200) {
-            console.log("if 응답 정보", response.data);
+            console.log("성공 응답", response.data);
             vm.emitMethod();
           }
         })
         .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 error");
-            vm.deletePopup();
+          if(e.response.status == 404) {
+            console.log("404 error");
+            vm.showDialog();
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
+            vm.showDialog();
           }
         });
     },

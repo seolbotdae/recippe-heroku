@@ -79,7 +79,7 @@
                     
                     <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 신고 버튼 여기 있음 -->
-                    <v-btn v-if="!isMine" @click="reportPhoto" icon x-large>
+                    <v-btn v-if="!isMine" @click="showReportDialog" icon x-large>
                       <v-icon x-large>mdi-alert-octagon</v-icon>
                       <div>신고</div>
                     </v-btn>
@@ -126,7 +126,18 @@
                 </template>
               </popup-dialog>
             </v-dialog>
-            <!-- 팝업창 형식 -->
+
+            <!-- 신고 팝업창 형식 -->
+            <v-dialog
+              max-width="400"
+              v-model="reportDialog"
+            >
+              <report-dialog
+                :postType=2
+                :postID=this.requestPhoto.post_id
+                @hide="hideReportDialog"
+              />
+            </v-dialog>
             
         </v-card>
       </v-col>
@@ -139,14 +150,17 @@
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 import PopupDialog from '@/components/popup.vue';
+import ReportDialog from '@/components/report.vue';
 
 export default{
   components: {
-    PopupDialog
+    PopupDialog,
+    ReportDialog
   },
   data(){
     return{
       popupDialog: false,
+      reportDialog: false,
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
@@ -230,6 +244,14 @@ export default{
           }
         })
     },
+
+    showReportDialog() { // 팝업창 보이기
+      this.reportDialog = true
+    },
+    hideReportDialog() { // 팝업창 숨기기
+      this.reportDialog = false
+    },
+
     likePhoto() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
       this.isLikedAfter = !this.isLikedAfter;
       if(this.isLikedAfter) ++this.requestPhoto.like_count;

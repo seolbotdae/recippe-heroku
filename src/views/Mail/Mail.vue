@@ -55,9 +55,10 @@
       max-width="500"
       v-model="CreateMail"
     >
-      <lookup-mail @hide="hideMailCreate">
-        <slot name="body" />
-      </lookup-mail>
+      <create-mail 
+        @hide="hideMailCreate"
+        @update="updateList"
+      />
     </v-dialog>
 
   </v-container>
@@ -89,7 +90,8 @@ import CreateMail from '@/components/createMail.vue';
 
 export default{
   components: {
-    LookupMail
+    LookupMail,
+    CreateMail
   },
   data () {
     return {
