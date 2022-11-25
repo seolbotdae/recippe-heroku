@@ -22,14 +22,14 @@ class ControlPhotoList_b():
         if arrangeBy == "최근 순":
             try:
                 posts = PhotoPost.objects.filter().order_by('upload_time').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
         elif arrangeBy == "좋아요 순":
             try:
                 posts = PhotoPost.objects.filter().order_by('like_count').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
