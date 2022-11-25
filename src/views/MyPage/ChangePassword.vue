@@ -9,13 +9,13 @@
             </v-card>
             <v-layout>
               <v-row justify="center">
-                <v-col xl12 md10 cols="4">
+                <v-col class="col-xl-4 col-md-6">
                   <v-card color="#fefefe" height="400" rounded="xl">
                     <v-card-title id="title" class="pa-10 justify-center fontsize">비밀번호 변경</v-card-title>
 
                     <v-col>
-                      <v-text-field filled label="새 비밀번호" placeholder="새로운 비밀번호 입력."></v-text-field>
-                      <v-text-field filled label="비밀번호 확인" placeholder="비밀번호 확인."></v-text-field>
+                      <v-text-field v-model="pw" filled label="새 비밀번호" placeholder="새로운 비밀번호 입력."></v-text-field>
+                      <v-text-field v-model="pwcheck" filled label="비밀번호 확인" placeholder="비밀번호 확인."></v-text-field>
                     </v-col>
 
                     
@@ -78,7 +78,25 @@ export default {
   },
   methods: {
     PWchange() {
-      console.log("change pw methods");
+      const userInfo = JSON.stringify({
+        "nickname": this.user.nickname,
+        "uid": this.user.id,
+        "password": this.user.pw,
+        "email": this.user.email,
+        "auto_login": false,
+      });
+      herokuAPI.changePW(userInfo)
+        .then(function (response) {
+          console.log("nnChange", response)
+          if(response.status == 200) {
+            console.log("닉넴변경 성공")
+            localStorage.setItem("UserInfo", userInfo);
+            router.push({name: 'mypage'});
+          }
+        }) 
+        .catch(function (e) {
+          console.log(e);
+        });
     }
   }
 }
