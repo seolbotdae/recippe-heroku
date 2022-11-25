@@ -14,7 +14,7 @@
             src="@/fav.png"
             class="ml-9"
           >
-            <v-btn plain retain-focus-on-click v-ripple="false" to="/recipe"></v-btn>
+            <v-btn plain retain-focus-on-click v-ripple="false" to="/"></v-btn>
           </v-img>
           <v-btn text @click="showDialog" class="mr-6 my-text">로그아웃</v-btn>
         </div>
