@@ -9,10 +9,10 @@
             <v-col offset="9">
               <dropdown class="my-dropdown-toggle my-5 "
               :options="search_standard" 
-              :selected="search_object" 
+              :selected= currentSearchOption
               v-on:updateOption="methodToRunOnSelect" 
               :placeholder="'검색 기준'"
-              :closeOnOutsideClick="boolean">
+              :closeOnOutsideClick="true">
             </dropdown>
             </v-col>
           </v-row>
@@ -50,8 +50,22 @@
               </v-card>
 
               <!-- 페이지 이동 -->
-              <v-pagination v-model="page" length="5" class="pb-10">
-              </v-pagination>
+              <template>
+                <v-pagination 
+                  v-model="page" 
+                  :length=pageLength 
+                  class="pb-10" 
+                  prev-icon="mdi-menu-left"
+                  next-icon="mdi-menu-right"
+                  @input="handlePage"
+                ></v-pagination>
+              </template>
+
+              <!-- 글쓰기 버튼 -->
+              <v-btn fab to="/photo/create" x-large color="primary" class="write-icon">
+                <v-icon dark>mdi-pencil-outline</v-icon>
+              </v-btn>
+                  
             </v-col>
           </v-row>
         </v-card>
@@ -67,6 +81,12 @@
 
 .like-count{
   font-size: 1.6em;
+}
+
+.write-icon{
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
 }
 </style>
 
@@ -84,38 +104,41 @@ export default {
           {name: '최근 순'},
           {name: '좋아요 순'}
       ],
-      search_object: {
-        name: '정렬 기준',
+
+      currentSearchOption : {
+        name: "최근 순"
       },
+
+      search_object: {
+        name: "정렬 기준",
+      },
+      page: 1,
+      pageLength: null,
+      
     };
   },
   mounted() {
     let vm = this;
-    herokuAPI.photoList(1)
-      .then(function(response) {
-        console.log("응답 온거", response);
-        if(response.status == 200) {
-            console.log("조회 성공");
-            for(let i = 0; response.data.photoList[i] != null; i++) {
-              vm.photo.push(response.data.photoList[i]);
-            }
-          }
-      })
+
+    this.sortPhotoList(1,"최근 순")
   },
+
   components: {
     'dropdown': dropdown,
   },
+
   methods: {
     toLookup(photoID) {
       router.push({
         path: "/photo/lookup/"+photoID,
       })
     },
-    sortPhotoList() {
+    //사진 리스트를 정렬해서 즉시 변경하는 함수
+    sortPhotoList(page, order_by) {
       let list = [];
       const sortInfo = JSON.stringify({
-        "arrangeBy": "좋아요 순",
-        "page": 1
+        "arrangeBy": order_by,
+        "page": page
       });
       herokuAPI.photoSort(sortInfo)
         .then(function (response) {
@@ -125,12 +148,35 @@ export default {
             for(let i = 0; response.data[i] != null; i++) {
               list.push(response.data[i]);
             }
+            window.scrollTo({top:0});
           }
         })
-      this.recipes = list;
+      this.photo = list;
     },
+    //정렬 드롭다운 선택시 실행되는 함수
     methodToRunOnSelect(payload) {
       this.object = payload;
+      if (this.object.name == "최근 순"){
+        console.log("최근 순 선택");
+        this.currentSearchOption.name = "최근 순";
+        this.sortPhotoList(this.page, "최근 순");
+      }else if(this.object.name == "좋아요 순"){
+        console.log("좋아요 순 선택");
+        this.currentSearchOption.name = "좋아요 순";
+        this.sortPhotoList(this.page, "좋아요 순");
+      }
+    },
+
+    handlePage(){
+      let vm = this;
+      
+      console.log("페이지네이션 " + vm.page + " 클릭");
+
+      if(this.currentSearchOption.name == "최근 순"){
+        this.sortPhotoList(vm.page, this.currentSearchOption.name)
+      }else if(this.currentSearchOption.name == "좋아요 순"){
+        this.sortPhotoList(vm.page, this.currentSearchOption.name)
+      }
     },
   }
 }
