@@ -23,15 +23,13 @@
       >
         취소
       </v-btn>
-      <template>
-        <v-btn
-          color="#7895B2"
-          small
-          @click="reportPopup"
-        >
-          신고하기
-        </v-btn>
-      </template>
+      <v-btn
+        color="#7895B2"
+        small
+        @click="reportPopup"
+      >
+        신고하기
+      </v-btn>
     </v-card-actions>
 
     <!-- 팝업창 형식 -->

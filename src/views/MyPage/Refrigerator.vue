@@ -15,7 +15,7 @@
                       <v-card-title id="title2" class="pl-10">
                         보유 재료
                       </v-card-title>
-                      <v-btn round color="#7895b2" dark class="mt-4 mr-10">재료추가</v-btn>
+                      <v-btn round color="#7895b2" dark class="mt-4 mr-10" @click="showAddIngredientDialog">재료추가</v-btn>
                     </v-row>
                     
                     <!-- 여기서부턴 vfor 문법을 사용해서 무한 리스트를 만들어야 합니다. -->
@@ -28,6 +28,18 @@
         </v-col>
       </v-row>
     </v-layout>
+
+    <!-- 재료 추가 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="addIngredientDialog"
+    >
+      <add-ingredient-dialog
+        @add="add"
+        @hide="hideAddIngredientDialog"
+      />
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -35,10 +47,15 @@
 
 <script>
 import herokuAPI from '@/api/heroku.js';
+import AddIngredientDialog from '@/components/addIngredient.vue'
 
 export default{
+  components: {
+    AddIngredientDialog
+  },
   data(){
     return{
+      addIngredientDialog: false,
       refrigerators: [],
     }
   },
@@ -59,6 +76,15 @@ export default{
       
   },
   methods: {
+    showAddIngredientDialog() {
+      this.addIngredientDialog = true;
+    },
+    hideAddIngredientDialog() {
+      this.addIngredientDialog = false;
+    },
+    add(ingredient) {
+      this.refrigerators.push(ingredient);
+    },
     deleteRefrigerator() {
       const deleteTarget = JSON.stringify (
         {
