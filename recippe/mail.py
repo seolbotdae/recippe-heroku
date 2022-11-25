@@ -9,7 +9,7 @@ class ControlMailList_b():
         # 요청받은 닉네임이 보내거나 받은 메일을 해당 페이지에 맞게 조회
         try:
             # 발신자이면서 지운적없거나 수신자이면서 지운적없거나 (_check => 지웠다면 True)
-            mails = Mail.objects.filter(nickname = nickname, sender_check = False) | Mail.objects.filter(receiver = nickname, receiver_check = False)
+            mails = Mail.objects.filter(nickname = nickname, sender_check = False).order_by('send_time').reverse() | Mail.objects.filter(receiver = nickname, receiver_check = False).order_by('send_time').reverse()
             mailList = mails[0+15*(page-1):15+15*(page-1)]
             result, mailList = self.sendResult("메일 조회 성공", mailList)
             pageCnt = int(len(mails)/15) + 1
