@@ -48,22 +48,13 @@
               </v-card>
 
               <!-- 페이지 이동 -->
-              <template>
-                <v-pagination 
-                  v-model="page" 
-                  :length=pageLength 
-                  class="pb-10" 
-                  prev-icon="mdi-menu-left"
-                  next-icon="mdi-menu-right"
-                  @input="handlePage"
-                ></v-pagination>
-              </template>
-
-              <!-- 글쓰기 버튼 -->
-              <v-btn fab to="/photo/create" x-large color="primary" class="write-icon">
-                <v-icon dark>mdi-pencil-outline</v-icon>
-              </v-btn>
-                  
+              <v-pagination 
+                v-model="page"
+                :length="pageLength"
+                class="pb-10"
+                @input="handlePage"
+              >
+              </v-pagination>
             </v-col>
           </v-row>
         </v-card>
@@ -78,12 +69,6 @@
 }
 .like-count{
   font-size: 1.6em;
-}
-
-.write-icon{
-  position: fixed;
-  bottom: 10%;
-  right: 5%;
 }
 </style>
 
@@ -111,13 +96,26 @@ export default {
       },
       page: 1,
       pageLength: null,
-      
     };
   },
   mounted() {
     let vm = this;
+    
+    herokuAPI.photoList(1)
+      .then(function(response) {
+        console.log("응답 온거", response);
+        if(response.status == 200) {
+          console.log("조회 성공");
+          vm.pageLength = response.data.total_page;
+          console.log(vm.pageLength);
 
-    this.sortPhotoList(1,"최근 순")
+          for(let i = 0; response.data.photoList[i] != null; i++) {
+            vm.photo.push(response.data.photoList[i]);
+          }
+        }
+      })
+
+    
   },
 
   components: {
@@ -130,25 +128,29 @@ export default {
         path: "/photo/lookup/"+photoID,
       })
     },
+
     //사진 리스트를 정렬해서 즉시 변경하는 함수
     sortPhotoList(page, order_by) {
-      let list = [];
+      let vm = this;
+      vm.photo = [];
+
       const sortInfo = JSON.stringify({
         "arrangeBy": order_by,
         "page": page
       });
+
       herokuAPI.photoSort(sortInfo)
         .then(function (response) {
           console.log("응답 온거", response);
           if(response.status == 200) {
             console.log("정렬 성공");
-            for(let i = 0; response.data[i] != null; i++) {
-              list.push(response.data[i]);
+            for(let i = 0; response.data.photoList[i] != null; i++) {
+              vm.photo.push(response.data.photoList[i]);
             }
+            console("리스트 내용 : ", vm.photo);
             window.scrollTo({top:0});
           }
         })
-      this.photo = list;
     },
     //정렬 드롭다운 선택시 실행되는 함수
     methodToRunOnSelect(payload) {
@@ -156,23 +158,24 @@ export default {
       if (this.object.name == "최근 순"){
         console.log("최근 순 선택");
         this.currentSearchOption.name = "최근 순";
-        this.sortPhotoList(this.page, "최근 순");
+        this.page=1;
+
+        this.sortPhotoList(this.page, this.currentSearchOption.name);
       }else if(this.object.name == "좋아요 순"){
         console.log("좋아요 순 선택");
         this.currentSearchOption.name = "좋아요 순";
-        this.sortPhotoList(this.page, "좋아요 순");
+        this.page=1;
+        this.sortPhotoList(this.page, this.currentSearchOption.name);
       }
     },
 
     handlePage(){
       let vm = this;
-      
-      console.log("페이지네이션 " + vm.page + " 클릭");
 
       if(this.currentSearchOption.name == "최근 순"){
-        this.sortPhotoList(vm.page, this.currentSearchOption.name)
+        this.sortPhotoList(vm.page, this.currentSearchOption.name);
       }else if(this.currentSearchOption.name == "좋아요 순"){
-        this.sortPhotoList(vm.page, this.currentSearchOption.name)
+        this.sortPhotoList(vm.page, this.currentSearchOption.name);
       }
     },
   }
