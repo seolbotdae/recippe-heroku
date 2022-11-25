@@ -233,11 +233,11 @@ class ControlComment_b():
     def insertComment(self, comment):
         try:            
             # 댓글 정보 생성 후 저장
-            comment = CommentSerializer(data = comment)
-            comment.is_valid()
-            comment.save()
-            comments = Comment.objects.filter(post_id=comment['post_id'])
-            RecipePost.objects.filter(post_id=comment['post_id']).update(comment_count=len(comments)) # 좋아요 수 업데이트
+            comments = CommentSerializer(data = comment)
+            comments.is_valid()
+            comments.save()
+            cs = Comment.objects.filter(post_id=comment['post_id'])
+            RecipePost.objects.filter(post_id=comment['post_id']).update(comment_count=len(cs)) # 좋아요 수 업데이트
 
             code = self.sendResult("댓글 등록 성공")
         except:
