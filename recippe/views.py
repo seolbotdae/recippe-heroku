@@ -445,7 +445,7 @@ class DeleteRefrigeratorAPI(APIView):
 
         # 냉장고 재료 삭제 시작
         refriInstance = ControlRefrigerator_b()
-        result, code = refriInstance.deleteRefrigerator(deleteTarget['id'],None,None)
+        result, code = refriInstance.deleteRefrigerator(deleteTarget['id'])
 
         # 결과 반환
         if code == 5:
