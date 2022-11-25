@@ -91,37 +91,32 @@
             <v-icon dark>mdi-pencil-outline</v-icon>
           </v-btn>
 
-          <!-- 임시버늩 -->
-          <v-btn fab x-large color="primary" to="/recipe/edit" class="write-icon">
-            <v-icon dark>mdi-pencil-outline</v-icon>
-          </v-btn>
-
           <!-- 음식 v card -->
-          <v-card height="100" class="mx-5 mb-5" v-for="item in 20">
+          <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item" @click="toLookup(item.post_id)">
             <div class="d-flex align-center">
-              <!-- 음식을 받아와서 넣으시면 됩니다. -->
-              <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">김치볶음밥</span>
-              <v-icon color="red" v-if="item%5+1>=1">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item%5+1>=2">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item%5+1>=3">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item%5+1>=4">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item%5+1>=5">mdi-chili-mild</v-icon>
+              <!-- 제목을 받아와서 넣으시면 됩니다. -->
+              <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">{{item.title}}</span>
+              <v-icon color="red" v-if="item.degree_of_spicy>=1">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item.degree_of_spicy>=2">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item.degree_of_spicy>=3">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item.degree_of_spicy>=4">mdi-chili-mild</v-icon>
+              <v-icon color="red" v-if="item.degree_of_spicy>=5">mdi-chili-mild</v-icon>
             </div>
             <div style="border: 0.5px solid #7895B2;" class="mx-5"></div>
             <div class="d-flex align-center justify-space-between">
               <div style="color:#7895B2" class="ml-10 py-3">
                 <!-- 날짜를 받아와서 넣으시면 됩니다. -->
-                <span class="mr-3">2022/06/07</span>
+                <span class="mr-3">{{item.upload_time}}</span>
                 <!-- 이름을 받아와서 넣으시면 됩니다 -->
-                <span>홍길동</span>
+                <span>{{item.nickname}}</span>
               </div>
               <div class="mr-6">
                 <!-- 좋아요 받아와서 넣으시면 됩ㄴ디ㅏ. -->
-                <v-icon color="red">mdi-thumb-up-outline</v-icon> 1.1K
+                <v-icon color="red">mdi-thumb-up-outline</v-icon> {{item.like_count}}
                 <!-- 댓글 가져와서 넣으시면 됩니다. -->
-                <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> 5m
+                <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> {{item.comment_count}}
                 <!-- 조회수 가져와서 넣으시면 됩니다. -->
-                <v-icon color="green" class="ml-2">mdi-eye-outline</v-icon> 1.5K
+                <v-icon color="green" class="ml-2">mdi-eye-outline</v-icon> {{item.views}}
               </div>
             </div>
           </v-card>
@@ -172,23 +167,15 @@ import dropdown from 'vue-dropdowns';
 export default {
   data () {
     return {
-      headers: [
-        { text: 'id', value: 'post_id' },
-        { text: 'title', value: 'title' },
-        { text: 'nickname', value: 'nickname' },
-        { text: 'spicy', value: 'degree_of_spicy' },
-        { text: 'like', value: 'like_count' },
-        { text: 'comment', value: 'comment_count' },
-        { text: 'view', value: 'views' },
-        { text: 'time', value: 'upload_time' },
-      ],
       recipes: [],
       recipeID: null,
       total_page: null,
+
+    //드롭다운
       //검색 기준
       search_standard: [
-          {name: '요리 이름'},
-          {name: '작성자'}
+        {name: '요리 이름'},
+        {name: '작성자'}
       ],
       search_object: {
         name: '검색 기준',
@@ -202,9 +189,8 @@ export default {
       object: {
         name: '정렬 기준',
       },
-      //맵기 단계
-      hotGrade: 2,
-      //카테고리 슬라이드
+
+    //카테고리 슬라이드
       categoryBoolean : false,
     }
   },
