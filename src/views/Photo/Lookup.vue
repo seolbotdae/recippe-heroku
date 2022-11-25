@@ -52,7 +52,7 @@
             <!-- 사진  -->
             <v-row>
               <v-col offset="2" cols="8">
-                <v-img 
+                <v-img
                 lazy-src="https://picsum.photos/id/11/10/6"
                 fill-height
                 src="https://picsum.photos/id/11/500/300"
@@ -65,7 +65,7 @@
                 <v-row justify="left">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
-                    <v-btn v-if="isMine" @click="showDialog" icon x-large>  <!--@click="deletePhoto"-->
+                    <v-btn v-if="isMine" @click="deletePopup" icon x-large>  <!--@click="deletePhoto"-->
                       <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
@@ -86,7 +86,6 @@
                   </div>
                     
                 </v-row>
-                
                 
               </v-col>
             </v-row>
@@ -113,16 +112,16 @@
               v-model="popupDialog"
             >
               <popup-dialog
-                headerTitle = "요리 사진 게시글 삭제"
-                btn1Title="취소"
-                btn2Title="삭제"
-                :btn2=true
+                :headerTitle=headerTitle
+                :btn1Title=btn1Title
+                :btn2Title=btn2Title
+                :btn2=btn2
                 @hide="hideDialog"
                 @submit="checkDialog"
               >
                 <template v-slot:body>
                   <!-- 내용이 들어가는 부분입니다아 -->
-                  <div>삭제하시겠습니까?</div>
+                  <div>{{ content1 }}<br>{{ content2 }}</div>
                 </template>
               </popup-dialog>
             </v-dialog>
@@ -176,6 +175,12 @@ export default{
       popupDialog: false,
       reportDialog: false,
       createMailDialog: false,
+      headerTitle: "",
+      content1: "",
+      content2: "",
+      btn1Title: "",
+      btn2Title: "",
+      btn2: false,
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
@@ -206,6 +211,15 @@ export default{
             }
           }
       })
+      .catch(function (e) {
+        if(e.response.status == 500) {
+          console.log("500 DB 오류");
+          vm.requestFailPopup();
+        } else if(e.response.status == 502) {
+          console.log("502 Unknown error");
+          vm.requestFailPopup();
+        }
+      });
   },
   beforeDestroy() {
     let vm = this;
@@ -220,7 +234,7 @@ export default{
       const likeInfo = JSON.stringify({
         "like_id": 0,
         "nickname": UserInfo.nickname,
-        "postType": -1,
+        "postType": 2,
         "postId": vm.requestPhoto.post_id,
         "task": task
       });
@@ -228,14 +242,53 @@ export default{
       .then(function (response) {
         if(response.status == 200) console.log("좋아요 " + task + " 성공");
       })
+      .catch(function (e) {
+        if(e.response.status == 500) {
+          console.log("500 취소 오류");
+          vm.likeFailPopup(task);
+        } else if(e.response.status == 501) {
+          console.log("501 등록 오류");
+          vm.likeFailPopup(task);
+        } else if(e.response.status == 502) {
+          console.log("502 Unknown error");
+          vm.likeFailPopup(task);
+        }
+      });
     }
   },
   methods: {
     showDialog() { // 팝업창 보이기
-      this.popupDialog = true
+      this.popupDialog = true;
     },
     hideDialog() { // 팝업창 숨기기
-      this.popupDialog = false
+      this.popupDialog = false;
+    },
+    deletePopup() {
+      this.headerTitle = "요리 사진 게시글 삭제";
+      this.content1 = "삭제하시겠습니까?";
+      this.btn1Title = "취소";
+      this.btn2Title = "삭제";
+      this.btn2 = true;
+    },
+    deleteFailPopup() {
+      this.headerTitle = "요리 사진 게시글 삭제 실패";
+      this.content1 = "게시글 삭제에 실패했습니다.";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+    },
+    requestFailPopup() {
+      this.headerTitle = "게시글 불러오기 실패";
+      this.content1 = "사진 게시글을 불러오는데";
+      this.content2 = "실패했습니다.";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+    },
+    likeFailPopup(text) {
+      this.headerTitle = "좋아요 "+text+" 실패";
+      this.content = "좋아요 "+text+"에 실패했습니다.";
+      this.btn1Title = "취소";
+      this.btn2Title = "삭제";
+      this.btn2 = true;
     },
     checkDialog() { // 팝업창 버튼 클릭시
       // 확인 버튼 클릭시 동작 걸기
@@ -258,6 +311,15 @@ export default{
             router.push({name: 'photo'});
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB 오류");
+            vm.deleteFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.deleteFailPopup();
+          }
+        });
     },
 
     showReportDialog() { // 팝업창 보이기
@@ -279,23 +341,6 @@ export default{
       if(this.isLikedAfter) ++this.requestPhoto.like_count;
       else --this.requestPhoto.like_count;
     },
-    reportPhoto() {
-      let vm = this;
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const reportInfo = JSON.stringify({
-        "id": 0,
-        "contents": "web test",
-        "post_type": 2,
-        "post_id": vm.requestPhoto.post_id,
-        "reporter": UserInfo.nickname
-      });
-      herokuAPI.photoReport(reportInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("게시글 신고 성공");
-          }
-        })
-    }
   }
 }
 </script>

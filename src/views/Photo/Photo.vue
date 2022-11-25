@@ -45,13 +45,17 @@
                   </v-col>
                 </v-row>
                 
-                
-                
               </v-card>
 
               <!-- 페이지 이동 -->
               <v-pagination v-model="page" length="5" class="pb-10">
               </v-pagination>
+
+              <!-- 글쓰기 버튼 -->
+              <v-btn fab to="/photo/create" x-large color="primary" class="write-icon">
+                <v-icon dark>mdi-pencil-outline</v-icon>
+              </v-btn>
+              
             </v-col>
           </v-row>
         </v-card>
@@ -64,9 +68,13 @@
 .sort-base{
   font-size: 1.2em;
 }
-
 .like-count{
   font-size: 1.6em;
+}
+.write-icon{
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
 }
 </style>
 

@@ -19,7 +19,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 이름 넣어주세요 -->
                         <v-card-title primary-title >
-                          김재환
+                          {{nickname}}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -37,7 +37,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 날짜 넣어주세요 -->
                         <v-card-title primary-title>
-                          2022/10/04 20:20:20
+                          {{upload_time}}
                         </v-card-title>
                       </v-card>
                     </v-col>
@@ -66,32 +66,66 @@
             </v-col>
           </v-row>
 
-
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        headerTitle = "게시글 등록 오류"
+        btn1Title="확인"
+        :btn2=false
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>게시글 등록에 실패했습니다.</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
+import PopupDialog from '@/components/popup.vue';
 
 export default{
+  components: {
+    PopupDialog
+  },
   data(){
     return {
+      popupDialog: false,
       preview: null,
       image: null,
-      preview_list: [],
-      image_list: []
+      nickname: "",
+      upload_time: ""
     };
   },
+  mounted(){
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    this.nickname = UserInfo.nickname;
+    const date = new Date();
+    this.upload_time = date.toLocaleString('ko-kr');
+  },
   methods: {
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false
+    },
     previewImage: function(event) {
       const btn1 = document.getElementById('card-on-off')
       if(btn1.style.display !== 'none') {
         btn1.style.display = 'none';
       }
-
 
       var input = event.target;
       if (input.files) {
@@ -127,6 +161,15 @@ export default{
             console.log("응답 정보", response.data);
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB error");
+            vm.showDialog();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.showDialog();
+          }
+        });
     }
   }
 }
