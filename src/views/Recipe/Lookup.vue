@@ -238,24 +238,24 @@ export default {
   components: {
     'dropdown': dropdown,
   },
-  // mounted() {
-  //   let pid = this.$route.params.id;
-  //   console.log("post_id", pid);
-  //   if(pid == null) {
-  //     console.log("ERROR");
-  //   }
-  //   const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-  //   let vm = this;
-  //   herokuAPI.recipeLookup(pid, UserInfo.nickname)
-  //     .then(function(response) {
-  //       console.log("게시글 응답 온거", response);
-  //       if(response.status == 200) {
-  //           console.log("조회 성공");
-  //           vm.requestRecipe = response.data.recipeInfo;
-  //           vm.isLiked = response.data.likeInfo;
-  //         }
-  //     })
-  // },
+  mounted() {
+    let pid = this.$route.params.id;
+    console.log("post_id", pid);
+    if(pid == null) {
+      console.log("ERROR");
+    }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    let vm = this;
+    herokuAPI.recipeLookup(pid, UserInfo.nickname)
+      .then(function(response) {
+        console.log("게시글 응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            vm.requestRecipe = response.data.recipeInfo;
+            vm.isLiked = response.data.likeInfo;
+          }
+      })
+  },
   methods: {
     deleteRecipe() {
       const deleteTarget = JSON.stringify({ requestRecipe });
