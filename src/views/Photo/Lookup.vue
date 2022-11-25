@@ -65,14 +65,14 @@
                 <v-row justify="left">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
-                    <v-btn v-if="isMine" icon x-large @click="showDialog">  <!--@click="deletePhoto"-->
+                    <v-btn v-if="isMine" @click="showDialog" icon x-large>  <!--@click="deletePhoto"-->
                       <v-icon x-large>mdi-delete-outline</v-icon>
                       <div>삭제</div>
                     </v-btn>
                     
                     <v-card height="20" color="#f5efe6" flat></v-card>
                     <!-- 쪽지 버튼 여기 있음 -->
-                    <v-btn v-if="!isMine" icon x-large>
+                    <v-btn v-if="!isMine" @click="showMailCreate" icon x-large>
                       <v-icon x-large>mdi-email-arrow-right-outline</v-icon>
                       <div>쪽지</div>
                     </v-btn>
@@ -127,6 +127,18 @@
               </popup-dialog>
             </v-dialog>
 
+            <!-- 쪽지 작성 팝업창 -->
+            <v-dialog
+              max-width="500"
+              v-model="createMailDialog"
+            >
+              <create-mail-dialog
+                :receiverFixed=true
+                :receiver=requestPhoto.nickname
+                @hide="hideMailCreate"
+              />
+            </v-dialog>
+
             <!-- 신고 팝업창 형식 -->
             <v-dialog
               max-width="400"
@@ -151,16 +163,19 @@ import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 import PopupDialog from '@/components/popup.vue';
 import ReportDialog from '@/components/report.vue';
+import CreateMailDialog from '@/components/createMail.vue';
 
 export default{
   components: {
     PopupDialog,
-    ReportDialog
+    ReportDialog,
+    CreateMailDialog
   },
   data(){
     return{
       popupDialog: false,
       reportDialog: false,
+      createMailDialog: false,
       requestPhoto: null,
       isLikedBefore: null,
       isLikedAfter: null,
@@ -250,6 +265,13 @@ export default{
     },
     hideReportDialog() { // 팝업창 숨기기
       this.reportDialog = false
+    },
+
+    showMailCreate(){ // 팝업창 보이기
+      this.createMailDialog = true;
+    },
+    hideMailCreate(){ // 팝업창 숨기기
+      this.createMailDialog = false;
     },
 
     likePhoto() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시

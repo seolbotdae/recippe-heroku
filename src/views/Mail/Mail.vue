@@ -34,9 +34,9 @@
     <!-- 쪽지 열람 팝업창 -->
     <v-dialog
       max-width="500"
-      v-model="LookupMail"
+      v-model="lookupMailDialog"
     >
-      <lookup-mail
+      <lookup-mail-dialog
         :mailTitle=openMail.title
         :mailID=openMail.mail_id
         :mailSender=openMail.nickname
@@ -53,9 +53,9 @@
     <!-- 쪽지 작성 팝업창 -->
     <v-dialog
       max-width="500"
-      v-model="CreateMail"
+      v-model="createMailDialog"
     >
-      <create-mail 
+      <create-mail-dialog
         @hide="hideMailCreate"
         @update="updateList"
       />
@@ -85,18 +85,18 @@
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
-import LookupMail from '@/components/lookupMail.vue';
-import CreateMail from '@/components/createMail.vue';
+import LookupMailDialog from '@/components/lookupMail.vue';
+import CreateMailDialog from '@/components/createMail.vue';
 
 export default{
   components: {
-    LookupMail,
-    CreateMail
+    LookupMailDialog,
+    CreateMailDialog
   },
   data () {
     return {
-      LookupMail: false,
-      CreateMail: false,
+      lookupMailDialog: false,
+      createMailDialog: false,
       mails: [],
       openMail: {},
       total_page: null,
@@ -120,16 +120,16 @@ export default{
   methods: {
     showMailLookup(index){ // 팝업창 보이기
       this.openMail = this.mails[index];
-      this.LookupMail = true;
+      this.lookupMailDialog = true;
     },
     hideMailLookup(){ // 팝업창 숨기기
-      this.LookupMail = false;
+      this.lookupMailDialog = false;
     },
-    showMailCreate(){
-      this.CreateMail = true;
+    showMailCreate(){ // 팝업창 보이기
+      this.createMailDialog = true;
     },
     hideMailCreate(){ // 팝업창 숨기기
-      this.CreateMail = false;
+      this.createMailDialog = false;
     },
     updateList(){ // 쪽지 목록 업데이트
       this.$router.go();

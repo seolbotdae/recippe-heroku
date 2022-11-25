@@ -73,7 +73,6 @@
         btn1Title="확인"
         :btn2=false
         @hide="hideDialog"
-        @submit="checkDialog"
       >
         <template v-slot:body>
           <!-- 내용이 들어가는 부분입니다아 -->
@@ -113,6 +112,9 @@ export default{
       default: "",
     },
   },
+  mounted(){
+    this.mailReceiver = this.receiver;
+  },
   methods: {
     showDialog(){ // 팝업창 보이기
       this.popupDialog = true
@@ -121,7 +123,7 @@ export default{
       this.popupDialog = false
     },
     emitMethod(){
-      this.$emit('update');
+      if(this.receiverFixed == false) this.$emit('update');
       this.$emit('hide');
     },
     sendMail(){ 
