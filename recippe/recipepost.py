@@ -73,6 +73,7 @@ class ControlRecipeList_b():
                 posts = RecipePost.objects.filter().order_by('upload_time').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
         elif arrangeBy == "좋아요 순":
@@ -80,6 +81,7 @@ class ControlRecipeList_b():
                 posts = RecipePost.objects.filter().order_by('like_count').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
         elif arrangeBy == "조회수 순":
@@ -87,10 +89,11 @@ class ControlRecipeList_b():
                 posts = RecipePost.objects.filter().order_by('views').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
 
-        return result, recipeList
+        return result, recipeList, pageCnt
 
     def sendResult(self, result, recipeList=None):
         if result == "레시피 게시판 조회 실패":

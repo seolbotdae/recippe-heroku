@@ -24,6 +24,7 @@ class ControlPhotoList_b():
                 posts = PhotoPost.objects.filter().order_by('upload_time').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
         elif arrangeBy == "좋아요 순":
@@ -31,10 +32,11 @@ class ControlPhotoList_b():
                 posts = PhotoPost.objects.filter().order_by('like_count').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
 
-        return result, photoList
+        return result, photoList, pageCnt
 
     def sendResult(self, result, photoList=None):
         if result == "사진 게시판 조회 실패":

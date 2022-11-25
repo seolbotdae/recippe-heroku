@@ -334,14 +334,17 @@ class RecipeSortAPI(APIView):
         
         # 레시피 게시판 정렬 시작
         sort = ControlRecipeList_b()
-        sortRes, sortList = sort.arrangeRecipeList(sortInfo['arrangeBy'], sortInfo['page'])
+        sortRes, sortList, pageCnt = sort.arrangeRecipeList(sortInfo['arrangeBy'], sortInfo['page'])
 
         # 결과 반환
         if sortRes == 4:
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif sortRes == 5:
             serializer = RecipeListSerializer(sortList, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            sortDict = {}
+            sortDict['recipeList'] = serializer.data
+            sortDict['total_page'] = pageCnt
+            return Response(sortDict, status=status.HTTP_200_OK)
         else:
             return Response(6, status=status.HTTP_502_BAD_GATEWAY)
 
@@ -690,14 +693,17 @@ class PhotoListAPI(APIView):
         
         # 사진 게시판 정렬 시작
         sort = ControlPhotoList_b()
-        sortRes, sortList = sort.arrangePhotoList(sortInfo['arrangeBy'], sortInfo['page'])
+        sortRes, sortList, pageCnt = sort.arrangePhotoList(sortInfo['arrangeBy'], sortInfo['page'])
 
         # 결과 반환
         if sortRes == 2:
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif sortRes == 3:
+            sortDict = {}
+            sortDict['recipeList'] = serializer.data
+            sortDict['total_page'] = pageCnt
             serializer = MyPhotoPostSerializer(sortList, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(sortDict, status=status.HTTP_200_OK)
         else:
             return Response(4, status=status.HTTP_502_BAD_GATEWAY)
 
