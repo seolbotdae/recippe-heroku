@@ -8,9 +8,9 @@ class ControlRecipeList_b():
             # 기본 기준인 최근 순으로 데이터 가져옴
             posts = RecipePost.objects.order_by('upload_time').reverse()
             # 1페이지당 20개
-            postlist = posts[0+20*(page-1):20+20*(page-1)]
+            postlist = posts[0+15*(page-1):15+15*(page-1)]
             result, recipeList = self.sendResult("레시피 게시판 조회 성공", postlist)
-            pageCnt = int(len(posts)/20) + 1
+            pageCnt = int(len(posts)/15) + 1
         except:
             result, recipeList = self.sendResult("레시피 게시판 조회 실패", None)
             pageCnt = 0
@@ -24,9 +24,9 @@ class ControlRecipeList_b():
                 # 카테고리들을 가져온 후 DB 에서 검색
                 categories = categories.split("-")
                 posts = RecipePost.objects.filter(category__in = categories).order_by('upload_time').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
-                pageCnt = int(len(posts)/20) + 1
+                pageCnt = int(len(posts)/15) + 1
             except:
                 result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
                 pageCnt = 0
@@ -36,9 +36,9 @@ class ControlRecipeList_b():
                 try:
                     # 이름이 포함 + 최근순
                     posts = RecipePost.objects.filter(title__icontains=keyword).order_by('upload_time').reverse()
-                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    postlist = posts[0+15*(page-1):15+15*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
-                    pageCnt = int(len(posts)/20) + 1
+                    pageCnt = int(len(posts)/15) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
                     pageCnt = 0
@@ -46,9 +46,9 @@ class ControlRecipeList_b():
                 try:
                     # 작성자가 작성함 + 최근순
                     posts = RecipePost.objects.filter(nickname=keyword).order_by('upload_time').reverse()
-                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    postlist = posts[0+15*(page-1):15+15*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
-                    pageCnt = int(len(posts)/20) + 1
+                    pageCnt = int(len(posts)/15) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
                     pageCnt = 0
@@ -57,9 +57,9 @@ class ControlRecipeList_b():
                     # 재료를 포함함 + 최근순
                     ids = Recipe_Ingredients.objects.filter(name=keyword).values_list('post_id', flat=True)
                     posts = RecipePost.objects.filter(post_id__in = ids).order_by('upload_time').reverse()
-                    postlist = posts[0+20*(page-1):20+20*(page-1)]
+                    postlist = posts[0+15*(page-1):15+15*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
-                    pageCnt = int(len(posts)/20) + 1
+                    pageCnt = int(len(posts)/15) + 1
                 except:
                     result, recipeList = self.sendResult("레시피 게시글 검색 실패", None)
                     pageCnt = 0
@@ -71,21 +71,21 @@ class ControlRecipeList_b():
         if arrangeBy == "최근 순":
             try:
                 posts = RecipePost.objects.filter().order_by('upload_time').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
         elif arrangeBy == "좋아요 순":
             try:
                 posts = RecipePost.objects.filter().order_by('like_count').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)
         elif arrangeBy == "조회수 순":
             try:
                 posts = RecipePost.objects.filter().order_by('views').reverse()
-                postlist = posts[0+20*(page-1):20+20*(page-1)]
+                postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, recipeList = self.sendResult("레시피 게시글 정렬 성공", postlist)
             except:
                 result, recipeList = self.sendResult("레시피 게시글 정렬 실패", None)

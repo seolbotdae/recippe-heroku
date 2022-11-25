@@ -8,9 +8,9 @@ class ControlPhotoList_b():
         try:
             # 사진 게시판 최근 순으로 조회
             posts = PhotoPost.objects.order_by('upload_time').reverse()
-            postlist = posts[0+20*(page-1):20+20*(page-1)] # 1페이지당 20개
+            postlist = posts[0+15*(page-1):15+15*(page-1)] # 1페이지당 20개
             result, photoList = self.sendResult("사진 게시판 조회 성공", postlist)
-            pageCnt = int(len(posts)/20) + 1
+            pageCnt = int(len(posts)/15) + 1
         except:
             result, photoList = self.sendResult("사진 게시판 조회 실패", None)
             pageCnt = 0
