@@ -52,15 +52,13 @@
       >
         뒤로가기
       </v-btn>
-      <template>
-        <v-btn
-          color="#7895B2"
-          small
-          @click="sendMail"
-        >
-          보내기
-        </v-btn>
-      </template>
+      <v-btn
+        color="#7895B2"
+        small
+        @click="sendMail"
+      >
+        보내기
+      </v-btn>
     </v-card-actions>
 
     <!-- 팝업창 형식 -->

@@ -55,6 +55,27 @@ import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 
 export default {
+  data() {
+    return {
+      user: {
+        email: '',
+        id: '',
+        nickname: '',
+        pw: '',
+        pwcheck: '',
+        al: ''
+      },
+      nickname: ''
+    };
+  },
+  created() {
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    this.nickname = UserInfo.nickname
+    this.user.id = UserInfo.uid
+    this.user.pw = UserInfo.password
+    this.user.email = UserInfo.email
+    this.user.al = UserInfo.auto_login
+  },
   methods: {
     PWchange() {
       console.log("change pw methods");

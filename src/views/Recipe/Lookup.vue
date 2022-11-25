@@ -6,7 +6,7 @@
         <v-card min-height="1000" color="#f5efe6">
           <div class="d-flex justify-space-between align-end">
             <!-- 뒤로 돌아가기 버튼 -->
-            <v-btn text to="/photo" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
+            <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
             <v-btn text class="mr-5">
               <v-icon>mdi-menu</v-icon>
             </v-btn>
