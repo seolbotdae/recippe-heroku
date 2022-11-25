@@ -701,7 +701,7 @@ class PhotoListAPI(APIView):
         elif sortRes == 3:
             serializer = MyPhotoPostSerializer(sortList, many=True)
             sortDict = {}
-            sortDict['recipeList'] = serializer.data
+            sortDict['photoList'] = serializer.data
             sortDict['total_page'] = pageCnt
             return Response(sortDict, status=status.HTTP_200_OK)
         else:
