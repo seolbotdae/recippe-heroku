@@ -233,6 +233,8 @@ class ControlComment_b():
             comment = CommentSerializer(data = comment)
             comment.is_valid()
             comment.save()
+            comments = Comment.objects.filter(post_id=comment['post_id'])
+            RecipePost.objects.filter(post_id=comment['post_id']).update(comment_count=len(comments)) # 좋아요 수 업데이트
 
             code = self.sendResult("댓글 등록 성공")
         except:
