@@ -45,8 +45,6 @@
                   </v-col>
                 </v-row>
                 
-                
-                
               </v-card>
 
               <!-- 페이지 이동 -->
@@ -78,7 +76,6 @@
 .sort-base{
   font-size: 1.2em;
 }
-
 .like-count{
   font-size: 1.6em;
 }

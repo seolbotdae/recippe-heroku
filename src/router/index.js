@@ -31,8 +31,6 @@ import ChangeNickname from '@/views/MyPage/ChangeNickname';
 import ChangePassword from '@/views/MyPage/ChangePassword';
 // 메일 관련 화면
 import MailBox from '@/views/Mail/Mail'
-import LookupM from '@/views/Mail/Lookup' 
-import CreateM from '@/views/Mail/Create'
 
 Vue.use(Router); // vue 라우터 사용
 const routes = [
@@ -127,16 +125,6 @@ const routes = [
             name: 'mail',
             component: MailBox
           },
-          {
-            path: 'lookup',
-            name: 'lookupM',
-            component: LookupM
-          },
-          {
-            path: 'create',
-            name: 'createM',
-            component: CreateM
-          }
         ]
       }
     ]
