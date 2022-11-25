@@ -699,10 +699,10 @@ class PhotoListAPI(APIView):
         if sortRes == 2:
             return Response(4, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif sortRes == 3:
+            serializer = MyPhotoPostSerializer(sortList, many=True)
             sortDict = {}
             sortDict['recipeList'] = serializer.data
             sortDict['total_page'] = pageCnt
-            serializer = MyPhotoPostSerializer(sortList, many=True)
             return Response(sortDict, status=status.HTTP_200_OK)
         else:
             return Response(4, status=status.HTTP_502_BAD_GATEWAY)
