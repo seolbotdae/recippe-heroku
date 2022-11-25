@@ -200,7 +200,7 @@ class ControlPost_b():
             except:
                 result, code = self.sendResult("사용자 좋아요 게시글 조회 실패", None)
         # 사진 좋아요 찾는 분기
-        elif postType == -1:
+        elif postType == 2:
             try:
                 postTarget = LikeInfo.objects.filter(nickname=nickname, post_type = postType)
                 targetList = []

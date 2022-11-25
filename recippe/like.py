@@ -13,14 +13,14 @@ class ControlLike_b():
                 likes = LikeInfo.objects.filter(post_id=postId)
                 RecipePost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "레시피 게시글 '좋아요' 취소 성공"
-            elif postType == -1: # 사진 
+            elif postType == 2: # 사진 
                 likes = LikeInfo.objects.filter(post_id=postId)
                 PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "사진 게시글 '좋아요' 취소 성공"
         except:
             if postType == 1:
                 resultMsg = "레시피 게시글 '좋아요' 취소 실패"
-            elif postType == -1:
+            elif postType == 2:
                 resultMsg = "사진 게시글 '좋아요' 취소 실패"
         
         result = self.sendResult(resultMsg)
@@ -35,14 +35,14 @@ class ControlLike_b():
                 likes = LikeInfo.objects.filter(post_id=postId)
                 RecipePost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "레시피 게시글 '좋아요' 등록 성공"
-            elif postType == -1: # 사진
+            elif postType == 2: # 사진
                 likes = LikeInfo.objects.filter(post_id=postId)
                 PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "사진 게시글 '좋아요' 등록 성공"
         except:
             if postType == 1:
                 resultMsg = "레시피 게시글 '좋아요' 등록 실패"
-            elif postType == -1:
+            elif postType == 2:
                 resultMsg = "사진 게시글 '좋아요' 등록 실패"
 
         result = self.sendResult(resultMsg)
