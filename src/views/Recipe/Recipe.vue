@@ -7,11 +7,11 @@
           <!-- 요리 검색 윗줄 -->
           <div class="find-cook flex align-end mb-2" v-if="!categoryBoolean">
             <dropdown class="my-dropdown-toggle my-0 ml-5"
-              :options="search_standard" 
+              :options="search_standard"
               :selected="search_object" 
               v-on:updateOption="methodToRunOnSelect" 
               :placeholder="'검색 기준'"
-              :closeOnOutsideClick="boolean">
+              :closeOnOutsideClick="true">
             </dropdown>
             <v-text-field
               label="요리를 검색하세요"
@@ -72,6 +72,8 @@
           </div>
         </v-card>
 
+
+
         <v-card min-height="1000" color="#f5efe6">
           <!-- 상단 레시피 게시판 글씨랑 정렬기준 드롭다운 -->
           <div class="recipe-top d-flex justify-space-between align-center pa-5">
@@ -82,7 +84,7 @@
               :selected="object" 
               v-on:updateOption="methodToRunOnSelect" 
               :placeholder="'정렬 기준'"
-              :closeOnOutsideClick="boolean">
+              :closeOnOutsideClick="true">
             </dropdown>
           </div>
 
@@ -92,7 +94,7 @@
           </v-btn>
 
           <!-- 음식 v card -->
-          <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item" @click="toLookup(item.post_id)">
+          <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item.post_id" @click="toLookup(item.post_id)">
             <div class="d-flex align-center">
               <!-- 제목을 받아와서 넣으시면 됩니다. -->
               <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">{{item.title}}</span>
@@ -111,7 +113,7 @@
                 <span>{{item.nickname}}</span>
               </div>
               <div class="mr-6">
-                <!-- 좋아요 받아와서 넣으시면 됩ㄴ디ㅏ. -->
+                <!-- 좋아요 받아와서 넣으시면 됩니다. -->
                 <v-icon color="red">mdi-thumb-up-outline</v-icon> {{item.like_count}}
                 <!-- 댓글 가져와서 넣으시면 됩니다. -->
                 <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> {{item.comment_count}}
@@ -129,6 +131,25 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        :headerTitle=headerTitle
+        :btn1Title=btn1Title
+        :btn2=btn2
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>{{ content1 }}</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -163,10 +184,22 @@
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 import dropdown from 'vue-dropdowns';
+import PopupDialog from '@/components/popup.vue';
 
-export default {
+export default{
+  components: {
+    PopupDialog,
+  },
   data () {
     return {
+    //팝업창
+      popupDialog: false,
+      headerTitle: "",
+      content1: "",
+      btn1Title: "확인",
+      btn2: false,
+
+    //레시피 정보들
       recipes: [],
       recipeID: null,
       total_page: null,
@@ -209,13 +242,47 @@ export default {
             }
           }
       })
+      .catch(function (e) {
+        if(e.response.status == 500) {
+          console.log("500 DB 오류");
+          vm.requestFailPopup();
+        } else if(e.response.status == 502) {
+          console.log("502 Unknown error");
+          vm.requestFailPopup();
+        }
+      });
   },
   methods: {
+  // 팝업창 관련
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true;
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false;
+    },
+    requestFailPopup() { // 실패
+      this.headerTitle = "요청 실패";
+      this.content1 = "레시피 게시글을 요청에 실패했습니다.";
+      this.showDialog();
+    },
+    searchRequestFailPopup() { // 검색 실패
+      this.headerTitle = "요청 실패";
+      this.content1 = "검색 결과 요청에 실패했습니다.";
+      this.showDialog();
+    },
+    sortRequestFailPopup() { // 정렬 실패
+      this.headerTitle = "요청 실패";
+      this.content1 = "정렬 정보 요청에 실패했습니다.";
+      this.showDialog();
+    },
+
+  // 클릭한 레시피 게시글 열람 페이지로 이동
     toLookup(recipeID) {
       router.push({
         path: "/recipe/lookup/"+recipeID,
       })
     },
+
     searchRecipeList() {
       let list = [];
       let tp;
@@ -237,9 +304,19 @@ export default {
               tp = response.data.total_page;
             }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB 오류");
+            vm.searchRequestFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.searchRequestFailPopup();
+          }
+        });
       this.recipes = list;
       this.total_page = tp;
     },
+
     sortRecipeList() {
       let list = [];
       const sortInfo = JSON.stringify({
@@ -256,20 +333,30 @@ export default {
             }
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB 오류");
+            vm.sortRequestFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.sortRequestFailPopup();
+          }
+        });
       this.recipes = list;
     },
+
     methodToRunOnSelect(payload) {
       this.object = payload;
     },
+
     // 카테고리 검색 슬라이드 버튼 함수
     methodToChangeCategoryBoolean() {
       if (this.categoryBoolean == true) {
         this.categoryBoolean = false
-      }else{
+      } else {
         this.categoryBoolean = true
       }
-
-    }
+    },
   }
 }
 </script>
