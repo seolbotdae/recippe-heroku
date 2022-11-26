@@ -6,7 +6,7 @@
     </v-card-title>
     
     <v-card-text>
-      <v-form>
+      <v-form ref="form" lazy-validation>
         <span>받는 사람</span>
         <div>
           <v-text-field
@@ -19,6 +19,7 @@
             v-else
             label="받을 사람의 닉네임을 작성하세요"
             v-model="mailReceiver"
+            :rules="receiver_rule"
             outlined
           ></v-text-field>
         </div>
@@ -28,6 +29,7 @@
           <v-text-field
             label="쪽지의 제목을 작성하세요"
             v-model="mailTitle"
+            :rules="title_rule"
             outlined
           ></v-text-field>
         </div>
@@ -37,6 +39,7 @@
           <v-textarea
             label="쪽지의 내용을 작성하세요"
             v-model="mailContents"
+            :rules="contents_rule"
             outlined
           ></v-textarea>
         </div>
@@ -96,7 +99,18 @@ export default{
       popupDialog: false,
       mailReceiver: "",
       mailTitle: "",
-      mailContents: ""
+      mailContents: "",
+    // 유효성 검사
+      receiver_rule: [
+        v => !!v || '받는 사람의 아이디를 입력하세요.',
+        v => !(v && v.length < 6) || '모든 아이디는 6자 이상입니다.',
+      ],
+      title_rule: [
+        v => !!v || '쪽지 제목을 입력하세요.',
+      ],
+      contents_rule: [
+        v => !!v || '쪽지 내용을 입력하세요.',
+      ],
     };
   },
   props: {
@@ -123,39 +137,42 @@ export default{
       if(this.receiverFixed == false) this.$emit('update');
       this.$emit('hide');
     },
-    sendMail(){ 
-      let vm = this;
-      console.log("메일 등록 로직");
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const sendMail = JSON.stringify (
-        {
-          "mail_id" : null,
-          "nickname" : UserInfo.nickname,
-          "receiver" : vm.mailReceiver,
-          "title" : vm.mailTitle,
-          "contents" : vm.mailContents,
-          "send_time" : "",
-          "sender_check" : 0,
-          "receiver_check" : 0
-        }
-      );
-      herokuAPI.mailSend(sendMail) 
-        .then(function (response) {
-          console.log("response", response);
-          if(response.status == 200) {
-            console.log("성공 응답", response.data);
-            vm.emitMethod();
+    sendMail(){
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        let vm = this;
+        console.log("메일 등록 로직");
+        const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+        const sendMail = JSON.stringify (
+          {
+            "mail_id" : null,
+            "nickname" : UserInfo.nickname,
+            "receiver" : vm.mailReceiver,
+            "title" : vm.mailTitle,
+            "contents" : vm.mailContents,
+            "send_time" : "",
+            "sender_check" : 0,
+            "receiver_check" : 0
           }
-        })
-        .catch(function (e) {
-          if(e.response.status == 404) {
-            console.log("404 error");
-            vm.showDialog();
-          } else if(e.response.status == 500) {
-            console.log("500 Unknown error");
-            vm.showDialog();
-          }
-        });
+        );
+        herokuAPI.mailSend(sendMail) 
+          .then(function (response) {
+            console.log("response", response);
+            if(response.status == 200) {
+              console.log("성공 응답", response.data);
+              vm.emitMethod();
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 404) {
+              console.log("404 error");
+              vm.showDialog();
+            } else if(e.response.status == 500) {
+              console.log("500 Unknown error");
+              vm.showDialog();
+            }
+          });
+      }
     },
   }
 };

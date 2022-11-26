@@ -24,7 +24,7 @@
                     <!-- 재료 있는 경우 -->
                     <v-card-text v-if="!isEmpty">
                       <!-- 재료 v card -->
-                      <v-card v-for="item in refrigerators" :key="item" outlined>
+                      <v-card v-for="item in refrigerators" :key="item.id" outlined>
                         <!-- 윗줄 -->
                         <div class="d-flex justify-space-between">
                           <span class="ml-3">{{item.name}}</span>
