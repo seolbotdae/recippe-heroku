@@ -269,12 +269,14 @@ export default{
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
+      this.showDialog();
     },
     deleteFailPopup() {
       this.headerTitle = "요리 사진 게시글 삭제 실패";
       this.content1 = "게시글 삭제에 실패했습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
+      this.showDialog();
     },
     requestFailPopup() {
       this.headerTitle = "게시글 불러오기 실패";
@@ -282,6 +284,7 @@ export default{
       this.content2 = "실패했습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
+      this.showDialog();
     },
     likeFailPopup(text) {
       this.headerTitle = "좋아요 "+text+" 실패";
@@ -289,6 +292,7 @@ export default{
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
+      this.showDialog();
     },
     checkDialog() { // 팝업창 버튼 클릭시
       // 확인 버튼 클릭시 동작 걸기
