@@ -9,7 +9,7 @@
             <dropdown class="my-dropdown-toggle my-0 ml-5"
               :options="search_standard"
               :selected="search_object" 
-              v-on:updateOption="methodToRunOnSelect" 
+              v-on:updateOption="searchStandardRunOnSelect" 
               :placeholder="'검색 기준'"
               :closeOnOutsideClick="true">
             </dropdown>
@@ -80,9 +80,9 @@
             <span style="color:#7895B2; font-weight:900; font-size:1.3em;">레시피 게시판</span>
             <!-- 드롭다운으로 대체할 예정 -->
             <dropdown class="my-dropdown-toggle"
-              :options="arrayOfObjects" 
-              :selected="object" 
-              v-on:updateOption="methodToRunOnSelect" 
+              :options="sort_standard" 
+              :selected="sort_object" 
+              v-on:updateOption="sortStandardRunOnSelect" 
               :placeholder="'정렬 기준'"
               :closeOnOutsideClick="true">
             </dropdown>
@@ -126,7 +126,12 @@
 
 
           <!-- 페이지 이동 -->
-          <v-pagination v-model="page" length="5" class="pb-10">
+          <v-pagination 
+            v-model="page" 
+            :length="pageLength"
+            class="pb-10"
+            @input="handlePage"  
+          >
           </v-pagination>
         </v-card>
       </v-col>
@@ -211,20 +216,29 @@ export default{
         {name: '작성자'}
       ],
       search_object: {
-        name: '검색 기준',
+        name: '요리 이름',
       },
       //정렬 기준 objects
-      arrayOfObjects: [
+      sort_standard: [
         { name: '최근 순'},
         { name: '조회 순'},
         { name: '좋아요 순'}
       ],
-      object: {
-        name: '정렬 기준',
+      sort_object: {
+        name: '최근 순',
       },
 
-    //카테고리 슬라이드
+      //카테고리 슬라이드
       categoryBoolean : false,
+
+      //현재 검색 기준
+      currentSearchStandard : "요리 이름",
+
+      //페이지네이션 길이
+      pageLength : 1,
+
+      //현재 페이지
+      page : 1,
     }
   },
   components: {
@@ -237,6 +251,7 @@ export default{
         console.log("리스트 응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
+            vm.pageLength = response.data.total_page;
             for(let i = 0; response.data.recipeList[i] != null; i++) {
               vm.recipes.push(response.data.recipeList[i]);
             }
@@ -317,20 +332,23 @@ export default{
       this.total_page = tp;
     },
 
-    sortRecipeList() {
-      let list = [];
+    sortRecipeList(page, order_by) {
+      let vm = this;
+      vm.recipes = [];
+      
       const sortInfo = JSON.stringify({
-        "arrangeBy": "좋아요 순",
-        "page": 1
+        "arrangeBy": order_by,
+        "page": page
       });
       herokuAPI.recipeSort(sortInfo)
         .then(function (response) {
           console.log("응답 온거", response);
           if(response.status == 200) {
             console.log("정렬 성공");
-            for(let i = 0; response.data[i] != null; i++) {
-              list.push(response.data[i]);
+            for(let i = 0; response.data.recipeList[i] != null; i++) {
+              vm.recipes.push(response.data.recipeList[i]);
             }
+            window.scrollTo({top:0});
           }
         })
         .catch(function (e) {
@@ -342,11 +360,50 @@ export default{
             vm.sortRequestFailPopup();
           }
         });
-      this.recipes = list;
     },
 
-    methodToRunOnSelect(payload) {
+    // 검색 드롭다운 선택시 실행되는 함수
+    searchStandardRunOnSelect(payload) {
       this.object = payload;
+      if (this.object.name == "요리 이름") {
+        console.log("요리 이름 선택");
+        this.search_object.name = '요리 이름';
+        this.currentSearchStandard = '요리 이름';
+      }else if(this.object.name == "작성자") {
+        console.log("작성자 선택");
+        this.search_object.name = '작성자';
+        this.currentSearchStandard = '작성자';
+      }
+    },
+
+    // 정렬 드롭다운 선택시 실행되는 함수
+    sortStandardRunOnSelect(payload) {
+      this.object = payload;
+      if (this.object.name == "최근 순") {
+        console.log("최근 순 선택");
+        this.sort_object.name = "최근 순";
+
+        this.page = 1;
+        console.log(this.page, this.sort_object.name);
+        this.sortRecipeList(this.page, this.sort_object.name);
+
+      } else if (this.object.name == "조회 순") {
+        console.log("조회 순 선택");
+        this.sort_object.name = "조회수 순";
+
+        this.page = 1;
+        console.log(this.page, this.sort_object.name);
+        this.sortRecipeList(this.page, this.sort_object.name);
+
+      } else if (this.object.name == "좋아요 순") {
+        console.log("좋아요 순 선택");
+        this.sort_object.name = "좋아요 순";
+
+        this.page = 1;
+        console.log(this.page, this.sort_object.name);
+        this.sortRecipeList(this.page, this.sort_object.name);
+
+      }
     },
 
     // 카테고리 검색 슬라이드 버튼 함수
@@ -357,6 +414,12 @@ export default{
         this.categoryBoolean = true
       }
     },
+
+    //페이지네이션 함수
+    handlePage(){
+      let vm = this;
+      vm.sortRecipeList(vm.page, vm.sort_object.name);
+    }
   }
 }
 </script>
