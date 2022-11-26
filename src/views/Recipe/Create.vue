@@ -18,6 +18,9 @@
                 label="레시피 제목"
                 id="id"
                 class="ml-16"
+
+                v-model="recipeTitle"
+
               ></v-text-field>
             </div>
             
@@ -29,7 +32,7 @@
               <dropdown class="my-dropdown-toggle ml-15"
               :options="recippeType" 
               :selected="recippeTypeObject" 
-              v-on:updateOption="methodToRunOnSelect" 
+              v-on:updateOption="methodToRunOnSelect_category" 
               :placeholder="'레시피 종류'"
               :closeOnOutsideClick="boolean"
               ></dropdown>
@@ -43,10 +46,10 @@
               <dropdown class="my-dropdown-toggle ml-15"
               :options="hotLevel" 
               :selected="hotLevelObject" 
-              v-on:updateOption="methodToRunOnSelect" 
+              v-on:updateOption="methodToRunOnSelect_spicy" 
               :placeholder="'매운맛 단계'"
-              :closeOnOutsideClick="boolean">
-              </dropdown>
+              :closeOnOutsideClick="boolean"
+              ></dropdown>
             </div>
 
             <div class="line mx-5"></div>
@@ -88,11 +91,14 @@
             placeholder="레시피 설명을 입력하세요"
             height="300"
             background-color="white"
+
+            v-model="recipeDescription"
+
           ></v-textarea>
 
           <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
-            <v-btn color="#AEBDCA" class="mr-2">등록하기</v-btn>
+            <v-btn color="#AEBDCA" class="mr-2" @click="addRecipe()">등록하기</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -146,6 +152,10 @@ export default {
       hotLevelObject: {
         name: '매운맛 단계',
       },
+      recipeTitle: null,
+      recipeCategory: null,
+      recipeSpicy: 0,
+      recipeDescription: null,
     }
     
   },
@@ -154,14 +164,16 @@ export default {
   },
   methods: {
     addRecipe() {
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const recipe = JSON.stringify (
         {
 	        "post_id": 0,
-	        "nickname": "test",
-	        "title": "heroku_test",
-	        "category": "heroku_test",
-	        "degree_of_spicy": 1,
-	        "description": "heroku_test",
+	        "nickname": UserInfo.nickname,
+	        "title": vm.recipeTitle,
+	        "category": vm.recipeCategory,
+	        "degree_of_spicy": vm.recipeSpicy,
+	        "description": vm.recipeDescription,
 	        "views": 0,
 	        "like_count": 0,
 	        "comment_count": 0,
@@ -186,6 +198,8 @@ export default {
 	        ]
         }
       );
+      console.log("연결 정보", recipe);
+      /* 데이터 연결한거 테스트를 위해 콘솔에 출력만 시킬라고 요거 주석처리해뒀어 나중에 적용시킬 때 풀면됨 && 등록하기 버튼에 붙어있음 - 요하
       herokuAPI.recipeAdd(recipe) 
         .then(function (response) {
           console.log("전송 정보",  recipe);
@@ -193,6 +207,20 @@ export default {
             console.log("응답 정보", response.data);
           }
         })
+      */
+    },
+    methodToRunOnSelect_category(payload) {
+      this.object = payload;
+      this.recipeCategory = this.object.name
+    },
+    methodToRunOnSelect_spicy(payload) {
+      this.object = payload;
+      if(this.object.name == "0단계") this.recipeSpicy = 0;
+      else if(this.object.name == "1단계") this.recipeSpicy = 1;
+      else if(this.object.name == "2단계") this.recipeSpicy = 2;
+      else if(this.object.name == "3단계") this.recipeSpicy = 3;
+      else if(this.object.name == "4단계") this.recipeSpicy = 4;
+      else if(this.object.name == "5단계") this.recipeSpicy = 5;
     }
   }
 }
