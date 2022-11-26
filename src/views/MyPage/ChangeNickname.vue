@@ -18,7 +18,16 @@
                   <v-card-title class="pt-15 pl-15">새로운 닉네임</v-card-title>
                   
                   <v-col offset="2" cols="8">
-                    <v-text-field filled v-model="user.nickname" label="새 닉네임" placeholder="새로운 닉네임 입력." class="pb-10"></v-text-field>
+                    <v-form ref="form" lazy-validation>
+                      <v-text-field 
+                        filled 
+                        v-model="user.nickname" 
+                        label="새 닉네임" 
+                        :rules="id_rule" 
+                        placeholder="새로운 닉네임 입력." 
+                        class="pb-10"
+                      ></v-text-field>
+                    </v-form>
                   </v-col>
 
           
@@ -92,7 +101,13 @@ export default{
         pwcheck: '',
         al: ''
       },
-      nickname: ''
+      nickname: '',
+      
+    // 유효성 검사
+      id_rule: [
+        v => !!v || '새로운 아이디를 입력하세요.',
+        v => !(v && v.length < 6) || '아이디는 6자 이상이여야 합니다.',
+      ],
     };
   },
   created() {
@@ -123,34 +138,37 @@ export default{
       showDialog();
     },
     NNchange() {
-      const userInfo = JSON.stringify({
-        "nickname": this.user.nickname,
-        "uid": this.user.id,
-        "password": this.user.pw,
-        "email": this.user.email,
-        "auto_login": this.user.al,
-      });
-      herokuAPI.changeNN(userInfo)
-        .then(function (response) {
-          console.log("nnChange", response)
-          if(response.status == 200) {
-            console.log("닉넴변경 성공")
-            localStorage.setItem("UserInfo", userInfo);
-            router.push({name: 'mypage'});
-          }
-        }) 
-        .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 닉네임 중복 error");
-            vm.sameNickPopup();
-          } else if(e.response.status == 500) {
-            console.log("500 닉네임 변경 실패 or DB오류");
-            vm.changeFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
-            vm.changeFailPopup();
-          }
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        const userInfo = JSON.stringify({
+          "nickname": this.user.nickname,
+          "uid": this.user.id,
+          "password": this.user.pw,
+          "email": this.user.email,
+          "auto_login": this.user.al,
         });
+        herokuAPI.changeNN(userInfo)
+          .then(function (response) {
+            console.log("nnChange", response)
+            if(response.status == 200) {
+              console.log("닉넴변경 성공")
+              localStorage.setItem("UserInfo", userInfo);
+              router.push({name: 'mypage'});
+            }
+          }) 
+          .catch(function (e) {
+            if(e.response.status == 400) {
+              console.log("400 닉네임 중복 error");
+              vm.sameNickPopup();
+            } else if(e.response.status == 500) {
+              console.log("500 닉네임 변경 실패 or DB오류");
+              vm.changeFailPopup();
+            } else if(e.response.status == 502) {
+              console.log("502 Unknown error");
+              vm.changeFailPopup();
+            }
+          });
+      }
     }
   }
 }

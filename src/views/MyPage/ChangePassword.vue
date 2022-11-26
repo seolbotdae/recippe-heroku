@@ -14,8 +14,24 @@
                     <v-card-title id="title" class="pa-10 justify-center fontsize">비밀번호 변경</v-card-title>
 
                     <v-col>
-                      <v-text-field v-model="user.pw" filled label="새 비밀번호" placeholder="새로운 비밀번호 입력."></v-text-field>
-                      <v-text-field v-model="user.pwcheck" filled label="비밀번호 확인" placeholder="비밀번호 확인."></v-text-field>
+                      <v-form ref="form" lazy-validation>
+                        <v-text-field 
+                          v-model="user.pw" 
+                          filled 
+                          label="새 비밀번호" 
+                          :rules="pw_rule"
+                          placeholder="새로운 비밀번호 입력."
+                          required
+                        ></v-text-field>
+                        <v-text-field 
+                          v-model="user.pwcheck" 
+                          filled 
+                          label="비밀번호 확인" 
+                          :rules="pwch_rule"
+                          placeholder="비밀번호 확인."
+                          required
+                        ></v-text-field>
+                      </v-form>
                     </v-col>
 
                     
@@ -80,9 +96,12 @@ export default{
   },
   data() {
     return {
+    // 팝업창
       popupDialog: false,
       headerTitle: "",
       content1: "",
+
+    // 사용자정보
       user: {
         email: '',
         id: '',
@@ -91,7 +110,21 @@ export default{
         pwcheck: '',
         al: ''
       },
-      nickname: ''
+      nickname: '',
+
+    // 유효성 검사
+      pw_rule: [
+        v => !!v || '새로운 비밀번호를 입력하세요.',
+        v => !(v && v.length < 6) || '비밀번호는 6자 이상이여야 합니다.',
+        v => /^[a-z0-9!?@<>]*$/.test(v) || '비밀번호는 영어 소문자, 숫자, 특수문자(!, ?, @, <, >)만 사용 가능합니다.',
+        v => /^.*[a-z]+.*$/.test(v) || '비밀번호에는 영어 소문자가 포함되어야 합니다.',
+        v => /^.*[0-9]+.*$/.test(v) || '비밀번호에는 숫자가 포함되어야 합니다.',
+        v => /^.*[!?@<>]+.*$/.test(v) || '비밀번호에는 특수문자(!, ?, @, <, >)가 포함되어야 합니다.',
+      ],
+      pwch_rule: [
+        v => !!v || '비밀번호 확인을 입력하세요.',
+        v => v === this.user.pw || '비밀번호가 일치하지 않습니다.',
+      ],
     };
   },
   created() {
@@ -114,32 +147,35 @@ export default{
       showDialog();
     },
     PWchange() {
-      const vm = this;
-      const userInfo = JSON.stringify({
-        "nickname": this.user.nickname,
-        "uid": this.user.id,
-        "password": this.user.pw,
-        "email": this.user.email,
-        "auto_login": this.user.al,
-      });
-      herokuAPI.changePW(userInfo)
-        .then(function (response) {
-          console.log("pwChange", response)
-          if(response.status == 200) {
-            console.log("비번변경 성공")
-            localStorage.setItem("UserInfo", userInfo);
-            router.push({name: 'mypage'});
-          }
-        }) 
-        .catch(function (e) {
-          if(e.response.status == 500) {
-            console.log("500 비밀번호 변경 실패");
-            vm.changeFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
-            vm.changeFailPopup();
-          }
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        const vm = this;
+        const userInfo = JSON.stringify({
+          "nickname": this.user.nickname,
+          "uid": this.user.id,
+          "password": this.user.pw,
+          "email": this.user.email,
+          "auto_login": this.user.al,
         });
+        herokuAPI.changePW(userInfo)
+          .then(function (response) {
+            console.log("pwChange", response)
+            if(response.status == 200) {
+              console.log("비번변경 성공")
+              localStorage.setItem("UserInfo", userInfo);
+              router.push({name: 'mypage'});
+            }
+          }) 
+          .catch(function (e) {
+            if(e.response.status == 500) {
+              console.log("500 비밀번호 변경 실패");
+              vm.changeFailPopup();
+            } else if(e.response.status == 502) {
+              console.log("502 Unknown error");
+              vm.changeFailPopup();
+            }
+          });
+      }
     }
   }
 }
