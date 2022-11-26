@@ -45,8 +45,10 @@
         @hide="hideDialog"
         @submit="checkDialog"
       >
-        <!-- 내용이 들어가는 부분입니다아 -->
-        {{ content }}
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div> {{ content }} </div>
+        </template>
       </popup-dialog>
     </v-dialog>
     <!-- 팝업창 형식 -->

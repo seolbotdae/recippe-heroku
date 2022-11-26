@@ -175,9 +175,12 @@ export default{
           }
         })
         .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 error");
-            vm.deletePopup();
+          if(e.response.status == 404) {
+            console.log("404 error");
+            vm.deleteFailPopup();
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
+            vm.deleteFailPopup();
           }
         });
     },

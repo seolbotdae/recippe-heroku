@@ -13,7 +13,14 @@
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.email" label="email"></v-text-field>
+          <v-form ref="form" lazy-validation>
+            <v-text-field 
+              v-model="info.email" 
+              label="이메일을 입력하세요"
+              :rules="email_rule"
+              required
+            ></v-text-field>
+          </v-form>
         </v-col>
       </v-row>
       <v-row>
@@ -54,9 +61,15 @@ export default {
     return {
       info: {
         email: null,
-        code: 0
+        code: ""
       },
-      next: null
+      next: null,
+
+    // 유효성 검사
+      email_rule: [
+        v => !!v || '인증코드를 받을 이메일을 입력하세요.',
+        v => /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(v) || '올바른 이메일을 입력하세요.',
+      ]
     }
   },
   created() {
@@ -70,19 +83,22 @@ export default {
   },
   methods: {
     firstcheck() {
-      const checkInfo = JSON.stringify({
-        "email": this.info.email,
-        "code": 0
-      });
-      console.log(checkInfo);
-      JSON.parse(checkInfo);
-      herokuAPI.firstcheck(checkInfo)
-        .then(function (response) {
-          console.log("firstcheck", response);
-        })
-        .catch(function (e) {
-          console.log(e);
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        const checkInfo = JSON.stringify({
+          "email": this.info.email,
+          "code": 0
         });
+        console.log(checkInfo);
+        JSON.parse(checkInfo);
+        herokuAPI.firstcheck(checkInfo)
+          .then(function (response) {
+            console.log("firstcheck", response);
+          })
+          .catch(function (e) {
+            console.log(e);
+          });
+      }
     },
     secondcheck() {
       const codenum = Number(this.info.code);

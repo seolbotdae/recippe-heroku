@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <v-form ref="form">
+    <v-form ref="form" lazy-validation>
       <v-row>
         <v-col cols="4" offset="4">
           <v-card-title style="justify-content: center">로그인</v-card-title>
@@ -16,12 +16,20 @@
 
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.id" label="id"></v-text-field>
+          <v-text-field 
+            v-model="info.id" 
+            label="id"
+            :rules="id_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.pw" label="password"></v-text-field>
+          <v-text-field 
+            v-model="info.pw" 
+            label="password"
+            :rules="pw_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
@@ -85,7 +93,15 @@ export default{
         id: null,
         pw: null,
         al: false
-      }
+      },
+
+    // 유효성 검사
+      id_rule: [
+        v => !!v || '아이디를 입력하세요.',
+      ],
+      pw_rule: [
+        v => !!v || '비밀번호를 입력하세요.',
+      ],
     }
   },
   methods: {
@@ -100,35 +116,38 @@ export default{
       this.hideDialog();
     },
     login(){
-      let vm = this;
-      const loginInfo = JSON.stringify({
-        "nickname": null,
-        "uid": vm.info.id,
-        "password": vm.info.pw,
-        "email": null,
-        "auto_login": vm.info.al,
-      });
-      const auto_login = vm.info.al;
-      herokuAPI.login(loginInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            const dataString = JSON.stringify({
-              "nickname": response.data.nickname,
-              "uid": response.data.uid,
-              "password": response.data.password,
-              "email": response.data.email,
-              "auto_login": auto_login,
-            });
-            localStorage.setItem("UserInfo", dataString);
-            router.push({name: 'home'});
-          }
-        })
-        .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 error");
-            vm.showDialog();
-          }
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        let vm = this;
+        const loginInfo = JSON.stringify({
+          "nickname": null,
+          "uid": vm.info.id,
+          "password": vm.info.pw,
+          "email": null,
+          "auto_login": vm.info.al,
         });
+        const auto_login = vm.info.al;
+        herokuAPI.login(loginInfo)
+          .then(function (response) {
+            if(response.status == 200) {
+              const dataString = JSON.stringify({
+                "nickname": response.data.nickname,
+                "uid": response.data.uid,
+                "password": response.data.password,
+                "email": response.data.email,
+                "auto_login": auto_login,
+              });
+              localStorage.setItem("UserInfo", dataString);
+              router.push({name: 'home'});
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 400) {
+              console.log("400 error");
+              vm.showDialog();
+            }
+          });
+      }
     },
     signup(){
       router.push({

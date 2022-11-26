@@ -197,14 +197,13 @@
 </style>
 
 <script>
-import heroku from '@/api/heroku.js';
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
 
 export default {
   data () {
     return {
-      requestRecipe: null,
+      requestRecipe: [],
       isLiked: null,
       recippeType: [
         { name: '최근 순'},
@@ -247,7 +246,7 @@ export default {
             vm.requestRecipe = response.data.recipeInfo;
             vm.isLiked = response.data.likeInfo;
             vm.hotLevel = vm.requestRecipe['degree_of_spicy']
-            this.lookupUnExistIngredients();
+            vm.lookupUnExistIngredients();
           }
       })
   },
@@ -304,12 +303,15 @@ export default {
         })
     },
     lookupUnExistIngredients() {
+      let vm = this;
       herokuAPI.unExistIntredients("test", 43)
         .then(function (response) {
+          console.log("test",response.data);
+          console.log("test",response.data.length);
           if(response.status == 200) {
             console.log("없는 식재료 가져오기 성공")
-            if(length(response.data) == 0) canDecrease = true;
-            else canDecrease = false;
+            if(response.data.length == 0) vm.canDecrease = true;
+            else vm.canDecrease = false;
           }
         })
     },

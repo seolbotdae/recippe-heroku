@@ -15,7 +15,7 @@
                       <v-card-title id="title2" class="pl-10">
                         보유 재료
                       </v-card-title>
-                      <v-btn round color="#7895b2" dark class="mt-4 mr-10" @click="showAddIngredientDialog">재료추가</v-btn>
+                      <v-btn color="#7895b2" dark class="mt-4 mr-10" @click="showAddIngredientDialog">재료추가</v-btn>
                     </v-row>
 
                     <!-- 재료 없는 경우 -->

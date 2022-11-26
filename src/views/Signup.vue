@@ -1,6 +1,6 @@
 <template>
   <v-container >
-    <v-form ref="form">
+    <v-form ref="form" lazy-validation>
       <v-row>
         <v-col cols="4" offset="4">
           <v-card-title style="justify-content: center">레쉽피 회원가입</v-card-title>
@@ -15,22 +15,38 @@
 
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.id" label="id"></v-text-field>
+          <v-text-field 
+            v-model="info.id" 
+            label="id"
+            :rules="id_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.nick" label="nickname"></v-text-field>
+          <v-text-field 
+            v-model="info.nick" 
+            label="nickname"
+            :rules="nn_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.pw" label="password"></v-text-field>
+          <v-text-field 
+            v-model="info.pw" 
+            label="password"
+            :rules="pw_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-text-field v-model="info.pwcheck" label="check password"></v-text-field>
+          <v-text-field 
+            v-model="info.pwcheck" 
+            label="check password"
+            :rules="pwch_rule"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row justify="center">
@@ -92,7 +108,28 @@ export default{
         nick: null,
         pw: null,
         pwcheck: null,
-      }
+      },
+
+    // 유효성 검사
+      id_rule: [
+        v => !!v || '아이디를 입력하세요.',
+        v => !(v && v.length < 6) || '아이디는 6자 이상이여야 합니다.',
+      ],
+      nn_rule: [
+        v => !!v || '닉네임을 입력하세요.',
+      ],
+      pw_rule: [
+        v => !!v || '새로운 비밀번호를 입력하세요.',
+        v => !(v && v.length < 6) || '비밀번호는 6자 이상이여야 합니다.',
+        v => /^[a-z0-9!?@<>]*$/.test(v) || '비밀번호는 영어 소문자, 숫자, 특수문자(!, ?, @, <, >)만 사용 가능합니다.',
+        v => /^.*[a-z]+.*$/.test(v) || '비밀번호에는 영어 소문자가 포함되어야 합니다.',
+        v => /^.*[0-9]+.*$/.test(v) || '비밀번호에는 숫자가 포함되어야 합니다.',
+        v => /^.*[!?@<>]+.*$/.test(v) || '비밀번호에는 특수문자(!, ?, @, <, >)가 포함되어야 합니다.',
+      ],
+      pwch_rule: [
+        v => !!v || '비밀번호 확인을 입력하세요.',
+        v => v === this.user.pw || '비밀번호가 일치하지 않습니다.',
+      ],
     }
   },
   created() {
@@ -112,41 +149,44 @@ export default{
       this.hideDialog();
     },
     signup() {
-      let vm = this;
-      const signupInfo = JSON.stringify({
-        "nickname": this.info.nick,
-        "uid": this.info.id,
-        "password": this.info.pw,
-        "email": this.info.email,
-        "auto_login": false,
-      });
-      console.log(signupInfo);
-      herokuAPI.signup(signupInfo)
-        .then(function (response) {
-          console.log(response)
-          if(response.status == 200) {
-            console.log("회원가입 성공")
-            router.push({name: 'login'});
-          }
-        }) 
-        .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 error");
-            vm.text = "아이디";
-            vm.title = "아이디 중복";
-            vm.showDialog();
-          } else if(e.response.status == 401) {
-            console.log("401 error");
-            vm.text = "닉네임";
-            vm.title = "닉네임 중복";
-            vm.showDialog();
-          } else if(e.response.status == 402) {
-            console.log("402 error");
-            vm.text = "아이디, 닉네임";
-            vm.title = "아이디, 닉네임 중복";
-            vm.showDialog();
-          }
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        let vm = this;
+        const signupInfo = JSON.stringify({
+          "nickname": this.info.nick,
+          "uid": this.info.id,
+          "password": this.info.pw,
+          "email": this.info.email,
+          "auto_login": false,
         });
+        console.log(signupInfo);
+        herokuAPI.signup(signupInfo)
+          .then(function (response) {
+            console.log(response)
+            if(response.status == 200) {
+              console.log("회원가입 성공")
+              router.push({name: 'login'});
+            }
+          }) 
+          .catch(function (e) {
+            if(e.response.status == 400) {
+              console.log("400 error");
+              vm.text = "아이디";
+              vm.title = "아이디 중복";
+              vm.showDialog();
+            } else if(e.response.status == 401) {
+              console.log("401 error");
+              vm.text = "닉네임";
+              vm.title = "닉네임 중복";
+              vm.showDialog();
+            } else if(e.response.status == 402) {
+              console.log("402 error");
+              vm.text = "아이디, 닉네임";
+              vm.title = "아이디, 닉네임 중복";
+              vm.showDialog();
+            }
+          });
+      }
     },
   }
 }

@@ -132,7 +132,7 @@
               v-model="createMailDialog"
             >
               <create-mail-dialog
-                :receiverFixed=true
+                :receiverFixed="true"
                 :receiver=requestPhoto.nickname
                 @hide="hideMailCreate"
               />
@@ -144,8 +144,8 @@
               v-model="reportDialog"
             >
               <report-dialog
-                :postType=2
-                :postID=this.requestPhoto.post_id
+                :postType="2"
+                :postID=requestPhoto.post_i
                 @hide="hideReportDialog"
               />
             </v-dialog>
@@ -181,7 +181,7 @@ export default{
       btn1Title: "",
       btn2Title: "",
       btn2: false,
-      requestPhoto: null,
+      requestPhoto: [],
       isLikedBefore: null,
       isLikedAfter: null,
       isMine: null,
@@ -288,7 +288,7 @@ export default{
     },
     likeFailPopup(text) {
       this.headerTitle = "좋아요 "+text+" 실패";
-      this.content = "좋아요 "+text+"에 실패했습니다.";
+      this.content1 = "좋아요 "+text+"에 실패했습니다.";
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
