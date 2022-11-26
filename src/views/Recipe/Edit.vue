@@ -20,6 +20,7 @@
                 id="id"
                 class="ml-16"
                 value="고등어 순살 조림"
+                v-model="recipeTitle"
               ></v-text-field>
             </div>
             
@@ -32,7 +33,7 @@
               <dropdown class="my-dropdown-toggle ml-15"
               :options="recippeType" 
               :selected="recippeTypeObject" 
-              v-on:updateOption="methodToRunOnSelect" 
+              v-on:updateOption="methodToRunOnSelect_category" 
               :placeholder="'레시피 종류'"
               :closeOnOutsideClick="boolean">
               </dropdown>
@@ -47,7 +48,7 @@
               <dropdown class="my-dropdown-toggle ml-14"
               :options="hotLevel" 
               :selected="hotLevelObject" 
-              v-on:updateOption="methodToRunOnSelect" 
+              v-on:updateOption="methodToRunOnSelect_spicy" 
               :placeholder="'매운맛 단계'"
               :closeOnOutsideClick="boolean">
               </dropdown>
@@ -95,11 +96,12 @@
 			      value="고등어 손질하고 재료 다 넣어서 졸이면 됩니다. ^^"
             height="300"
             background-color="white"
+            v-model="recipeDescription"
           ></v-textarea>
 
           <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
-            <v-btn color="#AEBDCA" class="mr-2">등록하기</v-btn>
+            <v-btn color="#AEBDCA" class="mr-2" @click="editRecipe()">등록하기</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -152,6 +154,10 @@ export default {
       hotLevelObject: {
         name: '3단계',
       },
+      recipeTitle: null,
+      recipeCategory: null,
+      recipeSpicy: 0,
+      recipeDescription: null,
     }
   },
   components: {
@@ -159,14 +165,15 @@ export default {
   },
   methods: {
     editRecipe() {
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const recipe = JSON.stringify (
         {
 	        "post_id": 52,
-	        "nickname": "test",
-	        "title": "heroku_test2",
-	        "category": "heroku_test2",
-	        "degree_of_spicy": 5,
-	        "description": "heroku_test2",
+	        "nickname": UserInfo.nickname,
+	        "title": this.recipeTitle,
+	        "category": this.recipeCategory,
+	        "degree_of_spicy": this.recipeSpicy,
+	        "description": this.recipeDescription,
 	        "views": 0,
 	        "like_count": 0,
 	        "comment_count": 0,
@@ -191,6 +198,8 @@ export default {
 	        ]
         }
       );
+      console.log(recipe);
+      /* recipe/create 와 마찬가지로 테스트를 위해 주석 쳐놨음 && 등록하기 버튼에 붙어있음 - 요하
       herokuAPI.recipeEdit(recipe) 
         .then(function (response) {
           console.log("전송 정보",  recipe);
@@ -198,6 +207,20 @@ export default {
             console.log("응답 정보", response.data);
           }
         })
+      */
+    },
+    methodToRunOnSelect_category(payload) {
+      this.object = payload;
+      this.recipeCategory = this.object.name
+    },
+    methodToRunOnSelect_spicy(payload) {
+      this.object = payload;
+      if(this.object.name == "0단계") this.recipeSpicy = 0;
+      else if(this.object.name == "1단계") this.recipeSpicy = 1;
+      else if(this.object.name == "2단계") this.recipeSpicy = 2;
+      else if(this.object.name == "3단계") this.recipeSpicy = 3;
+      else if(this.object.name == "4단계") this.recipeSpicy = 4;
+      else if(this.object.name == "5단계") this.recipeSpicy = 5;
     }
   }
 }

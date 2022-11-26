@@ -6,12 +6,14 @@
     </v-card-title>
 
     <v-card-text>
-      <v-textarea
-        label="이곳에 신고 사유를 작성하세요"
-        v-model="mailContents"
-        required
-        outlined
-      ></v-textarea>
+      <v-form ref="form" lazy-validation>
+        <v-textarea
+          label="이곳에 신고 사유를 작성하세요"
+          v-model="mailContents"
+          required
+          outlined
+        ></v-textarea>
+      </v-form>
     </v-card-text>
 
     <!-- 버튼 부분 -->

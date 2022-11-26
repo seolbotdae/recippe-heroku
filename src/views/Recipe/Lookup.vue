@@ -62,8 +62,9 @@
               <div class=ma-3>
                 <!-- 재료 나타날 v-for -->
                 <!-- 재료를 바꾸시면 됩니다. -->
-			          <span v-for="item in requestRecipe['Recipe_Ingredients']">
-			          	<span style="vertical-align: text-top" class="my-text ml-16">{{item.name}} {{item.amount}}{{item.unit}}</span>
+			          <span v-for="item in requestRecipe.Recipe_Ingredients" :key="item.id">
+			          	<span v-if="!UnExistIngre.includes(item.id)" style="vertical-align: text-top" class="my-text ml-16">{{item.name}} {{item.amount}}{{item.unit}}</span>
+                  <span v-if="UnExistIngre.includes(item.id)" style="vertical-align: text-top" class="my-text-x ml-16">{{item.name}} {{item.amount}}{{item.unit}}</span>
                   <br/>
                   
 			          </span>
@@ -97,7 +98,7 @@
           <div class="mx-5 line"></div>
           
           <!-- 댓글 v-for 부분입니다. -->
-          <div v-for="item in requestRecipe['comments']">
+          <div v-for="item in requestRecipe.comments" :key="item.coment_id">
             <div class="d-flex align-top justify-space-between">
               
               <!-- 사용자 정보 부분입니다 -->
@@ -119,11 +120,11 @@
               <div class="d-flex my-3 mr-7">
                 <div>
 
-                  <v-btn @click="reportComment" text icon small v-if="requestRecipe.nickname != item.nickname">
+                  <v-btn @click="reportComment" text icon small v-if="userNN != item.nickname">
                     <v-icon>mdi-alert-outline</v-icon>
                   </v-btn>
                   
-                  <div v-if="requestRecipe.nickname == item.nickname">
+                  <div v-if="userNN == item.nickname">
                     <v-btn @click="editComment" text icon small color="blue">
                       <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
@@ -184,6 +185,9 @@
 .my-text{
   color: #42688e;
 }
+.my-text-x{
+  color: #f00;
+}
 
 .my-comment-commenter{
   width: 200px;
@@ -204,7 +208,9 @@ export default {
   data () {
     return {
       requestRecipe: [],
+      UnExistIngre: [],
       isLiked: null,
+
       recippeType: [
         { name: '최근 순'},
         { name: '조회 순'},
@@ -225,6 +231,7 @@ export default {
       },
       hotLevel:4,
       canDecrease:false,
+      userNN: ""
     }
   },
   components: {
@@ -238,6 +245,9 @@ export default {
     }
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
+    vm.userNN = UserInfo.nickname;
+    
+  // 레시피 정보 요청
     herokuAPI.recipeLookup(pid, UserInfo.nickname)
       .then(function(response) {
         console.log("게시글 응답 온거", response);
@@ -246,9 +256,23 @@ export default {
             vm.requestRecipe = response.data.recipeInfo;
             vm.isLiked = response.data.likeInfo;
             vm.hotLevel = vm.requestRecipe['degree_of_spicy']
-            vm.lookupUnExistIngredients();
           }
       })
+
+  // 미보유 재료 요청
+    herokuAPI.unExistIntredients(UserInfo.nickname, pid)
+        .then(function (response) {
+          console.log("test",response.data);
+          console.log("test",response.data.length);
+          if(response.status == 200) {
+            console.log("없는 식재료 가져오기 성공")
+            for(let i = 0; i<response.data.length; i++) {
+              vm.UnExistIngre.push(response.data[i].id);
+            }
+            if(response.data.length == 0) vm.canDecrease = true;
+            else vm.canDecrease = false;
+          }
+        })
   },
   methods: {
     deleteRecipe() {
@@ -260,132 +284,119 @@ export default {
           }
         }) 
     },
-    likeRecipe(task) {
-      let vm = this;
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const likeInfo = JSON.stringify({
-        "like_id": 0,
-        "nickname": UserInfo.nickname,
-        "postType": 1,
-        "postId": vm.requestRecipe.post_id,
-        "task": task
-      });
-      console.log(likeInfo)
-      if(task == '등록') {
-        herokuAPI.recipeLike(likeInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("좋아요 등록 성공");
-          }
-        })
-      } else {
-        herokuAPI.recipeUnLike(likeInfo)
-          .then(function (response) {
-            if(response.status == 200) {
-              console.log("좋아요 취소 성공");
-            }
-          })
-      }
-    },
-    reportRecipe() {
-      const reportInfo = JSON.stringify({
-        "id": 0,
-        "contents": "web test",
-        "post_type": 1,
-        "post_id": 46,
-        "reporter": "test"
-      });
-      herokuAPI.recipeReport(reportInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("게시글 신고 성공");
-          }
-        })
-    },
-    lookupUnExistIngredients() {
-      let vm = this;
-      herokuAPI.unExistIntredients("test", 43)
-        .then(function (response) {
-          console.log("test",response.data);
-          console.log("test",response.data.length);
-          if(response.status == 200) {
-            console.log("없는 식재료 가져오기 성공")
-            if(response.data.length == 0) vm.canDecrease = true;
-            else vm.canDecrease = false;
-          }
-        })
-    },
-    remainAmmounts() {
-      herokuAPI.decreaseAmount("test", 43)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("남은 재료 계산하기 성공")
-          }
-        })
-    },
-    methodToRunOnSelect(payload) {
-      this.object = payload;
-    },
-    addComment() {
-      const NewComment = JSON.stringify({
-        "comment_id" : 0,
-	      "comments" : "web test",
-	      "comment_time" : 0,
-	      "nickname" : "test",
-	      "post_id" : 2
-      });
-      herokuAPI.commentAdd(NewComment)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 등록 성공");
-          }
-        })
-    },
-    editComment() {
-      const EditComment = JSON.stringify({
-        "comment_id" : 14,
-	      "comments" : "web test edit",
-	      "comment_time" : 0,
-	      "nickname" : "test",
-	      "post_id" : 2
-      });
-      herokuAPI.commentEdit(EditComment)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 수정 성공");
-          }
-        })
-    },
-    deleteComment() {
-      const deleteInfo = JSON.stringify({
-        "comment_id": 14,
-        "nickname": "test"
-      });
-      herokuAPI.commentDelete(deleteInfo)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 삭제 성공");
-          }
-        })
-    },
-    reportComment() {
-      const reportInfo = JSON.stringify({
-	      "contents" : "web comment test",
-	      "post_type" : -1,
-	      "post_id" : 2,
-	      "reporter" : "test"
-      })
-      herokuAPI.commentReport(reportInfo)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 신고 성공");
-          }
-        })
-    }
+    // likeRecipe(task) {
+    //   let vm = this;
+    //   const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    //   const likeInfo = JSON.stringify({
+    //     "like_id": 0,
+    //     "nickname": UserInfo.nickname,
+    //     "postType": 1,
+    //     "postId": vm.requestRecipe.post_id,
+    //     "task": task
+    //   });
+    //   console.log(likeInfo)
+    //   if(task == '등록') {
+    //     herokuAPI.recipeLike(likeInfo)
+    //     .then(function (response) {
+    //       if(response.status == 200) {
+    //         console.log("좋아요 등록 성공");
+    //       }
+    //     })
+    //   } else {
+    //     herokuAPI.recipeUnLike(likeInfo)
+    //       .then(function (response) {
+    //         if(response.status == 200) {
+    //           console.log("좋아요 취소 성공");
+    //         }
+    //       })
+    //   }
+    // },
+    // reportRecipe() {
+    //   const reportInfo = JSON.stringify({
+    //     "id": 0,
+    //     "contents": "web test",
+    //     "post_type": 1,
+    //     "post_id": 46,
+    //     "reporter": "test"
+    //   });
+    //   herokuAPI.recipeReport(reportInfo)
+    //     .then(function (response) {
+    //       if(response.status == 200) {
+    //         console.log("게시글 신고 성공");
+    //       }
+    //     })
+    // },
+    // remainAmmounts() {
+    //   herokuAPI.decreaseAmount("test", 43)
+    //     .then(function (response) {
+    //       if(response.status == 200) {
+    //         console.log("남은 재료 계산하기 성공")
+    //       }
+    //     })
+    // },
+    // methodToRunOnSelect(payload) {
+    //   this.object = payload;
+    // },
+    // addComment() {
+    //   const NewComment = JSON.stringify({
+    //     "comment_id" : 0,
+	  //     "comments" : "web test",
+	  //     "comment_time" : 0,
+	  //     "nickname" : "test",
+	  //     "post_id" : 2
+    //   });
+    //   herokuAPI.commentAdd(NewComment)
+    //     .then(function (response) {
+    //       console.log("응답 정보", response);
+    //       if(response.status == 200) {
+    //         console.log("댓글 등록 성공");
+    //       }
+    //     })
+    // },
+    // editComment() {
+    //   const EditComment = JSON.stringify({
+    //     "comment_id" : 14,
+	  //     "comments" : "web test edit",
+	  //     "comment_time" : 0,
+	  //     "nickname" : "test",
+	  //     "post_id" : 2
+    //   });
+    //   herokuAPI.commentEdit(EditComment)
+    //     .then(function (response) {
+    //       console.log("응답 정보", response);
+    //       if(response.status == 200) {
+    //         console.log("댓글 수정 성공");
+    //       }
+    //     })
+    // },
+    // deleteComment() {
+    //   const deleteInfo = JSON.stringify({
+    //     "comment_id": 14,
+    //     "nickname": "test"
+    //   });
+    //   herokuAPI.commentDelete(deleteInfo)
+    //     .then(function (response) {
+    //       console.log("응답 정보", response);
+    //       if(response.status == 200) {
+    //         console.log("댓글 삭제 성공");
+    //       }
+    //     })
+    // },
+    // reportComment() {
+    //   const reportInfo = JSON.stringify({
+	  //     "contents" : "web comment test",
+	  //     "post_type" : -1,
+	  //     "post_id" : 2,
+	  //     "reporter" : "test"
+    //   })
+    //   herokuAPI.commentReport(reportInfo)
+    //     .then(function (response) {
+    //       console.log("응답 정보", response);
+    //       if(response.status == 200) {
+    //         console.log("댓글 신고 성공");
+    //       }
+    //     })
+    // }
   }
 }
 </script>
