@@ -41,23 +41,49 @@
                 </v-card>
               </v-col>
             </v-row>
-            
 
-  
           </v-card>
         </v-col>
       </v-row>
     </v-layout>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        :headerTitle=headerTitle
+        btn1Title="확인"
+        :btn2=false
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div> {{ content1 }} </div>
+          <div v-if="content2 != ''"> {{ content2 }} </div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
   </v-container>
 </template>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
+import PopupDialog from '@/components/popup.vue';
 
-export default {
+export default{
+  components: {
+    PopupDialog
+  },
   data() {
     return {
+      popupDialog: false,
+      headerTitle: "",
+      content1: "",
+      content2: "",
       user: {
         email: '',
         id: '',
@@ -78,13 +104,31 @@ export default {
     this.user.al = UserInfo.auto_login
   },
   methods: {
+    showDialog(){ // 팝업창 보이기
+      this.popupDialog = true
+    },
+    hideDialog(){ // 팝업창 숨기기
+      this.popupDialog = false
+    },
+    changeFailPopup() {
+      this.headerTitle = "변경 요청 실패";
+      this.content1 = "닉네임 변경에 실패했습니다.";
+      this.content2 = "다시 시도하십시오.";
+      showDialog();
+    },
+    sameNickPopup() {
+      this.headerTitle = "변경 요청 실패";
+      this.content1 = "중복된 닉네임입니다.";
+      this.content2 = "";
+      showDialog();
+    },
     NNchange() {
       const userInfo = JSON.stringify({
         "nickname": this.user.nickname,
         "uid": this.user.id,
         "password": this.user.pw,
         "email": this.user.email,
-        "auto_login": false,
+        "auto_login": this.user.al,
       });
       herokuAPI.changeNN(userInfo)
         .then(function (response) {
@@ -96,7 +140,16 @@ export default {
           }
         }) 
         .catch(function (e) {
-          console.log(e);
+          if(e.response.status == 400) {
+            console.log("400 닉네임 중복 error");
+            vm.sameNickPopup();
+          } else if(e.response.status == 500) {
+            console.log("500 닉네임 변경 실패 or DB오류");
+            vm.changeFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.changeFailPopup();
+          }
         });
     }
   }

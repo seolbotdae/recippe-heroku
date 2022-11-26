@@ -60,7 +60,7 @@ export default{
     }
   },
   mounted() {
-    /* 냉장고 조회 - 원래 mounted 에 있어야 하는 놈 
+    // 냉장고 조회 - 원래 mounted 에 있어야 하는 놈 
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
     herokuAPI.refrigeratorLookup(UserInfo.nickname)
@@ -72,7 +72,7 @@ export default{
               vm.refrigerators.push(response.data[i]);
             }
           }
-      })*/
+      })
       
   },
   methods: {

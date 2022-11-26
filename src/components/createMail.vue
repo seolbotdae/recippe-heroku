@@ -78,7 +78,6 @@
         </template>
       </popup-dialog>
     </v-dialog>
-    <!-- 팝업창 형식 -->
 
   </v-card>
 </template>
