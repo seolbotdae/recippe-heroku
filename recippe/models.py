@@ -73,7 +73,7 @@ class Refrigerator(models.Model):
     nickname = models.ForeignKey(User, null=False, on_delete=models.CASCADE, db_column="nickname", related_name="Refrigerator")
     unit = models.ForeignKey(Units, null=False, on_delete=models.CASCADE, db_column="unit", related_name="Refrigerator")
     amount = models.FloatField(null=False, default=0)
-    expiry_date = models.CharField(max_length=100, null=False)
+    expiry_date = models.CharField(max_length=100, null=True)
 
 # 레시피재료
 class Recipe_Ingredients(models.Model):
