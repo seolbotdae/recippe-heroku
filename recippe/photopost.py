@@ -2,6 +2,7 @@ from .models import *
 
 from .serializers import *
 
+import math
 
 class ControlPhotoList_b():
     def requestPhotoList(self, page):
@@ -10,7 +11,7 @@ class ControlPhotoList_b():
             posts = PhotoPost.objects.order_by('upload_time').reverse()
             postlist = posts[0+15*(page-1):15+15*(page-1)] # 1페이지당 20개
             result, photoList = self.sendResult("사진 게시판 조회 성공", postlist)
-            pageCnt = int(len(posts)/15) + 1
+            pageCnt = math.ceil(len(posts)/15)
         except:
             result, photoList = self.sendResult("사진 게시판 조회 실패", None)
             pageCnt = 0
@@ -24,7 +25,7 @@ class ControlPhotoList_b():
                 posts = PhotoPost.objects.filter().order_by('upload_time').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
-                pageCnt = int(len(posts)/15) + 1
+                pageCnt = math.ceil(len(posts)/15)
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
         elif arrangeBy == "좋아요 순":
@@ -32,7 +33,7 @@ class ControlPhotoList_b():
                 posts = PhotoPost.objects.filter().order_by('like_count').reverse()
                 postlist = posts[0+15*(page-1):15+15*(page-1)]
                 result, photoList = self.sendResult("사진 게시글 정렬 성공", postlist)
-                pageCnt = int(len(posts)/15) + 1
+                pageCnt = math.ceil(len(posts)/15)
             except:
                 result, photoList = self.sendResult("사진 게시글 정렬 실패", None)
 
