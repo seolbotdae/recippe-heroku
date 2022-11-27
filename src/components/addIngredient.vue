@@ -19,6 +19,7 @@
             id="inputText"
             @keyup="ingredient_filter"
             class="mx-6"
+            v-model="name"
           ></v-text-field>
         </div>
   
@@ -38,6 +39,7 @@
         hide-details="auto"
         id="inputText"
         class="mx-6 mb-8"
+        v-model="amount"
       ></v-text-field>
 
       <div style="color:#7895B2; font-size: 1.3em;">
@@ -80,7 +82,7 @@
       <v-btn
         color="#7895B2"
         x-large
-        @click="addIngre"
+        @click="addIngre()"
       >
         추가하기
       </v-btn>
@@ -120,6 +122,7 @@
 </style>
 
 <script>
+import herokuAPI from '@/api/heroku.js';
 const Hangul = require('hangul-js');
 
 export default{
@@ -264,16 +267,30 @@ export default{
   },
   methods: {
     addIngre() {
-      const addIngre = {
-        "amount": this.amount,
-        "expiry_date": this.expiry_date, // 없어도 됨
-        "name" : this.name,
-        "nickname" : this.nickname,
-        "unit" : this.unit
-      };
-
-      this.$emit('add', addIngre);
-      this.$emit('hide');
+      let vm = this;
+      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+      const AddIngre = JSON.stringify ({
+        "amount": vm.amount,
+        "expiry_date": vm.expiry_date, // 없어도 됨
+        "name" : vm.name,
+        "nickname" : UserInfo.nickname,
+        "unit" : vm.unit,
+      });
+      console.log(AddIngre);
+      herokuAPI.refrigeratorAdd(AddIngre)
+        .then(function (response) {
+          console.log("response", response);
+          if(response.status == 200) {
+            console.log("성공 응답", response.data);
+          }
+        })
+        .catch(function (e) {
+          if(e.response.status == 400) {
+            console.log("400 error");
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
+          }
+        });
     },
     // 재료 필터
     ingredient_filter(){
@@ -306,8 +323,10 @@ export default{
     },
     // 단위 클릭 시 결정
     clickUnit(payload){
+      let vm = this;
       document.getElementById("inputUnit").value = " ";
       document.getElementById("inputUnit").value = payload.srcElement.innerText;
+      vm.unit = payload.srcElement.innerText;
       for (var i=0;i<this.units.length;i++){
         this.$refs.unitsName[i].classList.remove('visible');
       }

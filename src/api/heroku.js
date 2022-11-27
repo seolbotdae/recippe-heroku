@@ -27,6 +27,9 @@ export default {
   refrigeratorLookup: function(nickname) {
     return axios.get(BASE_URL+'inquiryrefrigerator/'+nickname+'/');
   },
+  refrigeratorAdd: function(info) {
+    return axios.post(BASE_URL+'addrefrigerator/', info);
+  },
   refrigeratorDelete: function(info) {
     return axios.post(BASE_URL+'deleterefrigerator/', info);
   },
