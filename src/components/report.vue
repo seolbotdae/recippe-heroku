@@ -9,7 +9,8 @@
       <v-form ref="form" lazy-validation>
         <v-textarea
           label="이곳에 신고 사유를 작성하세요"
-          v-model="mailContents"
+          v-model="reportContents"
+          :rules="report_rule"
           required
           outlined
         ></v-textarea>
@@ -63,19 +64,23 @@ import PopupDialog from '@/components/popup.vue';
 import herokuAPI from '@/api/heroku.js';
 
 export default{
-  name: "CreateMail",
+  name: "Report",
   components: {
     PopupDialog
   },
   data() {
     return {
       popupDialog: false,
-      mailContents: "",
+      reportContents: "",
       titlePopup: "",
       content: "",
       titleBtn1: "",
       titleBtn2: "",
       btn2: true,
+
+      report_rule: [
+        v => !!v || '신고 사유를 입력하세요.',
+      ],
     };
   },
   props: {
@@ -117,69 +122,72 @@ export default{
       this.$emit('hide');
     },
     reportPost(){ // 신고 등록 로직으로 수정하기
-      let vm = this;
-      console.log("통합 신고 로직"); // 레시피->1, 댓글->-1, 요리사진->2
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const reportInfo = JSON.stringify ({
-        "id": 0,
-        "contents": vm.mailContents,
-        "post_type": vm.postType,
-        "post_id": vm.postID,
-        "reporter": UserInfo.nickname
-      });
-      console.log("신고때 보낼 거", reportInfo);
-      if(vm.postType == 1) {
-        herokuAPI.recipeReport(reportInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("레시피 게시글 신고 성공");
-            vm.emitMethod();
-          }
-        })
-        .catch(function (e) {
-          if(e.response.status == 500) {
-            console.log("500 DB error");
-            vm.reportFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
-            vm.reportFailPopup();
-          }
+      const validate = this.$refs.form.validate();
+      if(validate) {
+        let vm = this;
+        console.log("통합 신고 로직"); // 레시피->1, 댓글->-1, 요리사진->2
+        const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+        const reportInfo = JSON.stringify ({
+          "id": 0,
+          "contents": vm.reportContents,
+          "post_type": vm.postType,
+          "post_id": vm.postID,
+          "reporter": UserInfo.nickname
         });
-      } else if(vm.postType == 2) {
-        herokuAPI.photoReport(reportInfo)
-        .then(function (response) {
-          if(response.status == 200) {
-            console.log("요리사진 게시글 신고 성공");
-            vm.emitMethod();
-          }
-        })
-        .catch(function (e) {
-          if(e.response.status == 500) {
-            console.log("500 DB error");
-            vm.reportFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
-            vm.reportFailPopup();
-          }
-        });
-      } else if(vm.postType == -1) {
-        herokuAPI.commentReport(reportInfo)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 신고 성공");
-            vm.emitMethod();
-          }
-        })
-        .catch(function (e) {
-          if(e.response.status == 404) {
-            console.log("404 DB error");
-            vm.reportFailPopup();
-          } else if(e.response.status == 500) {
-            console.log("500 Unknown error");
-            vm.reportFailPopup();
-          }
-        });
+        console.log("신고때 보낼 거", reportInfo);
+        if(vm.postType == 1) {
+          herokuAPI.recipeReport(reportInfo)
+          .then(function (response) {
+            if(response.status == 200) {
+              console.log("레시피 게시글 신고 성공");
+              vm.emitMethod();
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 500) {
+              console.log("500 DB error");
+              vm.reportFailPopup();
+            } else if(e.response.status == 502) {
+              console.log("502 Unknown error");
+              vm.reportFailPopup();
+            }
+          });
+        } else if(vm.postType == 2) {
+          herokuAPI.photoReport(reportInfo)
+          .then(function (response) {
+            if(response.status == 200) {
+              console.log("요리사진 게시글 신고 성공");
+              vm.emitMethod();
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 500) {
+              console.log("500 DB error");
+              vm.reportFailPopup();
+            } else if(e.response.status == 502) {
+              console.log("502 Unknown error");
+              vm.reportFailPopup();
+            }
+          });
+        } else if(vm.postType == -1) {
+          herokuAPI.commentReport(reportInfo)
+          .then(function (response) {
+            console.log("응답 정보", response);
+            if(response.status == 200) {
+              console.log("댓글 신고 성공");
+              vm.emitMethod();
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 404) {
+              console.log("404 DB error");
+              vm.reportFailPopup();
+            } else if(e.response.status == 500) {
+              console.log("500 Unknown error");
+              vm.reportFailPopup();
+            }
+          });
+        }
       }
     },
   }

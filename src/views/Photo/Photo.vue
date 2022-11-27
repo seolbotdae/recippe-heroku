@@ -17,6 +17,11 @@
             </v-col>
           </v-row>
 
+          <!-- 글쓰기 버튼 -->
+          <v-btn fab to="/photo/create" x-large color="primary" class="write-icon">
+            <v-icon dark>mdi-pencil-outline</v-icon>
+          </v-btn>
+
           <v-row justify="center">
             <v-col cols="8">
               <v-card height="400" v-for="item in photo" :key="item.post_id" class="my-10" @click="toLookup(item.post_id)">
@@ -88,6 +93,12 @@
 }
 .like-count{
   font-size: 1.6em;
+}
+.write-icon{
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
+  z-index: 9;
 }
 </style>
 

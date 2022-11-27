@@ -83,7 +83,7 @@ export default {
   recipeReport: function(info) {
     return axios.post(BASE_URL+'reportrecipe/', info);
   },
-  unExistIntredients: function(nickname, post_id) {
+  unExistIngredients: function(nickname, post_id) {
     return axios.get(BASE_URL+'unexistingredients/'+nickname+'/'+post_id+'/');
   },
   decreaseAmount: function(nickname, post_id) {

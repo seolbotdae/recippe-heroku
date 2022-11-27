@@ -123,8 +123,6 @@
             </div>
           </v-card>
 
-
-
           <!-- 페이지 이동 -->
           <v-pagination 
             v-model="page" 
@@ -162,28 +160,23 @@
 .find-cook{
   display: flex;
 }
-
 .black-line{
   border: 0.4px solid #7895B2;
 }
-
 .category-search-dropdown{
   display: flex;
   justify-content: center;
 }
-
 .write-icon{
   position: fixed;
   bottom: 10%;
   right: 5%;
+  z-index: 9;
 }
-
 .my-text{
   color:#7895B2;
 }
-
 </style>
-
 
 <script>
 import herokuAPI from '@/api/heroku.js';

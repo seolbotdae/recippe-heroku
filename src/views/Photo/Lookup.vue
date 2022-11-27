@@ -105,54 +105,53 @@
             <v-row justify="center" class="mt-10 thumbs">
               좋아요 수 {{ requestPhoto.like_count }}
             </v-row>
-
-            <!-- 팝업창 형식 -->
-            <v-dialog
-              max-width="300"
-              v-model="popupDialog"
-            >
-              <popup-dialog
-                :headerTitle=headerTitle
-                :btn1Title=btn1Title
-                :btn2Title=btn2Title
-                :btn2=btn2
-                @hide="hideDialog"
-                @submit="checkDialog"
-              >
-                <template v-slot:body>
-                  <!-- 내용이 들어가는 부분입니다아 -->
-                  <div>{{ content1 }}<br>{{ content2 }}</div>
-                </template>
-              </popup-dialog>
-            </v-dialog>
-
-            <!-- 쪽지 작성 팝업창 -->
-            <v-dialog
-              max-width="500"
-              v-model="createMailDialog"
-            >
-              <create-mail-dialog
-                :receiverFixed="true"
-                :receiver=requestPhoto.nickname
-                @hide="hideMailCreate"
-              />
-            </v-dialog>
-
-            <!-- 신고 팝업창 형식 -->
-            <v-dialog
-              max-width="400"
-              v-model="reportDialog"
-            >
-              <report-dialog
-                :postType="2"
-                :postID=requestPhoto.post_i
-                @hide="hideReportDialog"
-              />
-            </v-dialog>
-            
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        :headerTitle=headerTitle
+        :btn1Title=btn1Title
+        :btn2Title=btn2Title
+        :btn2=btn2
+        @hide="hideDialog"
+        @submit="checkDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>{{ content1 }}<br>{{ content2 }}</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
+    <!-- 쪽지 작성 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="createMailDialog"
+    >
+      <create-mail-dialog
+        :receiverFixed="true"
+        :receiver=requestPhoto.nickname
+        @hide="hideMailCreate"
+      />
+    </v-dialog>
+
+    <!-- 신고 팝업창 형식 -->
+    <v-dialog
+      max-width="400"
+      v-model="reportDialog"
+    >
+      <report-dialog
+        :postType="2"
+        :postID=requestPhoto.post_id
+        @hide="hideReportDialog"
+      />
+    </v-dialog>
 
   </v-container>
 </template>
@@ -172,6 +171,7 @@ export default{
   },
   data(){
     return{
+    // 팝업창
       popupDialog: false,
       reportDialog: false,
       createMailDialog: false,
@@ -181,11 +181,12 @@ export default{
       btn1Title: "",
       btn2Title: "",
       btn2: false,
+
       requestPhoto: [],
       isLikedBefore: null,
       isLikedAfter: null,
       isMine: null,
-      deletePost: false
+      deletePost: false,
     }
   },
   mounted() {
@@ -224,21 +225,21 @@ export default{
   beforeDestroy() {
     let vm = this;
     if (vm.deletePost) return;
+    if (vm.isLikedBefore == vm.isLikedAfter) return; // 좋아요 상태 같은 경우
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let task = "";
-    if(vm.isLikedBefore != vm.isLikedAfter) { // 좋아요 상태 바뀐 경우
-      if(vm.isLikedBefore) task = "취소"; // 좋아요 취소
-      else task = "등록"; // 좋아요 등록
+    if(vm.isLikedBefore) task = "취소"; // 좋아요 취소
+    else task = "등록"; // 좋아요 등록
 
-      console.log(task);
-      const likeInfo = JSON.stringify({
-        "like_id": 0,
-        "nickname": UserInfo.nickname,
-        "postType": 2,
-        "postId": vm.requestPhoto.post_id,
-        "task": task
-      });
-      herokuAPI.photoLike(likeInfo)
+    console.log(task);
+    const likeInfo = JSON.stringify({
+      "like_id": 0,
+      "nickname": UserInfo.nickname,
+      "postType": 2,
+      "postId": vm.requestPhoto.post_id,
+      "task": task
+    });
+    herokuAPI.photoLike(likeInfo)
       .then(function (response) {
         if(response.status == 200) console.log("좋아요 " + task + " 성공");
       })
@@ -254,7 +255,6 @@ export default{
           vm.likeFailPopup(task);
         }
       });
-    }
   },
   methods: {
     showDialog() { // 팝업창 보이기
@@ -353,16 +353,13 @@ export default{
 .back{
   color: aqua;
 }
-
 .v-btn__content{
   display: flex;
   flex-direction: column;
 }
-
 .thumbs{
   color: rgb(248, 62, 62);
   font-size: 1.7em;
   font-weight: 600;
 }
-
 </style>
