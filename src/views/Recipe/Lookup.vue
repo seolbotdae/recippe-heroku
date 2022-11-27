@@ -3,13 +3,27 @@
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
         <!-- 가장 바깥쪽 카드 -->
-        <v-card min-height="1000" color="#f5efe6">
+        <v-card min-height="1000" color="#f5efe6" style="position:relative">
           <div class="d-flex justify-space-between align-end">
             <!-- 뒤로 돌아가기 버튼 -->
             <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
-            <v-btn text class="mr-5">
+            <v-btn text class="mr-5" @click="menuButtonOnClickMethod">
               <v-icon>mdi-menu</v-icon>
             </v-btn>
+
+            <div class="menu-container mr-5">
+              <div class="mail-btn menu-item" @click="mailButtonOnClickMethod">
+                <span>쪽지</span>
+              </div>
+              <div class="report-btn menu-item" @click="reportButtonOnClickMethod">
+                <span>신고</span>
+              </div>
+              <div class="delete-btn menu-item" @click="deleteButtonOnClickMethod">
+                <span>삭제</span>
+              </div>
+            </div>
+            
+            
           </div>
           
           <!-- 게시글 정보 입력란 -->
@@ -242,6 +256,44 @@
 .unliked {
   color: #808080;
 }
+
+.menu-container {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 6%;
+}
+
+.menu-item {
+  display: none;
+  width: 64px;
+  font-size: 15px;
+  text-align: center;
+  padding-left: 18px;
+  padding-right: 18px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border: 1px solid black;
+  border-radius: 4px;
+
+  background-color:#fefefe;
+  cursor: pointer;
+}
+
+.menu-item:hover{
+  background-color:#8bacc9;
+  transition: 0.5s;
+}
+
+.mail-btn{
+  margin-top: -24px;
+}
+
+.visible{
+  display: block;
+}
+
+
 
 
 </style>
@@ -594,6 +646,49 @@ export default{
           }
         })
     },
+    // 옆의 메뉴 버튼을 누를 경우 실행되는 함수.
+    menuButtonOnClickMethod(){
+      let menuBtn = document.querySelector(".menu-container");
+      let mailBtn = document.querySelector(".mail-btn");
+      let reportBtn = document.querySelector(".report-btn");
+      let deleteBtn = document.querySelector(".delete-btn");
+
+      if(menuBtn.classList.contains('visible')) {
+        console.log("visible 있음");
+        menuBtn.classList.remove("visible");
+        deleteBtn.classList.remove("visible");
+        mailBtn.classList.remove("visible");
+        reportBtn.classList.remove("visible");
+      } else {
+        if(this.isMine) {
+          deleteBtn.classList.add("visible");
+        }else {
+          mailBtn.classList.add("visible");
+          reportBtn.classList.add("visible");
+        }
+        console.log("visible 없음");
+        menuBtn.classList.add("visible");
+      }
+    },
+    // 쪽지 버튼 누를 경우 실행되는 함수.
+    mailButtonOnClickMethod(){
+      let menuBtn = document.querySelector(".menu-container");
+      console.log("쪽지 버튼 누름!");
+      menuBtn.classList.remove("visible");
+    },
+    // 신고 버튼
+    reportButtonOnClickMethod(){
+      let menuBtn = document.querySelector(".menu-container");
+      console.log("신고 버튼 누름!");
+      menuBtn.classList.remove("visible");
+    },
+    // 삭제 버튼
+    deleteButtonOnClickMethod(){
+      let menuBtn = document.querySelector(".menu-container");
+      console.log("삭제 버튼 누름!");
+      menuBtn.classList.remove("visible");
+    }
+
   }
 }
 </script>
