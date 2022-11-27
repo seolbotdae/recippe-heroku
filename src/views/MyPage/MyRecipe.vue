@@ -5,7 +5,7 @@
         <!-- 요리 직접 검색과 카테고리 선택 -->
         <v-card min-height="100" color="#f5efe6" class="mb-3">
           <!-- 요리 검색 윗줄 -->
-          <div class="find-cook flex align-end mb-2" v-if="!categoryBoolean">
+          <div class="find-cook flex align-end mb-2">
             <dropdown class="my-dropdown-toggle my-0 ml-5"
               :options="search_standard"
               :selected="search_object" 
@@ -21,54 +21,6 @@
             <v-btn class="mx-3" color="#E8DFCA">
               검색
             </v-btn>
-          </div>
-          <div class="black-line mx-3" v-if="!categoryBoolean"></div>
-          <!-- 요리 검색 밑줄 -->
-          <div class="category-search-dropdown mt-2 flex-column">
-            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean" v-if=!categoryBoolean>카테고리 검색</v-btn>
-            <v-btn color="#f5efe6" depressed @click="methodToChangeCategoryBoolean" v-if=categoryBoolean>키워드 검색</v-btn>
-            <!-- 카테고리 슬라이드 -->
-            <v-card fill-height color="#E8DFCA" v-if=categoryBoolean>
-              <v-card min-height="100" class="my-5 mx-5">
-                <v-card-title primary-title class="my-text ml-5">
-                  재료
-                </v-card-title>
-                <v-radio-group v-model="value" row class="mt-0 ml-10">
-                  <v-radio label="육류" value="육류"></v-radio>
-                  <v-radio label="어류" value="어류"></v-radio>
-                  <v-radio label="채소류" value="채소류"></v-radio>
-                  <v-radio label="과일류" value="과일류"></v-radio>
-                </v-radio-group>
-              </v-card>
-
-              <v-card min-height="100" class="my-5 mx-5">
-                <v-card-title primary-title class="my-text ml-5">
-                  조리법
-                </v-card-title>
-                <v-radio-group v-model="value" row class="mt-0 ml-10">
-                  <v-radio label="구이" value="구이"></v-radio>
-                  <v-radio label="볶음" value="볶음"></v-radio>
-                  <v-radio label="조림" value="조림"></v-radio>
-                  <v-radio label="튀김" value="튀김"></v-radio>
-                </v-radio-group>
-              </v-card>
-
-              <v-card min-height="100" class="my-5 mx-5">
-                <v-card-title primary-title class="my-text ml-5">
-                  매운맛 단계
-                </v-card-title>
-                <v-radio-group v-model="value" row class="mt-0 ml-10">
-                  <v-radio label="1단계" value="1단계"></v-radio>
-                  <v-radio label="2단계" value="2단계"></v-radio>
-                  <v-radio label="3단계" value="3단계"></v-radio>
-                  <v-radio label="4단계" value="4단계"></v-radio>
-                  <v-radio label="5단계" value="5단계"></v-radio>
-                </v-radio-group>
-              </v-card>
-              <div class="d-flex justify-end ma-5">
-                <v-btn color="#7895B2">검색</v-btn>
-              </div>
-            </v-card>
           </div>
         </v-card>
 
@@ -86,11 +38,6 @@
               :closeOnOutsideClick="true">
             </dropdown>
           </div>
-
-          <!-- 글쓰기 버튼 -->
-          <v-btn fab to="/recipe/create" x-large color="primary" class="write-icon">
-            <v-icon dark>mdi-pencil-outline</v-icon>
-          </v-btn>
 
           <!-- 음식 v card -->
           <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item.post_id" @click="toLookup(item.post_id)">
@@ -122,14 +69,6 @@
             </div>
           </v-card>
 
-          <!-- 페이지 이동 -->
-          <v-pagination 
-            v-model="page" 
-            :length="pageLength"
-            class="pb-10"
-            @input="handlePage"  
-          >
-          </v-pagination>
         </v-card>
       </v-col>
     </v-row>
@@ -202,6 +141,8 @@ export default{
       recipeID: null,
       total_page: null,
 
+      userNN: "",
+
     //드롭다운
       //검색 기준
       search_standard: [
@@ -221,38 +162,30 @@ export default{
         name: '최근 순',
       },
 
-      //카테고리 슬라이드
-      categoryBoolean : false,
-
       //현재 검색 기준
       currentSearchStandard : "요리 이름",
-
-      //페이지네이션 길이
-      pageLength : 1,
-
-      //현재 페이지
-      page : 1,
     }
   },
   mounted() {
     let vm = this;
-    herokuAPI.recipeList(1)
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    vm.userNN = UserInfo.nickname
+    herokuAPI.myrecipesLookup(vm.userNN)
       .then(function(response) {
-        console.log("리스트 응답 온거", response);
+        console.log("응답 온거", response);
         if(response.status == 200) {
-            console.log("조회 성공");
-            vm.pageLength = response.data.total_page;
-            for(let i = 0; response.data.recipeList[i] != null; i++) {
-              vm.recipes.push(response.data.recipeList[i]);
-            }
+          console.log("조회 성공");
+          for(let i = 0; response.data[i] != null; i++) {
+            vm.recipes.push(response.data[i]);
           }
+        }
       })
       .catch(function (e) {
-        if(e.response.status == 500) {
-          console.log("500 DB 오류");
+        if(e.response.status == 400) {
+          console.log("400 DB 오류");
           vm.requestFailPopup();
-        } else if(e.response.status == 502) {
-          console.log("502 Unknown error");
+        } else if(e.response.status == 500) {
+          console.log("500 Unknown error");
           vm.requestFailPopup();
         }
       });
@@ -284,69 +217,61 @@ export default{
   // 클릭한 레시피 게시글 열람 페이지로 이동
     toLookup(recipeID) {
       router.push({
-        path: "/recipe/lookup/"+recipeID,
+        path: "/mypage/mypagerecipelookup/"+recipeID,
       })
     },
 
     searchRecipeList() {
-      let list = [];
-      let tp;
+      let vm = this;
       const searchInfo = JSON.stringify({
-        "searchType": "카테고리",
-        "categories": "test0-test2",
-        "keywordType": null,
-        "keyword": null,
-        "page": 1
+        "nickname": vm.userNN,
+        "keyword": "test"
       });
-      herokuAPI.recipeSearch(searchInfo)
+      herokuAPI.myrecipesSearch(searchInfo)
         .then(function(response) {
           console.log("응답 온거", response);
           if(response.status == 200) {
               console.log("검색 성공");
-              for(let i = 0; response.data.recipeList[i] != null; i++) {
-                list.push(response.data.recipeList[i]);
+              for(let i = 0; response.data[i] != null; i++) {
+                vm.recipes.push(response.data[i]);
               }
-              tp = response.data.total_page;
             }
         })
         .catch(function (e) {
-          if(e.response.status == 500) {
-            console.log("500 DB 오류");
+          if(e.response.status == 404) {
+            console.log("404 DB 오류");
             vm.searchRequestFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
             vm.searchRequestFailPopup();
           }
         });
-      this.recipes = list;
-      this.total_page = tp;
     },
 
-    sortRecipeList(page, order_by) {
+    sortRecipeList(order_by) {
       let vm = this;
       vm.recipes = [];
-      
       const sortInfo = JSON.stringify({
+        "nickname": vm.userNN,
         "arrangeBy": order_by,
-        "page": page
       });
-      herokuAPI.recipeSort(sortInfo)
+      herokuAPI.myrecipesSort(sortInfo)
         .then(function (response) {
           console.log("응답 온거", response);
           if(response.status == 200) {
             console.log("정렬 성공");
-            for(let i = 0; response.data.recipeList[i] != null; i++) {
-              vm.recipes.push(response.data.recipeList[i]);
+            for(let i = 0; response.data[i] != null; i++) {
+              vm.recipes.push(response.data[i]);
             }
             window.scrollTo({top:0});
           }
         })
         .catch(function (e) {
-          if(e.response.status == 500) {
-            console.log("500 DB 오류");
+          if(e.response.status == 404) {
+            console.log("404 DB 오류");
             vm.sortRequestFailPopup();
-          } else if(e.response.status == 502) {
-            console.log("502 Unknown error");
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
             vm.sortRequestFailPopup();
           }
         });
@@ -373,43 +298,25 @@ export default{
         console.log("최근 순 선택");
         this.sort_object.name = "최근 순";
 
-        this.page = 1;
-        console.log(this.page, this.sort_object.name);
-        this.sortRecipeList(this.page, this.sort_object.name);
+        console.log(this.sort_object.name);
+        this.sortRecipeList(this.sort_object.name);
 
       } else if (this.object.name == "조회 순") {
         console.log("조회 순 선택");
         this.sort_object.name = "조회수 순";
 
-        this.page = 1;
-        console.log(this.page, this.sort_object.name);
-        this.sortRecipeList(this.page, this.sort_object.name);
+        console.log(this.sort_object.name);
+        this.sortRecipeList(this.sort_object.name);
 
       } else if (this.object.name == "좋아요 순") {
         console.log("좋아요 순 선택");
         this.sort_object.name = "좋아요 순";
 
-        this.page = 1;
-        console.log(this.page, this.sort_object.name);
-        this.sortRecipeList(this.page, this.sort_object.name);
+        console.log(this.sort_object.name);
+        this.sortRecipeList(this.sort_object.name);
 
       }
     },
-
-    // 카테고리 검색 슬라이드 버튼 함수
-    methodToChangeCategoryBoolean() {
-      if (this.categoryBoolean == true) {
-        this.categoryBoolean = false
-      } else {
-        this.categoryBoolean = true
-      }
-    },
-
-    //페이지네이션 함수
-    handlePage(){
-      let vm = this;
-      vm.sortRecipeList(vm.page, vm.sort_object.name);
-    }
   }
 }
 </script>

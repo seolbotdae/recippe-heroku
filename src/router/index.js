@@ -26,6 +26,13 @@ import CreateP from '@/views/Photo/Create';
 import LookupP from '@/views/Photo/Lookup';
 // 마이페이지 관련 화면
 import MyPageM from '@/views/MyPage/MyPage';
+import MyRecipe from '@/views/MyPage/MyRecipe';
+import LikedRecipe from '@/views/MyPage/LikedRecipe';
+import CommentRecipe from '@/views/MyPage/CommentRecipe';
+import MypageRecipeLookup from '@/views/MyPage/RecipeLookup';
+import MyPhoto from '@/views/MyPage/MyPhoto';
+import LikedPhoto from '@/views/MyPage/LikedPhoto';
+import MypagePhotoLookup from '@/views/MyPage/PhotoLookup';
 import Refrigerator from '@/views/MyPage/Refrigerator';
 import ChangeNickname from '@/views/MyPage/ChangeNickname';
 import ChangePassword from '@/views/MyPage/ChangePassword';
@@ -63,7 +70,7 @@ const routes = [
             component: LookupR
           },
           {
-            path: 'edit',
+            path: 'edit/:id',
             name: 'editR',
             component: EditR
           },
@@ -98,6 +105,40 @@ const routes = [
             path: '',
             name: 'mypage',
             component: MyPageM
+          },
+          {
+            path: 'myrecipe',
+            name: 'myrecipe',
+            component: MyRecipe,
+          },
+          {
+            path: 'likedrecipe',
+            name: 'likedrecipe',
+            component: LikedRecipe
+          },{
+            path: 'commentrecipe',
+            name: 'commentrecipe',
+            component: CommentRecipe
+          },
+          {
+            path: 'mypagerecipelookup/:id',
+            name: 'LookupMR',
+            component: MypageRecipeLookup
+          },
+          {
+            path: 'myphoto',
+            name: 'myphoto',
+            component: MyPhoto,
+          },
+          {
+            path: 'likedphoto',
+            name: 'likedphoto',
+            component: LikedPhoto
+          },
+          {
+            path: 'mypagephotolookup/:id',
+            name: 'LookupMP',
+            component: MypagePhotoLookup
           },
           {
             path: 'refrigerator',
