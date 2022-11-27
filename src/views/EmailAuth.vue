@@ -56,7 +56,7 @@
 import herokuAPI from '@/api/heroku.js';
 import router from '@/router/index.js';
 
-export default {
+export default{
   data() {
     return {
       info: {

@@ -18,9 +18,7 @@
                 label="레시피 제목"
                 id="id"
                 class="ml-16"
-
                 v-model="recipeTitle"
-
               ></v-text-field>
             </div>
             
@@ -34,7 +32,7 @@
               :selected="recippeTypeObject" 
               v-on:updateOption="methodToRunOnSelect_category" 
               :placeholder="'레시피 종류'"
-              :closeOnOutsideClick="boolean"
+              :closeOnOutsideClick="true"
               ></dropdown>
             </div>
 
@@ -48,7 +46,7 @@
               :selected="hotLevelObject" 
               v-on:updateOption="methodToRunOnSelect_spicy" 
               :placeholder="'매운맛 단계'"
-              :closeOnOutsideClick="boolean"
+              :closeOnOutsideClick="true"
               ></dropdown>
             </div>
 

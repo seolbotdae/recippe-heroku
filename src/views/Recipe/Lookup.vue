@@ -23,7 +23,6 @@
               </div>
             </div>
             
-            
           </div>
           
           <!-- 게시글 정보 입력란 -->
@@ -140,7 +139,7 @@
                     <v-btn @click="editComment(item.comment_id)" text icon small color="blue">
                       <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
-                    <v-btn @click="deleteComment(item.comment_id)" text icon small color="red">
+                    <v-btn @click="commentDeletePopup(item.comment_id)" text icon small color="red">
                       <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
                   </div>
@@ -292,10 +291,6 @@
 .visible{
   display: block;
 }
-
-
-
-
 </style>
 
 <script>
@@ -309,7 +304,8 @@ export default{
   components: {
     PopupDialog,
     ReportDialog,
-    CreateMailDialog
+    CreateMailDialog,
+    'dropdown': dropdown,
   },
   data () {
     return {
@@ -336,6 +332,8 @@ export default{
       isLikedAfter: null,
       isMine: null,
       deletePost: false,
+      isRecipeDelete: true,
+      clickedCommentID: 0,
 
       recippeType: [
         { name: '최근 순'},
@@ -359,9 +357,6 @@ export default{
       canDecrease:false,
       userNN: ""
     }
-  },
-  components: {
-    'dropdown': dropdown,
   },
   mounted() {
     let pid = this.$route.params.id;
@@ -470,6 +465,17 @@ export default{
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
+      this.isRecipeDelete = true;
+      this.showDialog();
+    },
+    commentDeletePopup(id) {
+      this.clickedCommentID = id;
+      this.headerTitle = "댓글 삭제";
+      this.content1 = "삭제하시겠습니까?";
+      this.btn1Title = "취소";
+      this.btn2Title = "삭제";
+      this.btn2 = true;
+      this.isRecipeDelete = false;
       this.showDialog();
     },
     deleteFailPopup() {
@@ -503,9 +509,11 @@ export default{
       this.btn2 = true;
       this.showDialog();
     },
+
     checkDialog() { // 팝업창 버튼 클릭시
       // 확인 버튼 클릭시 동작 걸기
-      this.deleteRecipe();
+      if(this.isRecipeDelete == true) this.deleteRecipe();
+      else this.deleteComment();
       this.hideDialog();
     },
     deleteRecipe() { // 게시글 삭제
@@ -529,12 +537,33 @@ export default{
           }
         });
     },
+    deleteComment() {
+      let vm = this;
+      const deleteInfo = JSON.stringify({
+        "comment_id": vm.clickedCommentID,
+        "nickname": vm.userNN
+      });
+      herokuAPI.commentDelete(deleteInfo)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 삭제 성공");
+            vm.$router.go();
+          }
+        })
+    },
     
     showReportDialog() { // 신고 팝업창 보이기
       this.reportDialog = true
     },
     hideReportDialog() { // 신고 팝업창 숨기기
       this.reportDialog = false
+    },
+    reportRecipe() { // 게시글 신고
+      let vm = this;
+      vm.reportType = 1;
+      vm.reportID = vm.requestRecipe.post_id;
+      vm.showReportDialog();
     },
     reportComment(comment_id) { // 댓글 신고
       let vm = this;
@@ -612,6 +641,7 @@ export default{
           console.log("응답 정보", response);
           if(response.status == 200) {
             console.log("댓글 등록 성공");
+            vm.$router.go();
           }
         })
     },
@@ -632,21 +662,8 @@ export default{
     //       }
     //     })
     // },
-    deleteComment(comment_id) {
-      let vm = this;
-      const deleteInfo = JSON.stringify({
-        "comment_id": comment_id,
-        "nickname": vm.userNN
-      });
-      herokuAPI.commentDelete(deleteInfo)
-        .then(function (response) {
-          console.log("응답 정보", response);
-          if(response.status == 200) {
-            console.log("댓글 삭제 성공");
-          }
-        })
-    },
-    // 옆의 메뉴 버튼을 누를 경우 실행되는 함수.
+
+  // 옆의 메뉴 버튼을 누를 경우 실행되는 함수.
     menuButtonOnClickMethod(){
       let menuBtn = document.querySelector(".menu-container");
       let mailBtn = document.querySelector(".mail-btn");
@@ -675,18 +692,21 @@ export default{
       let menuBtn = document.querySelector(".menu-container");
       console.log("쪽지 버튼 누름!");
       menuBtn.classList.remove("visible");
+      this.showMailCreate();
     },
     // 신고 버튼
     reportButtonOnClickMethod(){
       let menuBtn = document.querySelector(".menu-container");
       console.log("신고 버튼 누름!");
       menuBtn.classList.remove("visible");
+      this.reportRecipe();
     },
     // 삭제 버튼
     deleteButtonOnClickMethod(){
       let menuBtn = document.querySelector(".menu-container");
       console.log("삭제 버튼 누름!");
       menuBtn.classList.remove("visible");
+      this.deletePopup();
     }
 
   }

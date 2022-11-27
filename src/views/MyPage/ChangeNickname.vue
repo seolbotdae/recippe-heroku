@@ -23,7 +23,7 @@
                         filled 
                         v-model="user.nickname" 
                         label="새 닉네임" 
-                        :rules="id_rule" 
+                        :rules="nn_rule" 
                         placeholder="새로운 닉네임 입력." 
                         class="pb-10"
                       ></v-text-field>
@@ -104,9 +104,8 @@ export default{
       nickname: '',
       
     // 유효성 검사
-      id_rule: [
-        v => !!v || '새로운 아이디를 입력하세요.',
-        v => !(v && v.length < 6) || '아이디는 6자 이상이여야 합니다.',
+      nn_rule: [
+        v => !!v || '새로운 닉네임을 입력하세요.',
       ],
     };
   },

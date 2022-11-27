@@ -73,7 +73,6 @@
         </v-card>
 
 
-
         <v-card min-height="1000" color="#f5efe6">
           <!-- 상단 레시피 게시판 글씨랑 정렬기준 드롭다운 -->
           <div class="recipe-top d-flex justify-space-between align-center pa-5">
