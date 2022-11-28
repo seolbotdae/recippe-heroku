@@ -38,16 +38,14 @@
                   </v-col>
                 </v-row>
 
-                <v-row justify="center">
-                  <v-col cols="8">
-                    <v-img
-                      lazy-src="https://w.namu.la/s/45e2317ae59261dcc8643bfa26897a253a3162b145e770687fcf649e461a99ae3b87401baf461913986519a8ed951db7d5f477222a5fe09d8d0b1c6c988e33c97e4d25588755b598af2025a04d3a3fc4b0c149cc3fdfa702f71ae970575d19ef"
-                      contain
-                      src="https://w.namu.la/s/45e2317ae59261dcc8643bfa26897a253a3162b145e770687fcf649e461a99ae3b87401baf461913986519a8ed951db7d5f477222a5fe09d8d0b1c6c988e33c97e4d25588755b598af2025a04d3a3fc4b0c149cc3fdfa702f71ae970575d19ef"
-                    ></v-img>
-                  </v-col>
-                </v-row>
-                
+                <div class="mx-6 mt-3">
+                  <v-img
+                    max-height="250"
+                    contain
+                    :src="'data:image/jpeg;base64,'+item.photo_link"
+                  ></v-img>
+                </div>
+                    
               </v-card>
 
               <!-- 페이지 이동 -->
@@ -98,6 +96,7 @@
   right: 5%;
   z-index: 9;
 }
+
 </style>
 
 <script>
@@ -153,6 +152,7 @@ export default{
           for(let i = 0; response.data.photoList[i] != null; i++) {
             vm.photo.push(response.data.photoList[i]);
           }
+          console.log(vm.photo);
         }
       })
       .catch(function (e) {

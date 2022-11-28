@@ -94,6 +94,7 @@
 <script>
 import herokuAPI from '@/api/heroku.js';
 import PopupDialog from '@/components/popup.vue';
+import router from '@/router';
 
 export default{
   components: {
@@ -132,6 +133,7 @@ export default{
         var reader = new FileReader();
         reader.onload = (e) => {
           this.preview = e.target.result;
+          this.image = this.preview;
         }
         this.image=input.files[0];
         reader.readAsDataURL(input.files[0]);
@@ -147,18 +149,20 @@ export default{
     addPhoto() {
       const newPhoto = JSON.stringify (
         {
-	        "post_id":0,
-          "photo_link":"web test",
+	        "post_id": null,
+          "photo_link": this.image.split(/[\,]/)[1],
           "like_count":0,
-          "upload_time":"",
-          "nickname":"test"
+          "upload_time": null,
+          "nickname":this.nickname
         }
       );
+      
       herokuAPI.photoAdd(newPhoto) 
         .then(function (response) {
           console.log("전송 정보",  newPhoto);
           if(response.status == 200) {
             console.log("응답 정보", response.data);
+            router.push({path: "/photo"});
           }
         })
         .catch(function (e) {
