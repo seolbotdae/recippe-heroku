@@ -70,10 +70,14 @@
         :landscape="true" 
         :reactive="true"
         color="#7895B2"
-        class="mb-15"
+        class=""
       >
       </v-date-picker>      
-      
+
+      <div class="d-flex justify-center">
+         <v-checkbox label="유통기한 선택 안함" v-model="is_expiry_not_exist"></v-checkbox>
+      </div>
+     
       
     </v-card-text>
 
@@ -132,7 +136,7 @@ export default{
       name: "",
       amount: "",
       unit: "",
-      expiry_date: "",
+      expiry_date: null,
       nickname: "",
 
       // 검색 목록
@@ -249,7 +253,10 @@ export default{
       ],
 
       // 단위 선택시를 위한 변수
-      unitLabel : "단위 입력"
+      unitLabel : "단위 입력",
+      
+      // 유통기한 선택 안함을 위한 변수
+      is_expiry_not_exist : false,
     };
   },
   props: {
@@ -277,7 +284,7 @@ export default{
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const Ingre = {
           "amount": vm.amount,
-          "expiry_date": vm.expiry_date, // 없어도 됨
+          "expiry_date": this.is_expiry_not_exist ? null : vm.expiry_date, // 없어도 됨
           "name" : vm.name,
           "nickname" : UserInfo.nickname,
           "unit" : vm.unit,
@@ -324,6 +331,9 @@ export default{
     clickIngredient(payload){
       console.log(payload.srcElement.innerText);
       document.getElementById("inputText").value = payload.srcElement.innerText;
+
+      this.name = payload.srcElement.innerText;
+      
       for (var i=0;i<this.ingredients.length;i++){
         this.$refs.ingreName[i].classList.remove('visible');
       }
