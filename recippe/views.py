@@ -565,7 +565,7 @@ class InquiryMyLikePostsAPI(APIView):
                 result = RecipeListSerializer(data=result, many=True)
                 result.is_valid()
                 return Response(result.data, status=status.HTTP_200_OK)
-            elif postType == -1:
+            elif postType == 2:
                 result = MyPhotoPostSerializer(data=result, many=True)
                 result.is_valid()
                 return Response(result.data, status=status.HTTP_200_OK)
