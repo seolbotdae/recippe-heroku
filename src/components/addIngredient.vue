@@ -324,6 +324,9 @@ export default{
     clickIngredient(payload){
       console.log(payload.srcElement.innerText);
       document.getElementById("inputText").value = payload.srcElement.innerText;
+
+      this.name = payload.srcElement.innerText;
+      
       for (var i=0;i<this.ingredients.length;i++){
         this.$refs.ingreName[i].classList.remove('visible');
       }
