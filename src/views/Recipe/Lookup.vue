@@ -162,8 +162,8 @@
                       outlined
                       background-color="white"
                       label="댓글을 입력해 주세요."
-                      v-model="newComment"
-                      :rules="newComment_rule"
+                      v-model="editComment"
+                      :rules="editComment_rule"
                       class="mb-0"
                     ></v-textarea>
                   </v-form>
@@ -188,8 +188,8 @@
                     outlined
                     background-color="white"
                     label="댓글을 입력해 주세요."
-                    v-model="editComment"
-                    :rules="editComment_rule"
+                    v-model="newComment"
+                    :rules="newComment_rule"
                     class="mb-0"
                   ></v-textarea>
                 </v-form>
@@ -319,6 +319,7 @@
 <script>
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
+import router from '@/router/index.js';
 import PopupDialog from '@/components/popup.vue';
 import ReportDialog from '@/components/report.vue';
 import CreateMailDialog from '@/components/createMail.vue';
@@ -546,12 +547,12 @@ export default{
     deleteRecipe() { // 게시글 삭제
       let vm = this;
       vm.deletePost = true;
-      const deleteTarget = JSON.stringify({ requestRecipe });
+      const deleteTarget = JSON.stringify(vm.requestRecipe);
       herokuAPI.recipeDelete(deleteTarget)
         .then(function (response){
           if(response.status == 200) {
             console.log("삭제 성공");
-            router.push({name: 'recipe'});
+            router.push({path: '/recipe'});
           }
         })
         .catch(function (e) {
@@ -614,6 +615,8 @@ export default{
 
     unExistIngredients() {
     // 미보유 재료 요청
+      let pid = this.$route.params.id;
+      let vm = this;
       herokuAPI.unExistIngredients(vm.userNN, pid)
         .then(function (response) {
           console.log("test",response.data);
@@ -656,14 +659,15 @@ export default{
       if(!validate) return;
       console.log("유효성검사 통과");
       let vm = this;
-      const NewComment = JSON.stringify({
+      const Comment = JSON.stringify({
         "comment_id" : 0,
 	      "comments" : vm.newComment,
 	      "comment_time" : 0,
 	      "nickname" : vm.userNN,
 	      "post_id" : vm.requestRecipe.post_id
       });
-      herokuAPI.commentAdd(NewComment)
+      console.log(Comment);
+      herokuAPI.commentAdd(Comment)
         .then(function (response) {
           console.log("응답 정보", response);
           if(response.status == 200) {

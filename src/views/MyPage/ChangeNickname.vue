@@ -128,15 +128,16 @@ export default{
       this.headerTitle = "변경 요청 실패";
       this.content1 = "닉네임 변경에 실패했습니다.";
       this.content2 = "다시 시도하십시오.";
-      showDialog();
+      this.showDialog();
     },
     sameNickPopup() {
       this.headerTitle = "변경 요청 실패";
       this.content1 = "중복된 닉네임입니다.";
       this.content2 = "";
-      showDialog();
+      this.showDialog();
     },
     NNchange() {
+      let vm = this;
       const validate = this.$refs.form.validate();
       if(validate) {
         const userInfo = JSON.stringify({

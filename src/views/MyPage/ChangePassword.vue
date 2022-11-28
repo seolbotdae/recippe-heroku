@@ -144,19 +144,20 @@ export default{
     changeFailPopup() {
       this.headerTitle = "변경 요청 실패";
       this.content1 = "변경 요청에 실패했습니다.";
-      showDialog();
+      this.showDialog();
     },
     PWchange() {
       const validate = this.$refs.form.validate();
       if(validate) {
         const vm = this;
         const userInfo = JSON.stringify({
-          "nickname": this.user.nickname,
+          "nickname": this.nickname,
           "uid": this.user.id,
           "password": this.user.pw,
           "email": this.user.email,
           "auto_login": this.user.al,
         });
+        console.log(userInfo);
         herokuAPI.changePW(userInfo)
           .then(function (response) {
             console.log("pwChange", response)

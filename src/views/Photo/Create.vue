@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
         <v-card min-height="800" fill-height color="#f5efe6">
-          <v-btn text class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
+          <v-btn to="/photo" text class="ml-5 mt-5"> - 요리 사진 게시판</v-btn>
           <v-row>
               <v-col>
                 <v-card fill-height color="#f5efe6" class="mt-10" flat>

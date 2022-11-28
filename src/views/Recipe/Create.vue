@@ -28,13 +28,8 @@
             <div class="px-10 d-flex align-center my-text">
               <span class="mr-16">레시피 종류</span>
               <v-divider vertical></v-divider>
-              <dropdown class="my-dropdown-toggle ml-15"
-                :options="recippeType" 
-                :selected="recippeTypeObject" 
-                v-on:updateOption="methodToRunOnSelect_category" 
-                :placeholder="'레시피 종류'"
-                :closeOnOutsideClick="true"
-              />
+              <v-btn @click="showCategoryDialog" class="ml-14">카테고리 선택하기</v-btn>
+              <span class="ml-16">카테고리 : {{category}}</span>
             </div>
 
             <div class="line mx-5"></div>
@@ -102,6 +97,17 @@
       </v-col>
     </v-row>
 
+    <!-- 카테고리 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="categoryDialog"
+    >
+      <category-dialog
+        @category="selectCategory"
+        @hide="hideCategoryDialog"
+      />
+    </v-dialog>
+
     <!-- 재료 추가 팝업창 -->
     <v-dialog
       max-width="500"
@@ -113,6 +119,24 @@
         @update="update"
         @hide="hideAddIngredientDialog"
       />
+    </v-dialog>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        headerTitle="등록하기 요청 실패"
+        btn1Title="확인"
+        :btn2="false"
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>등록 요청에 실패했습니다.</div>
+        </template>
+      </popup-dialog>
     </v-dialog>
 
   </v-container>
@@ -136,31 +160,36 @@
 .my-text{
   color: #42688e;
 }
+.temp {
+  max-height: 100px;
+  overflow: scroll;
+}
 
 </style>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
+import router from '@/router/index.js';
 import AddIngredientDialog from '@/components/addIngredient.vue';
+import PopupDialog from '@/components/popup.vue';
+import CategoryDialog from '@/components/Category.vue'
 
 export default{
   components: {
     'dropdown': dropdown,
-    AddIngredientDialog
+    PopupDialog,
+    AddIngredientDialog,
+    CategoryDialog
   },
   data () {
     return {
       addIngredientDialog: false,
+      popupDialog: false,
+      categoryDialog: false,
+
       ingredient: [],
-      recippeType: [
-        { name: '최근 순'},
-        { name: '조회 순'},
-        { name: '좋아요 순'}
-      ],
-      recippeTypeObject: {
-        name: '레시피 종류',
-      },
+      category: "",
       hotLevel: [
         { name: '1단계'},
         { name: '2단계'},
@@ -182,9 +211,24 @@ export default{
         v => !!v || '내용을 입력하세요.',
       ],
     }
-    
   },
   methods: {
+  // 팝업창 관련
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true;
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false;
+    },
+    showCategoryDialog() {
+      this.categoryDialog = true;
+    },
+    hideCategoryDialog() {
+      this.categoryDialog = false;
+    },
+    selectCategory(name, page) {
+      this.category = name;
+    },
   // 재료추가 팝업창 메소드들
     showAddIngredientDialog() {
       this.addIngredientDialog = true;
@@ -193,39 +237,57 @@ export default{
       this.addIngredientDialog = false;
     },
     add(ingre) {
-      this.ingredient.push(ingre);
+      const addIngre = {
+        "id": null,
+        "name": ingre.name,
+        "post_id": null,
+        "unit": ingre.unit,
+        "amount": ingre.amount
+      }
+      this.ingredient.push(addIngre);
     },
     update() {
       this.$router.go();
     },
 
     addRecipe() {
+      const validate = this.$refs.form.validate();
+      if(!validate) return;
       let vm = this;
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const recipe = JSON.stringify ({
-        "post_id": 0,
+        "post_id": null,
         "nickname": UserInfo.nickname,
         "title": vm.recipeTitle,
-        "category": vm.recipeCategory,
+        "category": vm.category,
         "degree_of_spicy": vm.recipeSpicy,
         "description": vm.recipeDescription,
         "views": 0,
         "like_count": 0,
         "comment_count": 0,
-        "upload_time": "",
+        "upload_time": null,
         "Recipe_Ingredients": vm.ingredient,
         "comments": []
         });
       console.log("연결 정보", recipe);
-      /* 데이터 연결한거 테스트를 위해 콘솔에 출력만 시킬라고 요거 주석처리해뒀어 나중에 적용시킬 때 풀면됨 && 등록하기 버튼에 붙어있음 - 요하
       herokuAPI.recipeAdd(recipe) 
         .then(function (response) {
           console.log("전송 정보",  recipe);
           if(response.status == 200) {
+            console.log("응답 정보", response);
             console.log("응답 정보", response.data);
+            router.push({path: "/recipe"});
           }
         })
-      */
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB error");
+            vm.showDialog();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.showDialog();
+          }
+        });
     },
     methodToRunOnSelect_category(payload) {
       this.object = payload;

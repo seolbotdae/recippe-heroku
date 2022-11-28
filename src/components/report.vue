@@ -6,15 +6,12 @@
     </v-card-title>
 
     <v-card-text>
-      <v-form ref="form" lazy-validation>
-        <v-textarea
-          label="이곳에 신고 사유를 작성하세요"
-          v-model="reportContents"
-          :rules="report_rule"
-          required
-          outlined
-        ></v-textarea>
-      </v-form>
+      <v-textarea
+        label="이곳에 신고 사유를 작성하세요"
+        v-model="reportContents"
+        required
+        outlined
+      ></v-textarea>
     </v-card-text>
 
     <!-- 버튼 부분 -->
@@ -77,10 +74,6 @@ export default{
       titleBtn1: "",
       titleBtn2: "",
       btn2: true,
-
-      report_rule: [
-        v => !!v || '신고 사유를 입력하세요.',
-      ],
     };
   },
   props: {
@@ -122,8 +115,6 @@ export default{
       this.$emit('hide');
     },
     reportPost(){ // 신고 등록 로직으로 수정하기
-      const validate = this.$refs.form.validate();
-      if(validate) {
         let vm = this;
         console.log("통합 신고 로직"); // 레시피->1, 댓글->-1, 요리사진->2
         const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
@@ -188,7 +179,6 @@ export default{
             }
           });
         }
-      }
     },
   }
 };
