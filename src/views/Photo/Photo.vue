@@ -2,20 +2,18 @@
   <v-container>
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
-        <v-card min-height="800" color="#f5efe6">
+        <v-card min-height="calc(100vh - 120px)" color="#f5efe6">
 
-          <!-- 정렬 기준 -->
-          <v-row>
-            <v-col offset="9">
-              <dropdown class="my-dropdown-toggle my-5 "
+          <div class="recipe-top d-flex justify-space-between align-center pa-5">
+            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">요리 사진 게시판</span>
+            <dropdown class="my-dropdown-toggle my-5 "
               :options="search_standard" 
               :selected= currentSearchOption
               v-on:updateOption="methodToRunOnSelect" 
               :placeholder="'검색 기준'"
-              :closeOnOutsideClick="true">
-            </dropdown>
-            </v-col>
-          </v-row>
+              :closeOnOutsideClick="true"
+            ></dropdown>
+          </div>
 
           <!-- 글쓰기 버튼 -->
           <v-btn fab to="/photo/create" x-large color="primary" class="write-icon">

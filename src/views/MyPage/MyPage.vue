@@ -5,15 +5,17 @@
         <v-card color="#f5efe6" class="py-2">
           <v-card-title class="pl-10 my-text">나의 활동</v-card-title>
           <v-card-actions class="pl-15">
-            <v-btn text to="/mypage/myphoto" color="#7895B2">내가 올린 사진</v-btn>
-            <v-btn text to="/mypage/likedphoto" color="#7895B2">좋아요 누른 사진</v-btn>
-          </v-card-actions>
-          <v-card-actions class="pl-15">
             <v-btn text to="/mypage/myrecipe" color="#7895B2">내가 쓴 레시피</v-btn>
-            <v-btn text to="/mypage/likedrecipe" color="#7895B2">좋아요 누른 레시피</v-btn>
           </v-card-actions>
           <v-card-actions class="pl-15">
+            <v-btn text to="/mypage/likedrecipe" color="#7895B2">좋아요 누른 레시피</v-btn>
             <v-btn text to="/mypage/commentrecipe" color="#7895B2">댓글 단 레시피</v-btn>
+          </v-card-actions>
+          <v-card-actions class="pl-15">
+            <v-btn text to="/mypage/myphoto" color="#7895B2">내가 올린 사진</v-btn>
+          </v-card-actions>
+          <v-card-actions class="pl-15">
+            <v-btn text to="/mypage/likedphoto" color="#7895B2">좋아요 누른 사진</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -70,7 +72,6 @@
 
 <script>
 import router from '@/router/index.js';
-import herokuAPI from '@/api/heroku.js';
 
 export default {
   data() {

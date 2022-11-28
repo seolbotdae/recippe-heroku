@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
         <!-- 요리 직접 검색과 카테고리 선택 -->
-        <v-card min-height="100" color="#f5efe6" class="mb-3">
+        <v-card min-height="70" color="#f5efe6" class="mb-3">
           <!-- 요리 검색 윗줄 -->
           <div class="find-cook flex align-end mb-2">
             <dropdown class="my-dropdown-toggle my-0 ml-5"
@@ -24,11 +24,10 @@
           </div>
         </v-card>
 
-
-        <v-card min-height="1000" color="#f5efe6">
+        <v-card min-height="calc(100vh - 202px)" color="#f5efe6">
           <!-- 상단 레시피 게시판 글씨랑 정렬기준 드롭다운 -->
           <div class="recipe-top d-flex justify-space-between align-center pa-5">
-            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">레시피 게시판</span>
+            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">내가 쓴 레시피</span>
             <!-- 드롭다운으로 대체할 예정 -->
             <dropdown class="my-dropdown-toggle"
               :options="sort_standard" 

@@ -3,10 +3,10 @@
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
 
-        <v-card min-height="1000" color="#f5efe6">
-          <!-- 상단 레시피 게시판 글씨랑 정렬기준 드롭다운 -->
+        <v-card min-height="calc(100vh - 120px)" color="#f5efe6">
+          
           <div class="recipe-top d-flex justify-space-between align-center pa-5">
-            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">레시피 게시판</span>
+            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">좋아요 누른 레시피</span>
           </div>
 
           <!-- 음식 v card -->

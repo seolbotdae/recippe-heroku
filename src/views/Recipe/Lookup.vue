@@ -146,8 +146,31 @@
                   
                 </div>
               </div>
-  
             </div>
+
+            <!-- 댓글 수정 부분입니다. -->
+            <div class="d-flex align-top jusify-left my-comment-write">
+              <div class="mx-7 my-3 my-comment-commenter ">
+                <v-btn @click="addComment" color="#AEBDCA">등록</v-btn>
+              </div>
+
+              <!-- 댓글 등록 댓글 내용부분입니다. -->
+              <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
+                <div class="my-text mb-0 ma-3">
+                  <v-form ref="form" lazy-validation>
+                    <v-textarea
+                      outlined
+                      background-color="white"
+                      label="댓글을 입력해 주세요."
+                      v-model="newComment"
+                      :rules="newComment_rule"
+                      class="mb-0"
+                    ></v-textarea>
+                  </v-form>
+                </div>
+              </v-card>
+            </div>
+
             <div class="mx-5 line"></div>  
           </div>
 
@@ -157,7 +180,7 @@
               <v-btn @click="addComment" color="#AEBDCA">등록</v-btn>
             </div>
 
-          <!-- 댓글 등록 댓글 내용부분입니다. -->
+            <!-- 댓글 등록 댓글 내용부분입니다. -->
             <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
               <div class="my-text mb-0 ma-3">
                 <v-form ref="form" lazy-validation>
@@ -165,8 +188,8 @@
                     outlined
                     background-color="white"
                     label="댓글을 입력해 주세요."
-                    v-model="newComment"
-                    :rules="newComment_rule"
+                    v-model="editComment"
+                    :rules="editComment_rule"
                     class="mb-0"
                   ></v-textarea>
                 </v-form>
@@ -324,6 +347,10 @@ export default{
 
       requestRecipe: [],
       UnExistIngre: [],
+      editComment: "",
+      editComment_rule: [
+        v => !!v || '댓글 내용을 입력하세요.',
+      ],
       newComment: "",
       newComment_rule: [
         v => !!v || '댓글 내용을 입력하세요.',

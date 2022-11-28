@@ -2,7 +2,11 @@
   <v-container>
     <v-row justify="center">
       <v-col class="col-xl-8 col-md-10">
-        <v-card min-height="800" color="#f5efe6">
+        <v-card min-height="calc(100vh - 120px)" color="#f5efe6">
+
+          <div class="recipe-top d-flex justify-space-between align-center pa-5">
+            <span style="color:#7895B2; font-weight:900; font-size:1.3em;">내가 올린 사진</span>
+          </div>
 
           <v-row justify="center">
             <v-col cols="8">
