@@ -100,20 +100,6 @@ export default {
         path: "/mypage/refrigerator",
       })
     },
-    lookupMyLikeList() { // 좋아요 누른 게시글
-      let vm = this;
-      let postType = 1; /* 1=레시피, -1=사진 */
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      herokuAPI.mylikeposts(UserInfo.nickname, postType)
-        .then(function(response) {
-          console.log("응답 온거", response);
-          if(response.status == 200) {
-            console.log("조회 성공");
-            if(postType == 1) for(let i = 0; response.data[i] != null; i++) vm.myrecipes.push(response.data[i]);
-            else for(let i = 0; response.data[i] != null; i++) vm.myphotos.push(response.data[i]);
-          }
-        })
-    },
   }
 }
 </script>

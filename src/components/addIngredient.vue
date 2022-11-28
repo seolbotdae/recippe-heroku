@@ -252,6 +252,12 @@ export default{
       unitLabel : "단위 입력"
     };
   },
+  props: {
+    isRecipe: {
+      type: Boolean,
+      default: false,
+    },
+  },
   mounted(){
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     this.nickname = UserInfo.nickname;
@@ -269,28 +275,36 @@ export default{
     addIngre() {
       let vm = this;
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const AddIngre = JSON.stringify ({
-        "amount": vm.amount,
-        "expiry_date": vm.expiry_date, // 없어도 됨
-        "name" : vm.name,
-        "nickname" : UserInfo.nickname,
-        "unit" : vm.unit,
-      });
-      console.log(AddIngre);
-      herokuAPI.refrigeratorAdd(AddIngre)
-        .then(function (response) {
-          console.log("response", response);
-          if(response.status == 200) {
-            console.log("성공 응답", response.data);
-          }
-        })
-        .catch(function (e) {
-          if(e.response.status == 400) {
-            console.log("400 error");
-          } else if(e.response.status == 500) {
-            console.log("500 Unknown error");
-          }
-        });
+      const Ingre = {
+          "amount": vm.amount,
+          "expiry_date": vm.expiry_date, // 없어도 됨
+          "name" : vm.name,
+          "nickname" : UserInfo.nickname,
+          "unit" : vm.unit,
+        };
+      if(vm.isRecipe == true) {
+        vm.$emit('hide');
+        vm.$emit('add', Ingre);
+      } else {
+        const AddIngre = JSON.stringify (Ingre);
+        console.log(AddIngre);
+        herokuAPI.refrigeratorAdd(AddIngre)
+          .then(function (response) {
+            console.log("response", response);
+            if(response.status == 200) {
+              console.log("성공 응답", response.data);
+              vm.$emit('hide');
+              vm.$emit('update');
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 400) {
+              console.log("400 error");
+            } else if(e.response.status == 500) {
+              console.log("500 Unknown error");
+            }
+          });
+      }
     },
     // 재료 필터
     ingredient_filter(){

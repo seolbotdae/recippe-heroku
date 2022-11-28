@@ -81,7 +81,7 @@
       v-model="addIngredientDialog"
     >
       <add-ingredient-dialog
-        @add="add"
+        @update="update"
         @hide="hideAddIngredientDialog"
       />
     </v-dialog>
@@ -116,7 +116,7 @@ export default{
     }
   },
   mounted() {
-    // 냉장고 조회 - 원래 mounted 에 있어야 하는 놈 
+    // 냉장고 조회
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
     herokuAPI.refrigeratorLookup(UserInfo.nickname)
@@ -174,12 +174,14 @@ export default{
       this.showDialog();
     },
     deleteIngre() {
+      let vm = this;
       const deleteTarget = JSON.stringify ({ "id": this.id });
       herokuAPI.refrigeratorDelete(deleteTarget)
         .then(function(response) {
           console.log("응답 온거", response);
           if(response.status == 200) {
             console.log("삭제 성공");
+            vm.$router.go();
           }
         })
         .catch(function (e) {
@@ -200,8 +202,8 @@ export default{
     hideAddIngredientDialog() {
       this.addIngredientDialog = false;
     },
-    add(ingredient) {
-      this.refrigerators.push(ingredient);
+    update() {
+      this.$router.go();
     },
     updateRefrigerator() {
       const edittedTarget = JSON.stringify({

@@ -134,11 +134,6 @@ export default{
     updateList(){ // 쪽지 목록 업데이트
       this.$router.go();
     },
-    toCreate() {
-      router.push({
-        path: "/mail/create/",
-      })
-    },
   }
 }
 </script>
