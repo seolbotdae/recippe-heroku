@@ -53,16 +53,14 @@
             <v-row>
               <v-col offset="2" cols="8">
                 <v-img
-                lazy-src="https://picsum.photos/id/11/10/6"
-                fill-height
-                src="https://picsum.photos/id/11/500/300"
-                class="mt-2"
-                >
-                </v-img>
+                    max-height="250"
+                    contain
+                    :src="'data:image/jpeg;base64,'+requestPhoto.photo_link"
+                  ></v-img>
               </v-col>
           
               <v-col cols="2" class="d-flex align-end">
-                <v-row justify="left">
+                <v-row justify="start">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
                     <v-btn v-if="isMine" @click="deletePopup" icon x-large>  <!--@click="deletePhoto"-->
@@ -228,33 +226,33 @@ export default{
     if (vm.isLikedBefore == vm.isLikedAfter) return; // 좋아요 상태 같은 경우
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let task = "";
-    if(vm.isLikedBefore) task = "취소"; // 좋아요 취소
-    else task = "등록"; // 좋아요 등록
+      if(vm.isLikedBefore) task = "취소"; // 좋아요 취소
+      else task = "등록"; // 좋아요 등록
 
-    console.log(task);
-    const likeInfo = JSON.stringify({
-      "like_id": 0,
-      "nickname": UserInfo.nickname,
-      "postType": 2,
-      "postId": vm.requestPhoto.post_id,
-      "task": task
-    });
-    herokuAPI.photoLike(likeInfo)
-      .then(function (response) {
-        if(response.status == 200) console.log("좋아요 " + task + " 성공");
-      })
-      .catch(function (e) {
-        if(e.response.status == 500) {
-          console.log("500 취소 오류");
-          vm.likeFailPopup(task);
-        } else if(e.response.status == 501) {
-          console.log("501 등록 오류");
-          vm.likeFailPopup(task);
-        } else if(e.response.status == 502) {
-          console.log("502 Unknown error");
-          vm.likeFailPopup(task);
-        }
+      console.log(task);
+      const likeInfo = JSON.stringify({
+        "like_id": 0,
+        "nickname": UserInfo.nickname,
+        "postType": 2,
+        "postId": vm.requestPhoto.post_id,
+        "task": task
       });
+      herokuAPI.photoLike(likeInfo)
+        .then(function (response) {
+          if(response.status == 200) console.log("좋아요 " + task + " 성공");
+        })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 취소 오류");
+            vm.likeFailPopup(task);
+          } else if(e.response.status == 501) {
+            console.log("501 등록 오류");
+            vm.likeFailPopup(task);
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.likeFailPopup(task);
+          }
+        });
   },
   methods: {
     showDialog() { // 팝업창 보이기

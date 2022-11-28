@@ -53,16 +53,14 @@
             <v-row>
               <v-col offset="2" cols="8">
                 <v-img
-                lazy-src="https://picsum.photos/id/11/10/6"
-                fill-height
-                src="https://picsum.photos/id/11/500/300"
-                class="mt-2"
-                >
-                </v-img>
+                    max-height="250"
+                    contain
+                    :src="'data:image/jpeg;base64,'+requestPhoto.photo_link"
+                  ></v-img>
               </v-col>
           
               <v-col cols="2" class="d-flex align-end">
-                <v-row justify="left">
+                <v-row justify="start">
                   <div class=".buttons">
                     <!-- 삭제 버튼 여기 있음 -->
                     <v-btn v-if="isMine" @click="deletePopup" icon x-large>  <!--@click="deletePhoto"-->
