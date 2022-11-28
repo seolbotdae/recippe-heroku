@@ -15,10 +15,11 @@
             </dropdown>
             <v-text-field
               label="요리를 검색하세요"
+              v-model="searchText"
               hide-details="auto"
               class="mx-5"
             ></v-text-field>
-            <v-btn class="mx-3" color="#E8DFCA">
+            <v-btn @click="beforeSelectKeyword" class="mx-3" color="#E8DFCA">
               검색
             </v-btn>
           </div>
@@ -193,6 +194,9 @@ export default{
 
       //현재 검색 기준
       currentSearchStandard : "요리 이름",
+      searchText: "",
+      searchTextStorage: "",
+      searchTypeStorage: "",
       category: "",
 
       currentRequestType : "",
@@ -269,6 +273,44 @@ export default{
         "page": page
       });
       vm.recipes = [];
+      herokuAPI.recipeSearch(searchInfo)
+        .then(function(response) {
+          console.log("응답 온거", response);
+          if(response.status == 200) {
+              console.log("검색 성공");
+              for(let i = 0; response.data.recipeList[i] != null; i++) {
+                vm.recipes.push(response.data.recipeList[i]);
+              }
+              vm.pageLength = response.data.total_page;
+            }
+        })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB 오류");
+            vm.searchRequestFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.searchRequestFailPopup();
+          }
+        });
+    },
+    beforeSelectKeyword() {
+      this.searchTextStorage = this.searchText;
+      this.searchTypeStorage = this.search_object.name;
+      this.selectKeyword(1);
+    },
+    selectKeyword(page) {
+      let vm = this;
+      vm.currentRequestType = "타이핑";
+      const searchInfo = JSON.stringify({
+        "searchType": "타이핑",
+        "categories": null,
+        "keywordType": vm.searchTypeStorage,
+        "keyword": vm.searchTextStorage,
+        "page": page
+      });
+      vm.recipes = [];
+      console.log(searchInfo);
       herokuAPI.recipeSearch(searchInfo)
         .then(function(response) {
           console.log("응답 온거", response);
@@ -378,7 +420,7 @@ export default{
       let vm = this;
       if(vm.currentRequestType == "정렬") vm.sortRecipeList(vm.page, vm.sort_object.name);
       else if (vm.currentRequestType == "카테고리") vm.selectCategory(vm.category, vm.page);
-      else if (vm.currentRequestType == "타이핑") ;
+      else if (vm.currentRequestType == "타이핑") vm.selectKeyword(vm.page);
     }
   }
 }
