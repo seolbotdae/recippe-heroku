@@ -10,7 +10,7 @@
             <v-layout>
               <v-row justify="center">
                 <v-col cols="10">
-                  <v-card>
+                  <v-card class="mb-5">
                     <v-row justify="space-between">
                       <v-card-title id="title2" class="pl-10">
                         보유 재료
@@ -24,26 +24,109 @@
                     <!-- 재료 있는 경우 -->
                     <v-card-text v-if="!isEmpty">
                       <!-- 재료 v card -->
-                      <v-card v-for="item in refrigerators" :key="item.id" outlined>
-                        <!-- 윗줄 -->
-                        <div class="d-flex justify-space-between">
-                          <span class="ml-3">{{item.name}}</span>
-                          <span class="mr-3">{{item.amount}}{{item.unit}}</span>
+                      <div v-for="item in refrigerators" :key="item.id" class="ingre-card">
+                        <!-- 7일 이상 남음 -->
+                        <div v-if="item.expireDate > 7 && item.expireDate != null" class="ingre-green">
+                          <!-- 7일 이상 남은 재료 -->
+                          <div class="d-flex justify-space-between">
+                            <span class="ml-3 my-2" style="font-size:1.8em">{{item.name}}</span>
+                            <span class="mr-3 my-2" style="font-size:1.8em">{{item.amount}}{{item.unit}}</span>
+                          </div>
+
+                          <!-- 구분선 -->
+                          <v-divider />
+
+                          <!-- 아랫줄 -->
+                          <div class="d-flex justify-space-between align-center">
+                            <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
+                            <div class="mr-3">
+                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
+                            </div>
+                          </div>
                         </div>
+                        <!-- 3~7일 남음 -->
+                        <div v-if="item.expireDate > 3 && item.expireDate <= 7 && item.expireDate != null" class="ingre-yellow">
+                          <!-- 7일 이상 남은 재료 -->
+                          <div class="d-flex justify-space-between">
+                            <span class="ml-3 my-2" style="font-size:1.8em">{{item.name}}</span>
+                            <span class="mr-3 my-2" style="font-size:1.8em">{{item.amount}}{{item.unit}}</span>
+                          </div>
 
-                        <!-- 구분선 -->
-                        <v-divider />
+                          <!-- 구분선 -->
+                          <v-divider />
 
-                        <!-- 아랫줄 -->
-                        <div class="d-flex justify-space-between">
-                          <span class="ml-3">{{item.expiry_date}}</span>
-                          <div class="mr-3">
-                            <v-btn>수정하기</v-btn>
-                            <v-btn @click="deletePopup(item.id)">삭제하기</v-btn>
+                          <!-- 아랫줄 -->
+                          <div class="d-flex justify-space-between align-center">
+                            <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
+                            <div class="mr-3">
+                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 0~3일 남음 -->
+                        <div v-if="item.expireDate >= 0 && item.expireDate <= 3 && item.expireDate != null" class="ingre-red">
+                          <!-- 7일 이상 남은 재료 -->
+                          <div class="d-flex justify-space-between">
+                            <span class="ml-3 my-2" style="font-size:1.8em">{{item.name}}</span>
+                            <span class="mr-3 my-2" style="font-size:1.8em">{{item.amount}}{{item.unit}}</span>
+                          </div>
+
+                          <!-- 구분선 -->
+                          <v-divider />
+
+                          <!-- 아랫줄 -->
+                          <div class="d-flex justify-space-between align-center">
+                            <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
+                            <div class="mr-3">
+                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 유통기한 지남 -->
+                        <div v-if="item.expireDate < 0 && item.expireDate != null" class="ingre-black">
+                          <!-- 7일 이상 남은 재료 -->
+                          <div class="d-flex justify-space-between">
+                            <span class="ml-3 my-2" style="font-size:1.8em">{{item.name}}</span>
+                            <span class="mr-3 my-2" style="font-size:1.8em">{{item.amount}}{{item.unit}}</span>
+                          </div>
+
+                          <!-- 구분선 -->
+                          <v-divider />
+
+                          <!-- 아랫줄 -->
+                          <div class="d-flex justify-space-between align-center">
+                            <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
+                            <div class="mr-3">
+                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- 유통기한 없음 -->
+                        <div v-if="item.expireDate == null">
+                          <!-- 7일 이상 남은 재료 -->
+                          <div class="d-flex justify-space-between">
+                            <span class="ml-3 my-2" style="font-size:1.8em">{{item.name}}</span>
+                            <span class="mr-3 my-2" style="font-size:1.8em">{{item.amount}}{{item.unit}}</span>
+                          </div>
+
+                          <!-- 구분선 -->
+                          <v-divider />
+
+                          <!-- 아랫줄 -->
+                          <div class="d-flex justify-space-between align-center">
+                            <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
+                            <div class="mr-3">
+                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
+                            </div>
                           </div>
                         </div>
                         
-                      </v-card>
+                      </div>
                     </v-card-text>
                     
                   </v-card>
@@ -113,18 +196,33 @@ export default{
       addIngredientDialog: false,
       refrigerators: [],
       isEmpty: false,
+
+      //현재 날짜를 저장하는 변수
+      todayDate : null,
     }
   },
   mounted() {
     // 냉장고 조회
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     let vm = this;
+
+    // 현재 날짜 저장하는 코드
+    let now = new Date();
+    console.log(now);
+
     herokuAPI.refrigeratorLookup(UserInfo.nickname)
       .then(function(response) {
         console.log("응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
             for(let i = 0; response.data[i] != null; i++) {
+              if(response.data[i].expiry_date != null){
+                var temp = new Date(response.data[i].expiry_date);
+                response.data[i].expireDate = Math.ceil((temp-now)/(1000*60*60*24));
+              } else {
+                response.data[i].expireDate = null;
+              }
+              
               vm.refrigerators.push(response.data[i]);
             }
           }
@@ -222,7 +320,6 @@ export default{
           }
         })
     },
-    
   }
 }
 </script>
@@ -236,4 +333,31 @@ export default{
     font-size: 1.4em;
     color: #7895b2;
   }
+
+  .ingre-card {
+    border: 1px solid rgb(182, 182, 182);
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .ingre-green {
+    background-color: rgb(93, 232, 93);
+    border-radius: 9px;
+  }
+
+  .ingre-yellow {
+    background-color: rgb(255, 255, 117);
+    border-radius: 9px;
+  }
+
+  .ingre-red {
+    background-color: rgb(255, 161, 161);
+    border-radius: 9px;
+  }
+
+  .ingre-black {
+    background-color: rgb(179, 179, 179);
+    border-radius: 9px;
+  }
+
 </style>
