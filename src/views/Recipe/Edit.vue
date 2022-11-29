@@ -7,7 +7,7 @@
           <!-- 뒤로 돌아가기 버튼 -->
           <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
           <!-- 게시글 정보 입력란 -->
-          <v-form ref="form" lazy-validation class="mt-5">
+          <v-form ref="form" v-model="valid" lazy-validation class="mt-5">
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex align-center my-text">
@@ -214,6 +214,8 @@ export default{
   },
   data () {
     return {
+      valid: true,
+
       addIngredientDialog: false,
       popupDialog: false,
       categoryDialog: false,
@@ -252,7 +254,7 @@ export default{
         v => !!v || '제목을 입력하세요.',
       ],
       recipeTitle: "",
-      recipeCategory: "",
+      recipeCategory: null,
       recipeSpicy: 0,
       recipeDescription: "",
       description_rule: [
@@ -368,6 +370,21 @@ export default{
     
     editRecipe() {
       let vm = this;
+      if(!validate) {
+        vm.snackbarContents = "모든 정보를 입력해주세요 (제목 또는 내용)";
+        vm.snackbar = true;
+        return;
+      }
+      if(vm.recipeCategory == null) {
+        vm.snackbarContents = "모든 정보를 입력해주세요 (카테고리)";
+        vm.snackbar = true;
+        return;
+      }
+      if(vm.ingredient.length == 0) {
+        vm.snackbarContents = "모든 정보를 입력해주세요 (식재료)";
+        vm.snackbar = true;
+        return;
+      }
       const recipe = JSON.stringify ({
         "post_id": vm.requestRecipe.post_id,
         "nickname": vm.userNN,

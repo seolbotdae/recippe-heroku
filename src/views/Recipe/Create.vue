@@ -146,14 +146,14 @@
       v-model="popupDialog"
     >
       <popup-dialog
-        headerTitle="등록하기 요청 실패"
+        headerTitle="생성 실패"
         btn1Title="확인"
         :btn2="false"
         @hide="hideDialog"
       >
         <template v-slot:body>
           <!-- 내용이 들어가는 부분입니다아 -->
-          <div>등록 요청에 실패했습니다.</div>
+          <div>게시글 생성에 실패했습니다.</div>
         </template>
       </popup-dialog>
     </v-dialog>
@@ -322,18 +322,23 @@ export default{
     },
 
     addRecipe() {
+      let vm = this;
       const validate = this.$refs.form.validate();
       if(!validate) {
-        vm.snackbarContents = "모든 정보를 입력해주세요 (제목 또는 내용)"
+        vm.snackbarContents = "모든 정보를 입력해주세요 (제목 또는 내용)";
         vm.snackbar = true;
         return;
       }
-      if(this.ingredient.length == 0) {
-        vm.snackbarContents = "모든 정보를 입력해주세요 (식재료)"
+      if(vm.recipeCategory == null) {
+        vm.snackbarContents = "모든 정보를 입력해주세요 (카테고리)";
         vm.snackbar = true;
         return;
       }
-      let vm = this;
+      if(vm.ingredient.length == 0) {
+        vm.snackbarContents = "모든 정보를 입력해주세요 (식재료)";
+        vm.snackbar = true;
+        return;
+      }
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const recipe = JSON.stringify ({
         "post_id": null,
