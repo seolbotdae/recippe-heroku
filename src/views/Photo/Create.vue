@@ -50,8 +50,6 @@
             <v-col justify="center">
               <v-card v-if="preview" >
                 <v-img :src="preview" class="img-fluid" contain/>
-                <p class="mb-0">file name: {{ image.name }}</p>
-                <p class="mb-0">size: {{ image.size/1024 }}KB</p>
               </v-card>
               <input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file">
             </v-col>
