@@ -190,6 +190,14 @@ export default{
       type: String
     },
   },
+  watch: {
+    nameP: function() {
+      let vm = this;
+      vm.name = vm.nameP;
+      vm.amount = vm.amountP;
+      vm.unit = vm.unitP;
+    }
+  },
   mounted(){
     let vm = this;
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
@@ -285,7 +293,6 @@ export default{
       for (var i=0;i<this.units.length;i++){
         this.$refs.unitsName[i].classList.remove('visible');
       }
-      
     }
   }
 }
