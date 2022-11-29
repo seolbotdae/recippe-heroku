@@ -93,6 +93,7 @@
 import herokuAPI from '@/api/heroku.js';
 import PopupDialog from '@/components/popup.vue';
 import router from '@/router';
+import Compressor from 'compressorjs';
 
 export default{
   components: {
@@ -136,6 +137,14 @@ export default{
         this.image=input.files[0];
         reader.readAsDataURL(input.files[0]);
       }
+
+      new Compressor(this.image, {
+        quality: 0.6,
+        success(result) {
+          this.image = this.image;
+          console.log(this.image);
+        }
+      })
     },
     reset: function() {
       this.image = null;
