@@ -100,7 +100,7 @@
 
           <!-- 좋아요 숫자 바꿔주세요 -->
           <div class="d-flex justify-center my-5"  :class="{ 'liked' : isLikedAfter == true, 'unliked' : isLikedAfter == false }">
-            <v-btn @click="likePhoto" text icon x-large>
+            <v-btn @click="likeRecipe" text icon x-large>
               <v-icon>mdi-thumb-up-outline</v-icon>
               {{ requestRecipe.like_count }}
             </v-btn>
@@ -608,7 +608,7 @@ export default{
       this.createMailDialog = false;
     },
 
-    likePhoto() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
+    likeRecipe() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
       this.isLikedAfter = !this.isLikedAfter;
       if(this.isLikedAfter) ++this.requestRecipe.like_count;
       else --this.requestRecipe.like_count;

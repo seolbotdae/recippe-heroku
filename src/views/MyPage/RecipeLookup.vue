@@ -100,7 +100,7 @@
 
           <!-- 좋아요 숫자 바꿔주세요 -->
           <div class="d-flex justify-center my-5"  :class="{ 'liked' : isLikedAfter == true, 'unliked' : isLikedAfter == false }">
-            <v-btn @click="likePhoto" text icon x-large>
+            <v-btn @click="likeRecipe" text icon x-large>
               <v-icon>mdi-thumb-up-outline</v-icon>
               {{ requestRecipe.like_count }}
             </v-btn>
@@ -112,7 +112,7 @@
           
           <!-- 댓글 v-for 부분입니다. -->
           <div v-for="item in requestRecipe.comments" :key="item.comment_id">
-            <div class="d-flex align-top justify-space-between">
+            <div v-if="editCommentID != item.comment_id" class="d-flex align-top justify-space-between">
               
               <!-- 사용자 정보 부분입니다 -->
               <div class="d-flex align-top jusify-left">
@@ -136,7 +136,7 @@
                   </v-btn>
                   
                   <div v-if="userNN == item.nickname">
-                    <v-btn @click="editComment(item.comment_id)" text icon small color="blue">
+                    <v-btn @click="toEditComment(item)" text icon small color="blue">
                       <v-icon>mdi-pencil-outline</v-icon>
                     </v-btn>
                     <v-btn @click="commentDeletePopup(item.comment_id)" text icon small color="red">
@@ -146,8 +146,31 @@
                   
                 </div>
               </div>
-  
             </div>
+
+            <!-- 댓글 수정 부분입니다. -->
+            <div v-else class="d-flex align-top jusify-left my-comment-write">
+              <div class="mx-7 my-3 my-comment-commenter ">
+                <v-btn @click="editComment" color="#AEBDCA">수정하기</v-btn>
+              </div>
+
+              <!-- 댓글 수정 댓글 내용부분입니다. -->
+              <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
+                <div class="my-text mb-0 ma-3">
+                  <v-form ref="form" lazy-validation>
+                    <v-textarea
+                      outlined
+                      background-color="white"
+                      label="댓글을 입력해 주세요."
+                      v-model="changeComment"
+                      :rules="changeComment_rule"
+                      class="mb-0"
+                    ></v-textarea>
+                  </v-form>
+                </div>
+              </v-card>
+            </div>
+            
             <div class="mx-5 line"></div>  
           </div>
 
@@ -296,6 +319,7 @@
 <script>
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
+import router from '@/router/index.js';
 import PopupDialog from '@/components/popup.vue';
 import ReportDialog from '@/components/report.vue';
 import CreateMailDialog from '@/components/createMail.vue';
@@ -324,6 +348,10 @@ export default{
 
       requestRecipe: [],
       UnExistIngre: [],
+      changeComment: "",
+      changeComment_rule: [
+        v => !!v || '댓글 내용을 입력하세요.',
+      ],
       newComment: "",
       newComment_rule: [
         v => !!v || '댓글 내용을 입력하세요.',
@@ -333,7 +361,8 @@ export default{
       isMine: null,
       deletePost: false,
       isRecipeDelete: true,
-      clickedCommentID: 0,
+      deleteCommentID: -1,
+      editCommentID: -1,
 
       recippeType: [
         { name: '최근 순'},
@@ -469,7 +498,7 @@ export default{
       this.showDialog();
     },
     commentDeletePopup(id) {
-      this.clickedCommentID = id;
+      this.deleteCommentID = id;
       this.headerTitle = "댓글 삭제";
       this.content1 = "삭제하시겠습니까?";
       this.btn1Title = "취소";
@@ -540,7 +569,7 @@ export default{
     deleteComment() {
       let vm = this;
       const deleteInfo = JSON.stringify({
-        "comment_id": vm.clickedCommentID,
+        "comment_id": vm.deleteCommentID,
         "nickname": vm.userNN
       });
       herokuAPI.commentDelete(deleteInfo)
@@ -579,7 +608,7 @@ export default{
       this.createMailDialog = false;
     },
 
-    likePhoto() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
+    likeRecipe() { // 좋아요 버튼 클릭시 동작, 서버랑 통신은 화면을 벗어날 때 초기와 다를 경우에만 실시
       this.isLikedAfter = !this.isLikedAfter;
       if(this.isLikedAfter) ++this.requestRecipe.like_count;
       else --this.requestRecipe.like_count;
@@ -645,23 +674,28 @@ export default{
           }
         })
     },
-    // editComment(comment_id) {
-    //   let vm = this;
-    //   const EditComment = JSON.stringify({
-    //     "comment_id" : comment_id,
-	  //     "comments" : "", // v-for 걸려있는 한개만 어케 변수랑 연결하지...?
-	  //     "comment_time" : 0,
-	  //     "nickname" : vm.userNN,
-	  //     "post_id" : vm.requestRecipe.post_id
-    //   });
-    //   herokuAPI.commentEdit(EditComment)
-    //     .then(function (response) {
-    //       console.log("응답 정보", response);
-    //       if(response.status == 200) {
-    //         console.log("댓글 수정 성공");
-    //       }
-    //     })
-    // },
+    toEditComment(object) {
+      this.editCommentID = object.comment_id;
+      this.changeComment = object.comments;
+    },
+    editComment() {
+      let vm = this;
+      const changeComment = JSON.stringify({
+        "comment_id" : vm.editCommentID,
+	      "comments" : vm.changeComment,
+	      "comment_time" : 0,
+	      "nickname" : vm.userNN,
+	      "post_id" : vm.requestRecipe.post_id
+      });
+      herokuAPI.commentEdit(changeComment)
+        .then(function (response) {
+          console.log("응답 정보", response);
+          if(response.status == 200) {
+            console.log("댓글 수정 성공");
+            router.go();
+          }
+        })
+    },
 
   // 옆의 메뉴 버튼을 누를 경우 실행되는 함수.
     menuButtonOnClickMethod(){
