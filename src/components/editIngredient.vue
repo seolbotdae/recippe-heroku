@@ -198,7 +198,7 @@ export default{
     },
     editIngre() {
       let vm = this;
-      const Ingre = {
+      const temp = {
         "id": vm.idP,
         "amount": vm.amount,
         "expiry_date": this.is_expiry_not_exist ? null : vm.expiry_date, // 없어도 됨
@@ -207,11 +207,11 @@ export default{
       };
       if(vm.isRecipe == true) {
         vm.$emit('hide');
-        vm.$emit('edit', Ingre);
+        vm.$emit('edit', temp);
       } else {
-        const editIngre = JSON.stringify (Ingre);
-        console.log(editIngre);
-        herokuAPI.refrigeratorEdit(editIngre)
+        const Ingre = JSON.stringify (temp);
+        console.log(Ingre);
+        herokuAPI.refrigeratorEdit(Ingre)
           .then(function (response) {
             console.log("response", response);
             if(response.status == 200) {
