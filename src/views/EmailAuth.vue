@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form ref="form">
+    <v-form>
       <v-row>
         <v-col cols="4" offset="4">
           <v-card-title style="justify-content: center">이메일 인증</v-card-title>
@@ -13,7 +13,7 @@
       </v-row>
       <v-row>
         <v-col cols="4" offset="4">
-          <v-form ref="form" lazy-validation>
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field 
               v-model="info.email" 
               label="이메일을 입력하세요"
@@ -49,6 +49,16 @@
         </v-col>
       </v-row>
     </v-form>
+
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -59,11 +69,14 @@ import router from '@/router/index.js';
 export default{
   data() {
     return {
+      valid: true,
       info: {
         email: null,
         code: ""
       },
       next: null,
+      snackbar: false,
+      snackbarContents: "",
 
     // 유효성 검사
       email_rule: [
@@ -83,24 +96,39 @@ export default{
   },
   methods: {
     firstcheck() {
+      let vm = this;
       const validate = this.$refs.form.validate();
-      if(validate) {
-        const checkInfo = JSON.stringify({
-          "email": this.info.email,
-          "code": 0
-        });
-        console.log(checkInfo);
-        JSON.parse(checkInfo);
-        herokuAPI.firstcheck(checkInfo)
-          .then(function (response) {
-            console.log("firstcheck", response);
-          })
-          .catch(function (e) {
-            console.log(e);
-          });
+      if(!validate) {
+        vm.snackbarContents = "잘못된 형식의 입력입니다."
+        vm.snackbar = true;
+        return;
       }
+      const checkInfo = JSON.stringify({
+        "email": this.info.email,
+        "code": 0
+      });
+      console.log(checkInfo);
+      JSON.parse(checkInfo);
+      herokuAPI.firstcheck(checkInfo)
+        .then(function (response) {
+          console.log("firstcheck", response);
+          vm.snackbarContents = "이메일을 전송했습니다."
+          vm.snackbar = true;
+        })
+        .catch(function (e) {
+          if(e.response.status == 501) {
+            console.log("501 전송실패");
+            vm.snackbarContents = "이메일 전송에 실패했습니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 404) {
+            console.log("404 존재하지 않는 이메일");
+            vm.snackbarContents = "존재하지 않는 이메일입니다."
+            vm.snackbar = true;
+          }
+        });
     },
     secondcheck() {
+      let vm = this;
       const codenum = Number(this.info.code);
       const checkInfo = JSON.stringify({
         "email": this.info.email,
@@ -121,9 +149,17 @@ export default{
           }
         }) 
         .catch(function (e) {
-          console.log(e);
+          if(e.response.status == 400) {
+            console.log("400 잘못된 코드");
+            vm.snackbarContents = "잘못된 인증코드입니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 500) {
+            console.log("500 등록 실패");
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+          }
         });
     }
-  }
+  },
 }
 </script>

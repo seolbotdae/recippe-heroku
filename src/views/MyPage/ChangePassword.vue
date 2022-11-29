@@ -14,7 +14,7 @@
                     <v-card-title id="title" class="pa-10 justify-center fontsize">비밀번호 변경</v-card-title>
 
                     <v-col>
-                      <v-form ref="form" lazy-validation>
+                      <v-form ref="form" v-model="valid" lazy-validation>
                         <v-text-field 
                           v-model="user.pw" 
                           filled 
@@ -96,6 +96,7 @@ export default{
   },
   data() {
     return {
+      valid: true,
     // 팝업창
       popupDialog: false,
       headerTitle: "",

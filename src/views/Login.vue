@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <v-form ref="form" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
       <v-row>
         <v-col cols="4" offset="4">
           <v-card-title style="justify-content: center">로그인</v-card-title>
@@ -88,6 +88,7 @@ export default{
   },
   data(){
     return{
+      valid: true,
       popupDialog: false,
       info: {
         id: null,
@@ -143,7 +144,7 @@ export default{
           })
           .catch(function (e) {
             if(e.response.status == 400) {
-              console.log("400 error");
+              console.log("400 아이디 또는 비밀번호 불일치");
               vm.showDialog();
             }
           });

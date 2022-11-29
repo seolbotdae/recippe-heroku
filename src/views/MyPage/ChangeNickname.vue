@@ -18,7 +18,7 @@
                   <v-card-title class="pt-15 pl-15">새로운 닉네임</v-card-title>
                   
                   <v-col offset="2" cols="8">
-                    <v-form ref="form" lazy-validation>
+                    <v-form ref="form" v-model="valid" lazy-validation>
                       <v-text-field 
                         filled 
                         v-model="user.nickname" 
@@ -30,8 +30,6 @@
                     </v-form>
                   </v-col>
 
-          
-
                   <v-row justify="center">
                     
                     <v-card-actions>
@@ -42,10 +40,7 @@
                       <v-btn outlined width="120" @click="NNchange()">확인</v-btn>
                     </v-card-actions>
                   
-
                   </v-row>
-
-                  
 
                 </v-card>
               </v-col>
@@ -89,6 +84,7 @@ export default{
   },
   data() {
     return {
+      valid: true,
       popupDialog: false,
       headerTitle: "",
       content1: "",

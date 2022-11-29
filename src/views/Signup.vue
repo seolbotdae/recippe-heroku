@@ -1,6 +1,6 @@
 <template>
   <v-container >
-    <v-form ref="form" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation>
       <v-row>
         <v-col cols="4" offset="4">
           <v-card-title style="justify-content: center">레쉽피 회원가입</v-card-title>
@@ -79,11 +79,19 @@
       >
         <template v-slot:body>
           <!-- 내용이 들어가는 부분입니다아 -->
-          <div>중복된 {{text}} 입니다.</div>
+          <div>{{text1}}<br/>{{text2}}</div>
         </template>
       </popup-dialog>
     </v-dialog>
-    <!-- 팝업창 형식 -->
+
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
   </v-container>
 </template>
@@ -99,9 +107,15 @@ export default{
   },
   data() {
     return {
+      valid: true,
       popupDialog: false,
       title: "",
-      text: "",
+      text1: "",
+      text2: "",
+
+      snackbar: false,
+      snackbarContents: "",
+
       info: {
         email: null,
         id: null,
@@ -128,7 +142,7 @@ export default{
       ],
       pwch_rule: [
         v => !!v || '비밀번호 확인을 입력하세요.',
-        v => v === this.user.pw || '비밀번호가 일치하지 않습니다.',
+        v => v === this.info.pw || '비밀번호가 일치하지 않습니다.',
       ],
     }
   },
@@ -149,44 +163,57 @@ export default{
       this.hideDialog();
     },
     signup() {
+      let vm = this;
       const validate = this.$refs.form.validate();
-      if(validate) {
-        let vm = this;
-        const signupInfo = JSON.stringify({
-          "nickname": this.info.nick,
-          "uid": this.info.id,
-          "password": this.info.pw,
-          "email": this.info.email,
-          "auto_login": false,
-        });
-        console.log(signupInfo);
-        herokuAPI.signup(signupInfo)
-          .then(function (response) {
-            console.log(response)
-            if(response.status == 200) {
-              console.log("회원가입 성공")
-              router.push({name: 'login'});
-            }
-          }) 
-          .catch(function (e) {
-            if(e.response.status == 400) {
-              console.log("400 error");
-              vm.text = "아이디";
-              vm.title = "아이디 중복";
-              vm.showDialog();
-            } else if(e.response.status == 401) {
-              console.log("401 error");
-              vm.text = "닉네임";
-              vm.title = "닉네임 중복";
-              vm.showDialog();
-            } else if(e.response.status == 402) {
-              console.log("402 error");
-              vm.text = "아이디, 닉네임";
-              vm.title = "아이디, 닉네임 중복";
-              vm.showDialog();
-            }
-          });
+      if(!validate) {
+        vm.title = "양식 오류";
+        vm.text1 = "양식에 맞지않은 입력입니다."
+        vm.showDialog();
+        return;
       }
+      const signupInfo = JSON.stringify({
+        "nickname": this.info.nick,
+        "uid": this.info.id,
+        "password": this.info.pw,
+        "email": this.info.email,
+        "auto_login": false,
+      });
+      console.log(signupInfo);
+      herokuAPI.signup(signupInfo)
+        .then(function (response) {
+          console.log(response)
+          if(response.status == 200) {
+            console.log("회원가입 성공")
+            router.push({name: 'login'});
+          }
+        }) 
+        .catch(function (e) {
+          if(e.response.status == 400) {
+            console.log("400 error");
+            vm.snackbarContents = "중복된 아이디 입니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 401) {
+            console.log("401 error");
+            vm.snackbarContents = "중복된 닉네임 입니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 402) {
+            console.log("402 error");
+            vm.snackbarContents = "중복된 아이디, 닉네임 입니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 500) {
+            console.log("500 error");
+            vm.title = "저장 실패";
+            vm.text1 = "정보 등록에 실패했습니다."
+            vm.text2 = "재시도 해주십시오."
+            vm.showDialog();
+          } else if(e.response.status == 502) {
+            console.log("502 error");
+            vm.title = "저장 실패";
+            vm.text1 = "정보 등록에 실패했습니다."
+            vm.text2 = "재시도 해주십시오."
+            vm.showDialog();
+          }
+        });
     },
   }
 }

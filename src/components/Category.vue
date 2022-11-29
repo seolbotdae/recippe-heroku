@@ -42,7 +42,7 @@ export default{
   },
   methods: {
     clickCategory(name) {
-      this.$emit('category', name, 1);
+      this.$emit('category', name);
       this.$emit('hide');
     }
   }

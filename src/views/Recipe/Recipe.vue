@@ -97,7 +97,7 @@
       v-model="categoryDialog"
     >
       <category-dialog
-        @category="selectCategory"
+        @category="beforeSelectCategory"
         @hide="hideCategoryDialog"
       />
     </v-dialog>
@@ -199,7 +199,7 @@ export default{
       searchTypeStorage: "",
       category: "",
 
-      currentRequestType : "",
+      currentRequestType : "정렬",
 
       //페이지네이션 길이
       pageLength : 1,
@@ -261,10 +261,14 @@ export default{
     hideCategoryDialog() {
       this.categoryDialog = false;
     },
-    selectCategory(name, page) {
+    beforeSelectCategory(name) {
       let vm = this;
       vm.currentRequestType = "카테고리";
       vm.category = name;
+      selectCategory(name, 1);
+    },
+    selectCategory(name, page) {
+      let vm = this;
       const searchInfo = JSON.stringify({
         "searchType": "카테고리",
         "categories": name,
@@ -416,11 +420,11 @@ export default{
     },
 
     //페이지네이션 함수
-    handlePage(){
+    handlePage(page){
       let vm = this;
-      if(vm.currentRequestType == "정렬") vm.sortRecipeList(vm.page, vm.sort_object.name);
-      else if (vm.currentRequestType == "카테고리") vm.selectCategory(vm.category, vm.page);
-      else if (vm.currentRequestType == "타이핑") vm.selectKeyword(vm.page);
+      if(vm.currentRequestType == "정렬") vm.sortRecipeList(page, vm.sort_object.name);
+      else if (vm.currentRequestType == "카테고리") vm.selectCategory(vm.category, page);
+      else if (vm.currentRequestType == "타이핑") vm.selectKeyword(page);
     }
   }
 }
