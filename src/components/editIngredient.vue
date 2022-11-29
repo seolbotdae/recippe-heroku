@@ -53,14 +53,13 @@
       </div>
 
       <div style="color:#7895B2; font-size: 1.3em;">
-        유통기한
+        유통기한<br/>  
+        <span style="font-size: 0.7em;">주의! : 달력에서 유통기한을 선택하지 않을 경우 유통기한 정보가 사라집니다.</span>
       </div>
 
-      <v-date-picker 
+      <v-date-picker
         v-model="expiry_date" 
-        :show-current="true" 
         :landscape="true" 
-        :reactive="true"
         color="#7895B2"
         class=""
       >
@@ -200,7 +199,7 @@ export default{
       let vm = this;
       const temp = {
         "id": vm.idP,
-        "amount": vm.amount,
+        "amount": Number(vm.amount),
         "expiry_date": this.is_expiry_not_exist ? null : vm.expiry_date, // 없어도 됨
         "name" : vm.name,
         "unit" : vm.unit,
