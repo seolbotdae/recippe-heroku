@@ -29,7 +29,7 @@
               <span class="mr-16">레시피 종류</span>
               <v-divider vertical></v-divider>
               <v-btn @click="showCategoryDialog" class="ml-14">카테고리 선택하기</v-btn>
-              <span class="ml-16">카테고리 : {{category}}</span>
+              <span class="ml-16">카테고리 : {{recipeCategory}}</span>
             </div>
 
             <div class="line mx-5"></div>
@@ -76,20 +76,21 @@
             </div>
             
             <div class="line mx-5"></div>
-          </v-form>
 
-          <!-- 레시피 설명 입력란 -->
-          <v-textarea
-            outlined
-            class="mt-5 mx-5"
-            name="name"
-            label="레시피 설명을 입력하세요"
-            placeholder="레시피 설명을 입력하세요"
-            height="300"
-            background-color="white"
-            v-model="recipeDescription"
-            :rules="description_rule"
-          ></v-textarea>
+            <!-- 레시피 설명 입력란 -->
+            <v-textarea
+              outlined
+              class="mt-5 mx-5"
+              name="name"
+              label="레시피 설명을 입력하세요"
+              placeholder="레시피 설명을 입력하세요"
+              height="300"
+              background-color="white"
+              v-model="recipeDescription"
+              :rules="description_rule"
+            ></v-textarea>
+            
+          </v-form>
 
           <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5" @click="$router.go(-1)">등록취소</v-btn>
@@ -231,7 +232,6 @@ export default{
       snackbarContents: "",
 
       ingredient: [],
-      category: "",
       hotLevel: [
         { name: '0단계'},
         { name: '1단계'},
@@ -270,7 +270,7 @@ export default{
       this.categoryDialog = false;
     },
     selectCategory(name) {
-      this.category = name;
+      this.recipeCategory = name;
     },
   // 재료추가 팝업창 메소드들
     showAddIngredientDialog() {
@@ -344,7 +344,7 @@ export default{
         "post_id": null,
         "nickname": UserInfo.nickname,
         "title": vm.recipeTitle,
-        "category": vm.category,
+        "category": vm.recipeCategory,
         "degree_of_spicy": vm.recipeSpicy,
         "description": vm.recipeDescription,
         "views": 0,

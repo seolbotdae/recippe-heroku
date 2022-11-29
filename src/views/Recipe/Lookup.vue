@@ -755,6 +755,7 @@ export default{
       let menuBtn = document.querySelector(".menu-container");
       console.log("삭제 버튼 누름!");
       menuBtn.classList.remove("visible");
+      let recipeID = this.requestRecipe.post_id
       router.push({
         path: "/recipe/edit/"+recipeID,
       })

@@ -76,20 +76,21 @@
             </div>
             
             <div class="line mx-5"></div>
-          </v-form>
 
-          <!-- 레시피 설명 입력란 -->
-          <v-textarea
-            outlined
-            class="mt-5 mx-5"
-            name="name"
-            label="레시피 설명을 입력하세요"
-            placeholder="레시피 설명을 입력하세요"
-            height="300"
-            background-color="white"
-            v-model="recipeDescription"
-            :rules="description_rule"
-          ></v-textarea>
+            <!-- 레시피 설명 입력란 -->
+            <v-textarea
+              outlined
+              class="mt-5 mx-5"
+              name="name"
+              label="레시피 설명을 입력하세요"
+              placeholder="레시피 설명을 입력하세요"
+              height="300"
+              background-color="white"
+              v-model="recipeDescription"
+              :rules="description_rule"
+            ></v-textarea>
+            
+          </v-form>
 
           <div class="d-flex justify-end mr-5 pb-5">
             <v-btn color="#AEBDCA" class="mr-5" @click="$router.go(-1)">수정취소</v-btn>
@@ -370,6 +371,7 @@ export default{
     
     editRecipe() {
       let vm = this;
+      const validate = this.$refs.form.validate();
       if(!validate) {
         vm.snackbarContents = "모든 정보를 입력해주세요 (제목 또는 내용)";
         vm.snackbar = true;

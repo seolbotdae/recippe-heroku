@@ -265,7 +265,7 @@ export default{
       let vm = this;
       vm.currentRequestType = "카테고리";
       vm.category = name;
-      selectCategory(name, 1);
+      vm.selectCategory(name, 1);
     },
     selectCategory(name, page) {
       let vm = this;
