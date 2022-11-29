@@ -36,6 +36,7 @@
           <v-text-field 
             v-model="info.pw" 
             label="password"
+            type="password"
             :rules="pw_rule"
           ></v-text-field>
         </v-col>
@@ -45,6 +46,7 @@
           <v-text-field 
             v-model="info.pwcheck" 
             label="check password"
+            type="password"
             :rules="pwch_rule"
           ></v-text-field>
         </v-col>
@@ -171,10 +173,13 @@ export default{
         vm.showDialog();
         return;
       }
+
+      let hashedPWD = this.hashing(vm.info.pw);
+
       const signupInfo = JSON.stringify({
         "nickname": this.info.nick,
         "uid": this.info.id,
-        "password": this.info.pw,
+        "password": hashedPWD,
         "email": this.info.email,
         "auto_login": false,
       });
@@ -215,6 +220,13 @@ export default{
           }
         });
     },
+    hashing(content){
+      var result = "";
+      for(let i = 0; i < content.length; i++){
+        result += String.fromCharCode(Number(content.charCodeAt(i))+1);
+      }
+      return result;
+    }
   }
 }
 </script>
