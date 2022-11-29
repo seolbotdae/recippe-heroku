@@ -10,11 +10,11 @@ class ControlLike_b():
             # 좋아요 정보 가져와서 삭제
             LikeInfo.objects.filter(post_type=postType, nickname=nickname, post_id=postId).delete()
             if postType == 1: # 레시피 
-                likes = LikeInfo.objects.filter(post_id=postId)
+                likes = LikeInfo.objects.filter(post_id=postId, post_type=postType)
                 RecipePost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "레시피 게시글 '좋아요' 취소 성공"
             elif postType == 2: # 사진 
-                likes = LikeInfo.objects.filter(post_id=postId)
+                likes = LikeInfo.objects.filter(post_id=postId, post_type=postType)
                 PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "사진 게시글 '좋아요' 취소 성공"
         except:
@@ -32,11 +32,11 @@ class ControlLike_b():
             newLike = LikeInfo.objects.create(post_type=postType, nickname=User.objects.get(nickname=nickname), post_id=postId)
             newLike.save()
             if postType == 1: # 레시피
-                likes = LikeInfo.objects.filter(post_id=postId)
+                likes = LikeInfo.objects.filter(post_id=postId, post_type=postType)
                 RecipePost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "레시피 게시글 '좋아요' 등록 성공"
             elif postType == 2: # 사진
-                likes = LikeInfo.objects.filter(post_id=postId)
+                likes = LikeInfo.objects.filter(post_id=postId, post_type=postType)
                 PhotoPost.objects.filter(post_id=postId).update(like_count=len(likes)) # 좋아요 수 업데이트
                 resultMsg = "사진 게시글 '좋아요' 등록 성공"
         except:

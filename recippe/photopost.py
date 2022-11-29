@@ -88,7 +88,7 @@ class ControlPhoto_b():
         try:
             deleteTarget = PhotoPost.objects.get(nickname=nickname, post_id=postId)
             deleteTarget.delete()
-            likeInfos = LikeInfo.objects.filter(post_id=postId, post_type=-1)
+            likeInfos = LikeInfo.objects.filter(post_id=postId, post_type=2)
             likeInfos.delete()
             reports = Report.objects.filter(post_id=postId, post_type=2)
             reports.delete()
