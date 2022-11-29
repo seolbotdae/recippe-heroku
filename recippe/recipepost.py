@@ -45,7 +45,7 @@ class ControlRecipeList_b():
             elif keywordType == "작성자":
                 try:
                     # 작성자가 작성함 + 최근순
-                    posts = RecipePost.objects.filter(nickname=keyword).order_by('upload_time').reverse()
+                    posts = RecipePost.objects.filter(nickname__icontains=keyword).order_by('upload_time').reverse()
                     postlist = posts[0+15*(page-1):15+15*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)
                     pageCnt = math.ceil(len(posts)/15)
@@ -55,7 +55,7 @@ class ControlRecipeList_b():
             elif keywordType == "재료":
                 try:
                     # 재료를 포함함 + 최근순
-                    ids = Recipe_Ingredients.objects.filter(name=keyword).values_list('post_id', flat=True)
+                    ids = Recipe_Ingredients.objects.filter(name__icontains=keyword).values_list('post_id', flat=True)
                     posts = RecipePost.objects.filter(post_id__in = ids).order_by('upload_time').reverse()
                     postlist = posts[0+15*(page-1):15+15*(page-1)]
                     result, recipeList = self.sendResult("레시피 게시글 검색 성공", postlist)

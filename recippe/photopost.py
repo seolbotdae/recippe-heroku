@@ -60,7 +60,7 @@ class ControlPhoto_b():
             post = PhotoPost.objects.get(post_id = postId)
             serializer = MyPhotoPostSerializer(post)
             result, photoPost = self.sendResult("사진 게시글 조회 성공", serializer.data)
-            isLiked = LikeInfo.objects.filter(post_id = postId, nickname = nickname, post_type=-1)
+            isLiked = LikeInfo.objects.filter(post_id = postId, nickname = nickname, post_type=2)
             print(isLiked)
             if len(isLiked) == 0:
                 likeInfo = False

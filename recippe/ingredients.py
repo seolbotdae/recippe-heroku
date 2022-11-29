@@ -10,18 +10,36 @@ class ControlIngredients_b():
             # 레시피 재료의 이름들, 냉장고(사용자 보유 재료)의 이름들
             recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId).values_list('name', flat=True)
             refrigerator = Refrigerator.objects.filter(nickname=nickname).values_list('name', flat=True)
-            ingredientsList = []
+            noExistList = []
+            yesExistList = []
             
             # 레시피의 재료중 냉장고에 없는것만 리스트에 저장
             for ingre in recipeIngredients:
                 if ingre not in refrigerator:
-                    ueIngre = Recipe_Ingredients.objects.get(post_id=postId, name=ingre)
-                    print(ueIngre)
-                    ingredientsList.append(ueIngre)
-            
-            print(ingredientsList)
+                    noExistList.append(ingre)
+                else:
+                    yesExistList.append(ingre)
 
-            result, ueIngredients = self.sendResult("없는 재료 가져오기 성공", ingredientsList)
+            print(noExistList, yesExistList)
+            
+            # 없는 것만 모은 식재료중 레시피에서 요구하는 만큼 amount 가 남아있는지 확인
+            realList = []
+            for ingre in yesExistList:
+                checkRefri = Refrigerator.objects.get(nickname=nickname, name=ingre)
+                checkRecipe = Recipe_Ingredients.objects.get(post_id=postId, name=ingre)
+                if checkRecipe.unit == 'T':
+                    if checkRefri.amount < 15*checkRecipe.amount:
+                        realList.append(checkRecipe)
+                else:
+                    if checkRefri.amount < checkRecipe.amount:
+                        realList.append(checkRecipe)
+            
+            # 아까 없던 재료 그대로 다시 복사
+            for ingre in noExistList:
+                ri = Recipe_Ingredients.objects.get(post_id=postId, name=ingre)
+                realList.append(ri)
+
+            result, ueIngredients = self.sendResult("없는 재료 가져오기 성공", realList)
         except:
             result, ueIngredients = self.sendResult("없는 재료 가져오기 실패", None)
 
@@ -30,12 +48,20 @@ class ControlIngredients_b():
     def decreaseAmmounts(self, nickname, postId):
         try:
             # 레시피 재료의 이름, 총 양들, 냉장고의 이름, 총 양들
+            recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId)
+            refrigerator = Refrigerator.objects.filter(nickname=nickname)
+            
             recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId).values_list('name', 'amount').order_by('name')
             refrigerator = Refrigerator.objects.filter(nickname=nickname).values_list('name', 'amount').order_by('name')
 
             # 재료 감산 후 업데이트
             for idx in range(len(recipeIngredients)):
-                Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx][0]).update(amount=refrigerator[idx][1]-recipeIngredients[idx][1])
+                if recipeIngredients[idx].unit == 'T':
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=refrigerator[idx].amount-(recipeIngredients[idx].amount*15))
+                elif recipeIngredients[idx].unit == 'kg' or recipeIngredients[idx].unit == 'l':
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=refrigerator[idx].amount-(recipeIngredients[idx].amount*1000))
+                else:
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx][0]).update(amount=refrigerator[idx][1]-recipeIngredients[idx][1])
 
             result = self.sendResult("남은 재료 계산하기 성공")
         except:

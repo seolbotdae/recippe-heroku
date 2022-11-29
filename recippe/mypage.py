@@ -9,7 +9,18 @@ class ControlRefrigerator_b():
         try:
             # 요청받은 닉네임의 사용자가 등록한 식재료 DB 에서 가져옴
             ingredientsList = Refrigerator.objects.filter(nickname = nickname)
-
+            
+            for ingre in ingredientsList:
+                if ingre.amount >= 1000:
+                    if ingre.unit.unit == "ml":
+                        afterAmount = ingre.amount / 1000
+                        ingre.amount = afterAmount
+                        ingre.unit = Units.objects.get(unit='l')
+                    elif ingre.unit.unit == "g":
+                        afterAmount = ingre.amount / 1000
+                        ingre.amount = afterAmount
+                        ingre.unit = Units.objects.get(unit='kg')
+                    
             if ingredientsList.exists():
                 result, code = self.sendResult("냉장고 조회 성공", ingredientsList)
             else:
@@ -21,14 +32,24 @@ class ControlRefrigerator_b():
 
     def insertRefrigerator(self, refrigerator):
         userRequest = refrigerator
+        inputUnit = userRequest['unit']
+        if inputUnit == 'kg':
+            changedAmount = userRequest['amount'] * 1000
+            changedUnit = 'g'
+        elif inputUnit == 'l':
+            changedAmount = userRequest['amount'] * 1000
+            changedUnit = 'ml'
+        else: 
+            changedAmount = userRequest['amount']
+            changedUnit = userRequest['unit']
 
         try:
             # 받은 식재료 정보 생성 후 저장
-            refriObject = Refrigerator.objects.create(amount = userRequest['amount'],
+            refriObject = Refrigerator.objects.create(amount = changedAmount,
                 expiry_date = userRequest['expiry_date'],
                 name = Ingredients.objects.get(name = userRequest['name']),
                 nickname = User.objects.get(nickname = userRequest['nickname']),
-                unit = Units.objects.get(unit = userRequest['unit']))
+                unit = Units.objects.get(unit = changedUnit))
                 
             refriObject.save()
 
@@ -50,13 +71,25 @@ class ControlRefrigerator_b():
         return result, code
 
     def updateRefrigerator(self, refrigerator):
+        userRequest = refrigerator
+        inputUnit = userRequest['unit']
+        if inputUnit == 'kg':
+            changedAmount = userRequest['amount'] * 1000
+            changedUnit = 'g'
+        elif inputUnit == 'l':
+            changedAmount = userRequest['amount'] * 1000
+            changedUnit = 'ml'
+        else: 
+            changedAmount = userRequest['amount']
+            changedUnit = userRequest['unit']
+
         try:
             # 수정된 정보들로 업데이트
             test = Refrigerator.objects.get(id = refrigerator["id"])
             Refrigerator.objects.filter(id = refrigerator["id"]).update(
                 name = Ingredients.objects.get(name= refrigerator['name']),
-                unit = Units.objects.get(unit = refrigerator["unit"]),
-                amount = refrigerator["amount"],
+                unit = Units.objects.get(unit = changedUnit),
+                amount = changedAmount,
                 expiry_date = refrigerator["expiry_date"]
             )
 
