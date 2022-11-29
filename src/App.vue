@@ -17,9 +17,11 @@ export default {
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     if(UserInfo == null) {
       router.push({name: 'login'});
-    } else if(UserInfo.auto_login == false) {
-      localStorage.removeItem("UserInfo");
-      router.push({name: 'login'});
+    } else if(sessionStorage.getItem("running") != "true") {
+      if(UserInfo.auto_login == false) {
+        localStorage.removeItem("UserInfo");
+        router.push({name: 'login'});
+      }
     }
   }
 };

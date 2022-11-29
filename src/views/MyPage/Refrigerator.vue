@@ -164,6 +164,8 @@
       v-model="addIngredientDialog"
     >
       <add-ingredient-dialog
+        :isRecipe='true'
+        @add="add"
         @update="update"
         @hide="hideAddIngredientDialog"
       />
@@ -184,6 +186,15 @@
       />
     </v-dialog>
 
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -203,6 +214,9 @@ export default{
   },
   data(){
     return{
+      snackbar: false,
+      snackbarContents: "",
+
       popupDialog: false,
       headerTitle: "",
       content1: "",
@@ -279,15 +293,22 @@ export default{
       this.showDialog();
     },
     deleteFailPopup() {
-      this.headerTitle = "재료 삭제 실패";
-      this.content1 = "재료 삭제에 실패했습니다.";
+      this.headerTitle = "삭제 실패";
+      this.content1 = "삭제 요청에 실패했습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
       this.showDialog();
     },
     requestFailPopup() {
-      this.headerTitle = "보유 재료 불러오기 실패";
+      this.headerTitle = "서버 오류";
       this.content1 = "보유 재료 조회에 실패했습니다.";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
+    addRequestFailPopup() {
+      this.headerTitle = "요청 실패";
+      this.content1 = "재료 추가 요청에 실패했습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
       this.showDialog();
@@ -320,6 +341,34 @@ export default{
     },
     hideAddIngredientDialog() {
       this.addIngredientDialog = false;
+    },
+    add(ingre) {
+      let vm = this;
+      var index = this.refrigerators.findIndex(e => e.name === ingre.name);
+      if(index != -1) {
+        vm.snackbarContents = "이미 추가한 재료입니다."
+        vm.snackbar = true;
+        return;
+      }
+      const AddIngre = JSON.stringify (ingre);
+        console.log(AddIngre);
+        herokuAPI.refrigeratorAdd(AddIngre)
+          .then(function (response) {
+            console.log("response", response);
+            if(response.status == 200) {
+              console.log("성공 응답", response.data);
+              vm.$router.go();
+            }
+          })
+          .catch(function (e) {
+            if(e.response.status == 400) {
+              console.log("400 error");
+              vm.addRequestFailPopup();
+            } else if(e.response.status == 500) {
+              console.log("500 Unknown error");
+              vm.addRequestFailPopup();
+            }
+          });
     },
   // 재료수정 팝업창 메소드들
     showEditIngredientDialog() {

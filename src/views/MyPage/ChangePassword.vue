@@ -76,6 +76,15 @@
       </popup-dialog>
     </v-dialog>
 
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -103,6 +112,9 @@ export default{
       popupDialog: false,
       headerTitle: "",
       content1: "",
+
+      snackbar: false,
+      snackbarContents: "",
 
     // 사용자정보
       user: {
@@ -144,45 +156,46 @@ export default{
     hideDialog(){ // 팝업창 숨기기
       this.popupDialog = false
     },
-    changeFailPopup() {
-      this.headerTitle = "변경 요청 실패";
-      this.content1 = "변경 요청에 실패했습니다.";
-      this.showDialog();
-    },
     PWchange() {
+      const vm = this;
       const validate = this.$refs.form.validate();
-      if(validate) {
-        const vm = this;
-
-        let hashedPWD = this.hashing(vm.user.pw);
-
-        const userInfo = JSON.stringify({
-          "nickname": this.nickname,
-          "uid": this.user.id,
-          "password": hashedPWD,
-          "email": this.user.email,
-          "auto_login": this.user.al,
-        });
-        console.log(userInfo);
-        herokuAPI.changePW(userInfo)
-          .then(function (response) {
-            console.log("pwChange", response)
-            if(response.status == 200) {
-              console.log("비번변경 성공")
-              localStorage.setItem("UserInfo", userInfo);
-              router.push({name: 'mypage'});
-            }
-          }) 
-          .catch(function (e) {
-            if(e.response.status == 500) {
-              console.log("500 비밀번호 변경 실패");
-              vm.changeFailPopup();
-            } else if(e.response.status == 502) {
-              console.log("502 Unknown error");
-              vm.changeFailPopup();
-            }
-          });
+      if(!validate) {
+        vm.headerTitle = "양식 오류";
+        vm.content1 = "양식에 맞지않은 비밀번호입니다.";
+        vm.showDialog();
+        return;
       }
+      let hashedPWD = this.hashing(vm.user.pw);
+
+      const userInfo = JSON.stringify({
+        "nickname": this.nickname,
+        "uid": this.user.id,
+        "password": hashedPWD,
+        "email": this.user.email,
+        "auto_login": this.user.al,
+      });
+      console.log(userInfo);
+      herokuAPI.changePW(userInfo)
+        .then(function (response) {
+          console.log("pwChange", response)
+          if(response.status == 200) {
+            console.log("비번변경 성공")
+            localStorage.setItem("UserInfo", userInfo);
+            router.push({name: 'mypage'});
+          }
+        }) 
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 비밀번호 변경 실패");
+            vm.snackbarContents = "DB 오류로 비밀번호 변경 요청에 실패했습니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.snackbarContents = "알 수 없는 오류로 비밀번호 변경 요청에 실패했습니다."
+            vm.snackbar = true;
+          }
+        });
+      
     },
     hashing(content){
       var result = "";

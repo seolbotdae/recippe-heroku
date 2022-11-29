@@ -91,6 +91,16 @@
         추가하기
       </v-btn>
     </v-card-actions>
+
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-card>
 </template>
 
@@ -126,15 +136,17 @@
 </style>
 
 <script>
-import herokuAPI from '@/api/heroku.js';
 const Hangul = require('hangul-js');
 
 export default{
   name: "addIngredient",
   data() {
     return {
+      snackbar: false,
+      snackbarContents: "",
+
       name: "",
-      amount: null,
+      amount: "",
       unit: "",
       expiry_date: null,
       nickname: "",
@@ -281,6 +293,21 @@ export default{
   methods: {
     addIngre() {
       let vm = this;
+      if(vm.name == "") {
+        vm.snackbarContents = "이름을 입력해주세요."
+        vm.snackbar = true;
+        return;
+      }
+      if(vm.amount == "") {
+        vm.snackbarContents = "양을 입력해주세요."
+        vm.snackbar = true;
+        return;
+      }
+      if(vm.unit == "") {
+        vm.snackbarContents = "단위를 입력해주세요."
+        vm.snackbar = true;
+        return;
+      }
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const Ingre = {
           "amount": vm.amount,
@@ -292,25 +319,6 @@ export default{
       if(vm.isRecipe == true) {
         vm.$emit('hide');
         vm.$emit('add', Ingre);
-      } else {
-        const AddIngre = JSON.stringify (Ingre);
-        console.log(AddIngre);
-        herokuAPI.refrigeratorAdd(AddIngre)
-          .then(function (response) {
-            console.log("response", response);
-            if(response.status == 200) {
-              console.log("성공 응답", response.data);
-              vm.$emit('hide');
-              vm.$emit('update');
-            }
-          })
-          .catch(function (e) {
-            if(e.response.status == 400) {
-              console.log("400 error");
-            } else if(e.response.status == 500) {
-              console.log("500 Unknown error");
-            }
-          });
       }
     },
     // 재료 필터

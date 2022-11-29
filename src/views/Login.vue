@@ -73,7 +73,15 @@
         </template>
       </popup-dialog>
     </v-dialog>
-    <!-- 팝업창 형식 -->
+    
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
   </v-container>
 </template>
@@ -91,6 +99,10 @@ export default{
     return{
       valid: true,
       popupDialog: false,
+
+      snackbar: false,
+      snackbarContents: "",
+
       info: {
         id: null,
         pw: null,
@@ -118,41 +130,50 @@ export default{
       this.hideDialog();
     },
     login(){
+      let vm = this;
       const validate = this.$refs.form.validate();
-      if(validate) {
-        let vm = this;
-
-        let hashedPWD = this.hashing(vm.info.pw);
-
-        const loginInfo = JSON.stringify({
-          "nickname": null,
-          "uid": vm.info.id,
-          "password": hashedPWD,
-          "email": null,
-          "auto_login": vm.info.al,
-        });
-        const auto_login = vm.info.al;
-        herokuAPI.login(loginInfo)
-          .then(function (response) {
-            if(response.status == 200) {
-              const dataString = JSON.stringify({
-                "nickname": response.data.nickname,
-                "uid": response.data.uid,
-                "password": response.data.password,
-                "email": response.data.email,
-                "auto_login": auto_login,
-              });
-              localStorage.setItem("UserInfo", dataString);
-              router.push({name: 'home'});
-            }
-          })
-          .catch(function (e) {
-            if(e.response.status == 400) {
-              console.log("400 아이디 또는 비밀번호 불일치");
-              vm.showDialog();
-            }
-          });
+      if(!validate) {
+        vm.snackbarContents = "아이디와 비밀번호를 모두 입력해 주세요."
+        vm.snackbar = true;
+        return;
       }
+      
+      let hashedPWD = this.hashing(vm.info.pw);
+
+      const loginInfo = JSON.stringify({
+        "nickname": null,
+        "uid": vm.info.id,
+        "password": hashedPWD,
+        "email": null,
+        "auto_login": vm.info.al,
+      });
+      const auto_login = vm.info.al;
+      herokuAPI.login(loginInfo)
+        .then(function (response) {
+          if(response.status == 200) {
+            const dataString = JSON.stringify({
+              "nickname": response.data.nickname,
+              "uid": response.data.uid,
+              "password": response.data.password,
+              "email": response.data.email,
+              "auto_login": auto_login,
+            });
+            localStorage.setItem("UserInfo", dataString);
+            sessionStorage.setItem("running", "true")
+            router.push({name: 'home'});
+          }
+        })
+        .catch(function (e) {
+          if(e.response.status == 400) {
+            console.log("400 아이디 또는 비밀번호 불일치");
+            vm.snackbarContents = "아이디 또는 비밀번호가 잘못되었습니다."
+            vm.snackbar = true;
+          } else if(e.response.status == 500) {
+            console.log("500 Unknown error");
+            vm.snackbarContents = "알 수 없는 이유로 로그인에 실패했습니다."
+            vm.snackbar = true;
+          }
+        });
     },
     signup(){
       router.push({

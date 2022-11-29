@@ -158,8 +158,12 @@ export default{
             vm.snackbar = true;
           } else if(e.response.status == 500) {
             console.log("500 등록 실패");
+            vm.snackbarContents = "DB 오류로 등록에 실패했습니다."
+            vm.snackbar = true;
           } else if(e.response.status == 502) {
             console.log("502 Unknown error");
+            vm.snackbarContents = "알 수 없는 이유로 등록에 실패했습니다."
+            vm.snackbar = true;
           }
         });
     }

@@ -83,6 +83,25 @@
         수정하기
       </v-btn>
     </v-card-actions>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        :headerTitle=headerTitle
+        btn1Title="확인"
+        :btn2="false"
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>{{ content1 }}</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
   </v-card>
 </template>
 
@@ -119,13 +138,21 @@
 
 <script>
 import herokuAPI from '@/api/heroku.js';
+import PopupDialog from '@/components/popup.vue';
 
 export default{
   name: "editIngredient",
+  components: {
+    PopupDialog,
+  },
   data() {
     return {
+      popupDialog: false,
+      headerTitle: "",
+      content1: "",
+
       name: "",
-      amount: null,
+      amount: "",
       unit: "",
       expiry_date: null,
       nickname: "",
@@ -179,25 +206,37 @@ export default{
     }
   },
   methods: {
-    updateRefrigerator() {
-      const edittedTarget = JSON.stringify({
-        "id": 1,
-        "amount": 1000,
-        "expiry_date": '2022-12-31',
-        "name": "kkochu",
-        "nickname": "test",
-        "unit": "g"
-      });
-      herokuAPI.refrigeratorEdit(edittedTarget)
-        .then(function(response) {
-          console.log("응답 온거", response);
-          if(response.status == 200) {
-            console.log("수정 성공");
-          }
-        })
+  // 팝업창 메소드들
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true;
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false;
+    },
+    invalidPopup() {
+      this.headerTitle = "유효하지 않음";
+      this.content1 = "입력 정보가 유효하지 않습니다.";
+      this.showDialog();
+    },
+    editFailPopup() {
+      this.headerTitle = "변경 실패";
+      this.content1 = "재료 변경에 실패하였습니다.";
+      this.showDialog();
     },
     editIngre() {
       let vm = this;
+      if(vm.name == "") {
+        vm.invalidPopup();
+        return;
+      }
+      if(vm.amount == "") {
+        vm.invalidPopup();
+        return;
+      }
+      if(vm.unit == "") {
+        vm.invalidPopup();
+        return;
+      }
       const temp = {
         "id": vm.idP,
         "amount": vm.amount,
@@ -223,8 +262,10 @@ export default{
           .catch(function (e) {
             if(e.response.status == 406) {
               console.log("406 수정실패 error");
+              vm.editFailPopup();
             } else if(e.response.status == 500) {
               console.log("500 Unknown error");
+              vm.editFailPopup();
             }
           });
       }
