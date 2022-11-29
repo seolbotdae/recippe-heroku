@@ -40,7 +40,7 @@
                           <div class="d-flex justify-space-between align-center">
                             <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
                             <div class="mr-3">
-                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="my-2" @click="beforeEdit(item)">수정하기</v-btn>
                               <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
                             </div>
                           </div>
@@ -60,7 +60,7 @@
                           <div class="d-flex justify-space-between align-center">
                             <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
                             <div class="mr-3">
-                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="my-2" @click="beforeEdit(item)">수정하기</v-btn>
                               <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
                             </div>
                           </div>
@@ -80,7 +80,7 @@
                           <div class="d-flex justify-space-between align-center">
                             <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
                             <div class="mr-3">
-                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="my-2" @click="beforeEdit(item)">수정하기</v-btn>
                               <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
                             </div>
                           </div>
@@ -100,7 +100,7 @@
                           <div class="d-flex justify-space-between align-center">
                             <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
                             <div class="mr-3">
-                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="my-2" @click="beforeEdit(item)">수정하기</v-btn>
                               <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
                             </div>
                           </div>
@@ -120,7 +120,7 @@
                           <div class="d-flex justify-space-between align-center">
                             <span class="ml-3" style="font-size:1.2em">{{item.expiry_date}}</span>
                             <div class="mr-3">
-                              <v-btn small color="#AEBDCA" class="my-2">수정하기</v-btn>
+                              <v-btn small color="#AEBDCA" class="my-2" @click="beforeEdit(item)">수정하기</v-btn>
                               <v-btn small color="#AEBDCA" class="ml-3 my-2" @click="deletePopup(item.id)">삭제하기</v-btn>
                             </div>
                           </div>
@@ -169,6 +169,21 @@
       />
     </v-dialog>
 
+    <!-- 재료 수정 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="editIngredientDialog"
+    >
+      <edit-ingredient-dialog
+        :idP="id"
+        :nameP="name"
+        :amountP="amount"
+        :unitP="unit"
+        @update="update"
+        @hide="hideEditIngredientDialog"
+      />
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -178,11 +193,13 @@
 import herokuAPI from '@/api/heroku.js';
 import PopupDialog from '@/components/popup.vue';
 import AddIngredientDialog from '@/components/addIngredient.vue';
+import EditIngredientDialog from '@/components/editIngredient.vue';
 
 export default{
   components: {
     PopupDialog,
-    AddIngredientDialog
+    AddIngredientDialog,
+    EditIngredientDialog
   },
   data(){
     return{
@@ -193,7 +210,11 @@ export default{
       btn2Title: "",
       btn2: false,
       id: -1,
+      name: "",
+      amount: -1,
+      unit: "",
       addIngredientDialog: false,
+      editIngredientDialog: false,
       refrigerators: [],
       isEmpty: false,
 
@@ -300,25 +321,22 @@ export default{
     hideAddIngredientDialog() {
       this.addIngredientDialog = false;
     },
+  // 재료수정 팝업창 메소드들
+    showEditIngredientDialog() {
+      this.editIngredientDialog = true;
+    },
+    hideEditIngredientDialog() {
+      this.editIngredientDialog = false;
+    },
+    beforeEdit(object) {
+      this.id = object.id;
+      this.name = object.name;
+      this.amount = object.amount;
+      this.unit = object.unit;
+      this.showEditIngredientDialog();
+    },
     update() {
       this.$router.go();
-    },
-    updateRefrigerator() {
-      const edittedTarget = JSON.stringify({
-        "id": 1,
-        "amount": 1000,
-        "expiry_date": '2022-12-31',
-        "name": "kkochu",
-        "nickname": "test",
-        "unit": "g"
-      });
-      herokuAPI.refrigeratorEdit(edittedTarget)
-        .then(function(response) {
-          console.log("응답 온거", response);
-          if(response.status == 200) {
-            console.log("수정 성공");
-          }
-        })
     },
   }
 }

@@ -19,6 +19,7 @@
               label="이메일을 입력하세요"
               :rules="email_rule"
               required
+              :disabled="sendCode"
             ></v-text-field>
           </v-form>
         </v-col>
@@ -77,6 +78,7 @@ export default{
       next: null,
       snackbar: false,
       snackbarContents: "",
+      sendCode: false,
 
     // 유효성 검사
       email_rule: [
@@ -114,6 +116,7 @@ export default{
           console.log("firstcheck", response);
           vm.snackbarContents = "이메일을 전송했습니다."
           vm.snackbar = true;
+          vm.sendCode = true;
         })
         .catch(function (e) {
           if(e.response.status == 501) {

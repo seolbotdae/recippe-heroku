@@ -134,7 +134,7 @@ export default{
   data() {
     return {
       name: "",
-      amount: "",
+      amount: 0,
       unit: "",
       expiry_date: null,
       nickname: "",
