@@ -53,7 +53,7 @@
             <v-row>
               <v-col offset="2" cols="8">
                 <v-img
-                    max-height="450"
+                    max-height="350"
                     contain
 
                     :src="'data:image/jpeg;base64,'+requestPhoto.photo_link"
