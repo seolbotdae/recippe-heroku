@@ -45,7 +45,7 @@
           </v-card-title>
           
           <!-- 추천 요리 사진 v-for 입니다. -->
-          <div class="d-flex align-center">
+          <div class="d-flex align-center photo-box">
             <div v-for="item in photo" :key="item.photo_link" @click="toLookupPhoto(item.post_id)">
               <v-img
                 contain
@@ -71,6 +71,10 @@
 .recommend-recipe-title{
   color: #7ca5c9;
   font-weight: 900;
+}
+
+.photo-box{
+  cursor: pointer;
 }
 </style>
 
