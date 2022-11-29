@@ -55,7 +55,10 @@
                 <!-- 재료 나타날 v-for -->
 			          <div v-for="(item,index) in ingredient" :key="item.name">
 			          	<span style="vertical-align: text-top" class="my-text">{{ item.name }} {{ item.amount }}{{ item.unit }}</span>
-                  <v-btn @click="ingredient.splice(index,1)" small text color="success pa-5">
+                  <v-btn @click="beforeEdit(item)" small text color="success pa-5">
+                    <v-icon>mdi-pencil-outline</v-icon>
+                  </v-btn>
+                  <v-btn @click="ingredient.splice(index,1)" small text color="warning pa-5">
                     <v-icon>mdi-close-box</v-icon>
                   </v-btn>
                   <br/>
@@ -63,7 +66,6 @@
 			          </div>
               </div>
               
-			        
               <div class="d-flex">
                 <v-btn @click="showAddIngredientDialog" color="success pa-5" class="add-ingredient">
                   <v-icon>mdi-plus-circle-outline</v-icon>
@@ -121,6 +123,23 @@
       />
     </v-dialog>
 
+    <!-- 재료 수정 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="editIngredientDialog"
+    >
+      <edit-ingredient-dialog
+        :isRecipe="true"
+        :idP="id"
+        :nameP="name"
+        :amountP="amount"
+        :unitP="unit"
+        @edit="edit"
+        @update="update"
+        @hide="hideEditIngredientDialog"
+      />
+    </v-dialog>
+
     <!-- 팝업창 형식 -->
     <v-dialog
       max-width="300"
@@ -138,6 +157,15 @@
         </template>
       </popup-dialog>
     </v-dialog>
+
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
   </v-container>
 </template>
@@ -172,6 +200,7 @@ import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
 import router from '@/router/index.js';
 import AddIngredientDialog from '@/components/addIngredient.vue';
+import EditIngredientDialog from '@/components/editIngredient.vue';
 import PopupDialog from '@/components/popup.vue';
 import CategoryDialog from '@/components/Category.vue'
 
@@ -180,6 +209,7 @@ export default{
     'dropdown': dropdown,
     PopupDialog,
     AddIngredientDialog,
+    EditIngredientDialog,
     CategoryDialog
   },
   data () {
@@ -187,10 +217,21 @@ export default{
       addIngredientDialog: false,
       popupDialog: false,
       categoryDialog: false,
+      editIngredientDialog: false,
+      editIngreID: -1,
+
       headerTitle: "",
       content1: "",
       content2: "",
       btn1Title: "",
+
+      id: -1,
+      name: "",
+      amount: -1,
+      unit: "",
+
+      snackbar: false,
+      snackbarContents: "",
 
       userNN: "",
 
@@ -284,6 +325,7 @@ export default{
       this.addIngredientDialog = false;
     },
     add(ingre) {
+      let vm = this;
       const addIngre = {
         "id": null,
         "name": ingre.name,
@@ -291,11 +333,39 @@ export default{
         "unit": ingre.unit,
         "amount": ingre.amount
       }
+      var index = this.ingredient.findIndex(e => e.name === ingre.name);
+      if(index != -1) {
+        vm.snackbarContents = "이미 추가한 재료입니다."
+        vm.snackbar = true;
+        return;
+      }
       this.ingredient.push(addIngre);
+    },
+  // 재료수정 팝업창 메소드들
+    showEditIngredientDialog() {
+      this.editIngredientDialog = true;
+    },
+    hideEditIngredientDialog() {
+      this.editIngredientDialog = false;
+    },
+    beforeEdit(object) {
+      this.editIngreID = object.id;
+      this.id = object.id;
+      this.name = object.name;
+      this.amount = object.amount;
+      this.unit = object.unit;
+      this.showEditIngredientDialog();
+    },
+    edit(ingre) {
+      var index = this.ingredient.findIndex(e => e.id === this.editIngreID);
+      this.ingredient[index].amount = ingre.amount;
+      this.ingredient[index].name = ingre.name;
+      this.ingredient[index].unit = ingre.unit;
     },
     update() {
       this.$router.go();
     },
+    
     editRecipe() {
       let vm = this;
       const recipe = JSON.stringify ({
