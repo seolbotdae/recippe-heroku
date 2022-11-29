@@ -18,8 +18,8 @@ export default{
   data() {
     return {
       recippeType: [
-        { name: '족발·보쌈'},
-        { name: '찜·탕·찌개'},
+        { name: '족발보쌈'},
+        { name: '찜탕찌개'},
         { name: '돈까스'},
         { name: '회'},
         { name: '일식'},
@@ -35,7 +35,7 @@ export default{
         { name: '국수'},
         { name: '도시락'},
         { name: '분식'},
-        { name: '카페·디저트'},
+        { name: '카페디저트'},
         { name: '패스트푸드'},
       ],
     }
