@@ -5,76 +5,67 @@
         <!-- 가장 바깥쪽 카드 -->
         <v-card min-height="1000" color="#f5efe6">
           <!-- 뒤로 돌아가기 버튼 -->
-          <v-btn text to="/photo" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
+          <v-btn text to="/recipe" class="ml-5 mt-5"> - 레시피 게시판</v-btn>
           <!-- 게시글 정보 입력란 -->
-          <div class="mt-5">
+          <v-form ref="form" lazy-validation class="mt-5">
             <div class="line mx-5"></div>
 
-            <!-- value 를 변수로 채워주시면 됩니다. -->
-            <div class="px-10 d-flex align-center">
-              <span class="my-text mr-16">레시피 제목</span>
-              <v-divider vertical></v-divider>
+            <div class="px-10 d-flex align-center my-text">
+              <span class="mr-16">레시피 제목</span>
+              <v-divider vertical />
               <v-text-field
                 name="name"
                 label="레시피 제목"
                 id="id"
                 class="ml-16"
-                value="고등어 순살 조림"
                 v-model="recipeTitle"
+                :rules="title_rule"
               ></v-text-field>
             </div>
             
             <div class="line mx-5"></div>
 
-            <!-- script에 recippeTypeObject 를 바꾸시면 됩니다. -->
-            <div class="px-10 d-flex align-center">
-              <span class="mr-16 my-text">레시피 종류</span>
+            <div class="px-10 d-flex align-center my-text">
+              <span class="mr-16">레시피 종류</span>
               <v-divider vertical></v-divider>
-              <dropdown class="my-dropdown-toggle ml-15"
-              :options="recippeType" 
-              :selected="recippeTypeObject" 
-              v-on:updateOption="methodToRunOnSelect_category" 
-              :placeholder="'레시피 종류'"
-              :closeOnOutsideClick="boolean">
-              </dropdown>
+              <v-btn @click="showCategoryDialog" class="ml-14">카테고리 선택하기</v-btn>
+              <span class="ml-16">카테고리 : {{recipeCategory}}</span>
             </div>
 
             <div class="line mx-5"></div>
 
-            <!-- script에 recippeTypeObject 를 바꾸시면 됩니다. -->
-            <div class="px-10 d-flex align-center">
-              <span class="mr-16 my-text">매운맛 단계</span>
+            <div class="px-10 d-flex align-center my-text">
+              <span class="mr-16">매운맛 단계</span>
               <v-divider vertical></v-divider>
-              <dropdown class="my-dropdown-toggle ml-14"
-              :options="hotLevel" 
-              :selected="hotLevelObject" 
-              v-on:updateOption="methodToRunOnSelect_spicy" 
-              :placeholder="'매운맛 단계'"
-              :closeOnOutsideClick="boolean">
-              </dropdown>
+              <dropdown class="my-dropdown-toggle ml-15"
+                :options="hotLevel" 
+                :selected="hotLevelObject" 
+                v-on:updateOption="methodToRunOnSelect_spicy" 
+                :placeholder="'매운맛 단계'"
+                :closeOnOutsideClick="true"
+              />
             </div>
 
             <div class="line mx-5"></div>
 
             <div class="px-10 d-flex wrap align-center ingredients" style="position:relative">
               <span class="ml-1 mr-14 my-text">식재료 및 양</span>
-              <v-divider vertical class="mr-11"></v-divider>
+              <v-divider vertical class="mr-11" />
               <div class=ma-3>
                 <!-- 재료 나타날 v-for -->
-                <!-- 재료를 바꾸시면 됩니다. -->
-			          <span v-for="item in 30">
-			          	<span style="vertical-align: text-top" class="my-text">고등어 1마리</span>
-                  <v-btn small text color="success pa-5">
-                    <v-icon >mdi-close-box</v-icon>
+			          <div v-for="(item,index) in ingredient" :key="item.name">
+			          	<span style="vertical-align: text-top" class="my-text">{{ item.name }} {{ item.amount }}{{ item.unit }}</span>
+                  <v-btn @click="ingredient.splice(index,1)" small text color="success pa-5">
+                    <v-icon>mdi-close-box</v-icon>
                   </v-btn>
                   <br/>
                   
-			          </span>
+			          </div>
               </div>
               
 			        
               <div class="d-flex">
-                <v-btn color="success pa-5" class="add-ingredient">
+                <v-btn @click="showAddIngredientDialog" color="success pa-5" class="add-ingredient">
                   <v-icon>mdi-plus-circle-outline</v-icon>
                   <span>재료 추가하기</span>
                 </v-btn>
@@ -83,29 +74,71 @@
             </div>
             
             <div class="line mx-5"></div>
-          </div>
+          </v-form>
 
           <!-- 레시피 설명 입력란 -->
-          <!-- 여기 value를 바꾸시면 됩니다. -->
           <v-textarea
             outlined
             class="mt-5 mx-5"
             name="name"
             label="레시피 설명을 입력하세요"
             placeholder="레시피 설명을 입력하세요"
-			      value="고등어 손질하고 재료 다 넣어서 졸이면 됩니다. ^^"
             height="300"
             background-color="white"
             v-model="recipeDescription"
+            :rules="description_rule"
           ></v-textarea>
 
           <div class="d-flex justify-end mr-5 pb-5">
-            <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
-            <v-btn color="#AEBDCA" class="mr-2" @click="editRecipe()">등록하기</v-btn>
+            <v-btn color="#AEBDCA" class="mr-5" @click="$router.go(-1)">수정취소</v-btn>
+            <v-btn color="#AEBDCA" class="mr-2" @click="editRecipe()">수정하기</v-btn>
           </div>
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 카테고리 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="categoryDialog"
+    >
+      <category-dialog
+        @category="selectCategory"
+        @hide="hideCategoryDialog"
+      />
+    </v-dialog>
+
+    <!-- 재료 추가 팝업창 -->
+    <v-dialog
+      max-width="500"
+      v-model="addIngredientDialog"
+    >
+      <add-ingredient-dialog
+        :isRecipe='true'
+        @add="add"
+        @update="update"
+        @hide="hideAddIngredientDialog"
+      />
+    </v-dialog>
+
+    <!-- 팝업창 형식 -->
+    <v-dialog
+      max-width="300"
+      v-model="popupDialog"
+    >
+      <popup-dialog
+        :headerTitle="headerTitle"
+        btn1Title="확인"
+        :btn2="false"
+        @hide="hideDialog"
+      >
+        <template v-slot:body>
+          <!-- 내용이 들어가는 부분입니다아 -->
+          <div>{{content1}}<br/>{{content2}}</div>
+        </template>
+      </popup-dialog>
+    </v-dialog>
+
   </v-container>
 </template>
 
@@ -127,24 +160,44 @@
 .my-text{
   color: #42688e;
 }
+.temp {
+  max-height: 100px;
+  overflow: scroll;
+}
+
 </style>
 
 <script>
 import herokuAPI from '@/api/heroku.js';
 import dropdown from 'vue-dropdowns';
+import router from '@/router/index.js';
+import AddIngredientDialog from '@/components/addIngredient.vue';
+import PopupDialog from '@/components/popup.vue';
+import CategoryDialog from '@/components/Category.vue'
 
-export default {
+export default{
+  components: {
+    'dropdown': dropdown,
+    PopupDialog,
+    AddIngredientDialog,
+    CategoryDialog
+  },
   data () {
-	return {
-      recippeType: [
-        { name: '최근 순'},
-        { name: '조회 순'},
-        { name: '좋아요 순'}
-      ],
-      recippeTypeObject: {
-        name: '한식',
-      },
+    return {
+      addIngredientDialog: false,
+      popupDialog: false,
+      categoryDialog: false,
+      headerTitle: "",
+      content1: "",
+      content2: "",
+      btn1Title: "",
+
+      userNN: "",
+
+      requestRecipe: [],
+      ingredient: [],
       hotLevel: [
+        { name: '0단계'},
         { name: '1단계'},
         { name: '2단계'},
         { name: '3단계'},
@@ -152,62 +205,136 @@ export default {
         { name: '5단계'}
       ],
       hotLevelObject: {
-        name: '3단계',
+        name: '매운맛 단계',
       },
-      recipeTitle: null,
-      recipeCategory: null,
+      title_rule: [
+        v => !!v || '제목을 입력하세요.',
+      ],
+      recipeTitle: "",
+      recipeCategory: "",
       recipeSpicy: 0,
-      recipeDescription: null,
+      recipeDescription: "",
+      description_rule: [
+        v => !!v || '내용을 입력하세요.',
+      ],
     }
   },
-  components: {
-    'dropdown': dropdown,
+  mounted() {
+    let pid = this.$route.params.id;
+    console.log("post_id", pid);
+    if(pid == null) {
+      console.log("ERROR");
+    }
+    const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
+    let vm = this;
+    vm.userNN = UserInfo.nickname;
+    
+  // 레시피 정보 요청
+    herokuAPI.recipeLookup(pid, vm.userNN)
+      .then(function(response) {
+        console.log("게시글 응답 온거", response);
+        if(response.status == 200) {
+            console.log("조회 성공");
+            vm.requestRecipe = response.data.recipeInfo;
+            vm.recipeTitle = vm.requestRecipe.title;
+            vm.recipeCategory = vm.requestRecipe.category;
+            vm.recipeSpicy = vm.requestRecipe.degree_of_spicy;
+            vm.recipeDescription = vm.requestRecipe.description;
+            vm.ingredient = vm.requestRecipe.Recipe_Ingredients;
+          }
+      })
+      .catch(function (e) {
+        if(e.response.status == 500) {
+          console.log("500 DB 오류");
+          vm.requestFailPopup();
+        } else if(e.response.status == 502) {
+          console.log("502 Unknown error");
+          vm.requestFailPopup();
+        }
+      });
   },
   methods: {
+  // 팝업창 관련
+    showDialog() { // 팝업창 보이기
+      this.popupDialog = true;
+    },
+    hideDialog() { // 팝업창 숨기기
+      this.popupDialog = false;
+    },
+    requestFailPopup() {
+      this.headerTitle = "게시글 불러오기 실패";
+      this.content1 = "레시피 게시글을 불러오는데";
+      this.content2 = "실패했습니다.";
+      this.showDialog();
+    },
+    showCategoryDialog() {
+      this.categoryDialog = true;
+    },
+    hideCategoryDialog() {
+      this.categoryDialog = false;
+    },
+    selectCategory(name) {
+      this.recipeCategory = name;
+    },
+  // 재료추가 팝업창 메소드들
+    showAddIngredientDialog() {
+      this.addIngredientDialog = true;
+    },
+    hideAddIngredientDialog() {
+      this.addIngredientDialog = false;
+    },
+    add(ingre) {
+      const addIngre = {
+        "id": null,
+        "name": ingre.name,
+        "post_id": null,
+        "unit": ingre.unit,
+        "amount": ingre.amount
+      }
+      this.ingredient.push(addIngre);
+    },
+    update() {
+      this.$router.go();
+    },
     editRecipe() {
-      const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
-      const recipe = JSON.stringify (
-        {
-	        "post_id": 52,
-	        "nickname": UserInfo.nickname,
-	        "title": this.recipeTitle,
-	        "category": this.recipeCategory,
-	        "degree_of_spicy": this.recipeSpicy,
-	        "description": this.recipeDescription,
-	        "views": 0,
-	        "like_count": 0,
-	        "comment_count": 0,
-	        "upload_time": "2022-11-21T15:10:03.102840+09:00",
-	        "Recipe_Ingredients": [
-		        {
-			        "id": 54,
-			        "name": "yangpa",
-			        "post_id": 53,
-			        "unit": "T",
-			        "amount": 100.0
-		        },
-		        {
-			        "id": 55,
-			        "name": "asparagus",
-			        "post_id": 53,
-			        "unit": "Kg",
-			        "amount": 200.0
-		        }
-	        ],
-	        "comments": [
-	        ]
-        }
+      let vm = this;
+      const recipe = JSON.stringify ({
+        "post_id": vm.requestRecipe.post_id,
+        "nickname": vm.userNN,
+        "title": this.recipeTitle,
+        "category": this.recipeCategory,
+        "degree_of_spicy": this.recipeSpicy,
+        "description": this.recipeDescription,
+        "views": 0,
+        "like_count": 0,
+        "comment_count": 0,
+        "upload_time": "2022-11-21T15:10:03.102840+09:00",
+        "Recipe_Ingredients": vm.ingredient,
+        "comments": []
+      }
       );
       console.log(recipe);
-      /* recipe/create 와 마찬가지로 테스트를 위해 주석 쳐놨음 && 등록하기 버튼에 붙어있음 - 요하
       herokuAPI.recipeEdit(recipe) 
         .then(function (response) {
           console.log("전송 정보",  recipe);
           if(response.status == 200) {
             console.log("응답 정보", response.data);
+            router.go(-1);
           }
         })
-      */
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB error");
+            vm.headerTitle = "게시글 수정 실패";
+            vm.content1 = "게시글 수정을 실패했습니다."
+            vm.showDialog();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.headerTitle = "게시글 수정 실패";
+            vm.content1 = "게시글 수정을 실패했습니다."
+            vm.showDialog();
+          }
+        });
     },
     methodToRunOnSelect_category(payload) {
       this.object = payload;

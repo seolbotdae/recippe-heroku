@@ -90,7 +90,7 @@
           ></v-textarea>
 
           <div class="d-flex justify-end mr-5 pb-5">
-            <v-btn color="#AEBDCA" class="mr-5">등록취소</v-btn>
+            <v-btn color="#AEBDCA" class="mr-5" @click="$router.go(-1)">등록취소</v-btn>
             <v-btn color="#AEBDCA" class="mr-2" @click="addRecipe()">등록하기</v-btn>
           </div>
         </v-card>
@@ -191,6 +191,7 @@ export default{
       ingredient: [],
       category: "",
       hotLevel: [
+        { name: '0단계'},
         { name: '1단계'},
         { name: '2단계'},
         { name: '3단계'},
@@ -226,7 +227,7 @@ export default{
     hideCategoryDialog() {
       this.categoryDialog = false;
     },
-    selectCategory(name, page) {
+    selectCategory(name) {
       this.category = name;
     },
   // 재료추가 팝업창 메소드들
@@ -270,11 +271,10 @@ export default{
         "comments": []
         });
       console.log("연결 정보", recipe);
-      herokuAPI.recipeAdd(recipe) 
+      herokuAPI.recipeAdd(recipe)
         .then(function (response) {
           console.log("전송 정보",  recipe);
           if(response.status == 200) {
-            console.log("응답 정보", response);
             console.log("응답 정보", response.data);
             router.push({path: "/recipe"});
           }

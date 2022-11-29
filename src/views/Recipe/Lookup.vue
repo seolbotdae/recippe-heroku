@@ -18,6 +18,9 @@
               <div class="report-btn menu-item" @click="reportButtonOnClickMethod">
                 <span>신고</span>
               </div>
+              <div class="edit-btn menu-item" @click="editButtonOnClickMethod">
+                <span>수정</span>
+              </div>
               <div class="delete-btn menu-item" @click="deleteButtonOnClickMethod">
                 <span>삭제</span>
               </div>
@@ -706,6 +709,7 @@ export default{
       let mailBtn = document.querySelector(".mail-btn");
       let reportBtn = document.querySelector(".report-btn");
       let deleteBtn = document.querySelector(".delete-btn");
+      let editBtn = document.querySelector(".edit-btn");
 
       if(menuBtn.classList.contains('visible')) {
         console.log("visible 있음");
@@ -713,9 +717,11 @@ export default{
         deleteBtn.classList.remove("visible");
         mailBtn.classList.remove("visible");
         reportBtn.classList.remove("visible");
+        editBtn.classList.remove("visible");
       } else {
         if(this.isMine) {
           deleteBtn.classList.add("visible");
+          editBtn.classList.add("visible");
         }else {
           mailBtn.classList.add("visible");
           reportBtn.classList.add("visible");
@@ -744,8 +750,15 @@ export default{
       console.log("삭제 버튼 누름!");
       menuBtn.classList.remove("visible");
       this.deletePopup();
+    },
+    editButtonOnClickMethod(){
+      let menuBtn = document.querySelector(".menu-container");
+      console.log("삭제 버튼 누름!");
+      menuBtn.classList.remove("visible");
+      router.push({
+        path: "/recipe/edit/"+recipeID,
+      })
     }
-
   }
 }
 </script>
