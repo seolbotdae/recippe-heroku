@@ -28,6 +28,7 @@
           <v-text-field 
             v-model="info.pw" 
             label="password"
+            type="password"
             :rules="pw_rule"
           ></v-text-field>
         </v-col>
@@ -120,10 +121,13 @@ export default{
       const validate = this.$refs.form.validate();
       if(validate) {
         let vm = this;
+
+        let hashedPWD = this.hashing(vm.info.pw);
+
         const loginInfo = JSON.stringify({
           "nickname": null,
           "uid": vm.info.id,
-          "password": vm.info.pw,
+          "password": hashedPWD,
           "email": null,
           "auto_login": vm.info.al,
         });
@@ -154,6 +158,13 @@ export default{
       router.push({
         path: "/email-auth/0",
       })
+    },
+    hashing(content){
+      var result = "";
+      for(let i = 0; i < content.length; i++){
+        result += String.fromCharCode(Number(content.charCodeAt(i))+1);
+      }
+      return result;
     }
   }
 }

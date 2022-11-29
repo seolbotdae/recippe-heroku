@@ -20,6 +20,7 @@
                           filled 
                           label="새 비밀번호" 
                           :rules="pw_rule"
+                          type="password"
                           placeholder="새로운 비밀번호 입력."
                           required
                         ></v-text-field>
@@ -28,6 +29,7 @@
                           filled 
                           label="비밀번호 확인" 
                           :rules="pwch_rule"
+                          type="password"
                           placeholder="비밀번호 확인."
                           required
                         ></v-text-field>
@@ -151,10 +153,13 @@ export default{
       const validate = this.$refs.form.validate();
       if(validate) {
         const vm = this;
+
+        let hashedPWD = this.hashing(vm.user.pw);
+
         const userInfo = JSON.stringify({
           "nickname": this.nickname,
           "uid": this.user.id,
-          "password": this.user.pw,
+          "password": hashedPWD,
           "email": this.user.email,
           "auto_login": this.user.al,
         });
@@ -178,6 +183,20 @@ export default{
             }
           });
       }
+    },
+    hashing(content){
+      var result = "";
+      for(let i = 0; i < content.length; i++){
+        result += String.fromCharCode(Number(content.charCodeAt(i))+1);
+      }
+      return result;
+    },
+    rhashing(content){
+      var result = "";
+      for(let i = 0; i < content.length; i++){
+        result += String.fromCharCode(Number(content.charCodeAt(i))-1);
+      }
+      return result;
     }
   }
 }
