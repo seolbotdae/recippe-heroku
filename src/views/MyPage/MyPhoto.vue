@@ -8,7 +8,7 @@
             <span style="color:#7895B2; font-weight:900; font-size:1.3em;">내가 올린 사진</span>
           </div>
 
-          <v-row :v-if="isExist" justify="center">
+          <v-row v-if="!isExist" justify="center">
             <v-col cols="12">
               <p style="text-align:center; font-size:1.2em;" class="mt-10">
                 올린 사진이 없습니다.
@@ -16,7 +16,7 @@
             </v-col>
           </v-row>
 
-          <v-row justify="center" :v-if="isExist">
+          <v-row justify="center" v-if="isExist">
             <v-col cols="8">
               <v-card height="400" v-for="item in photo" :key="item.post_id" class="my-10" @click="toLookup(item.post_id)">
                 <v-row>

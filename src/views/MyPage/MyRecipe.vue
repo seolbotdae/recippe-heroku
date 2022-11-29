@@ -33,35 +33,46 @@
             </dropdown>
           </div>
 
-          <!-- 음식 v card -->
-          <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item.post_id" @click="toLookup(item.post_id)">
-            <div class="d-flex align-center">
-              <!-- 제목을 받아와서 넣으시면 됩니다. -->
-              <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">{{item.title}}</span>
-              <v-icon color="red" v-if="item.degree_of_spicy>=1">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item.degree_of_spicy>=2">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item.degree_of_spicy>=3">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item.degree_of_spicy>=4">mdi-chili-mild</v-icon>
-              <v-icon color="red" v-if="item.degree_of_spicy>=5">mdi-chili-mild</v-icon>
-            </div>
-            <div style="border: 0.5px solid #7895B2;" class="mx-5"></div>
-            <div class="d-flex align-center justify-space-between">
-              <div style="color:#7895B2" class="ml-10 py-3">
-                <!-- 날짜를 받아와서 넣으시면 됩니다. -->
-                <span class="mr-3">{{item.upload_time}}</span>
-                <!-- 이름을 받아와서 넣으시면 됩니다 -->
-                <span>{{item.nickname}}</span>
+          <v-row v-if="!isExist" justify="center">
+            <v-col cols="12">
+              <p style="text-align:center; font-size:1.2em;" class="mt-10">
+                올린 레시피가 없습니다.
+              </p>
+            </v-col>
+          </v-row>
+
+          <div v-if="isExist">
+            <!-- 음식 v card -->
+            <v-card height="100" class="mx-5 mb-5" v-for="item in recipes" :key="item.post_id" @click="toLookup(item.post_id)">
+              <div class="d-flex align-center">
+                <!-- 제목을 받아와서 넣으시면 됩니다. -->
+                <span class="mx-10 py-3" style="font-size:1.1em; font-weight:600; color:#7895B2">{{item.title}}</span>
+                <v-icon color="red" v-if="item.degree_of_spicy>=1">mdi-chili-mild</v-icon>
+                <v-icon color="red" v-if="item.degree_of_spicy>=2">mdi-chili-mild</v-icon>
+                <v-icon color="red" v-if="item.degree_of_spicy>=3">mdi-chili-mild</v-icon>
+                <v-icon color="red" v-if="item.degree_of_spicy>=4">mdi-chili-mild</v-icon>
+                <v-icon color="red" v-if="item.degree_of_spicy>=5">mdi-chili-mild</v-icon>
               </div>
-              <div class="mr-6">
-                <!-- 좋아요 받아와서 넣으시면 됩니다. -->
-                <v-icon color="red">mdi-thumb-up-outline</v-icon> {{item.like_count}}
-                <!-- 댓글 가져와서 넣으시면 됩니다. -->
-                <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> {{item.comment_count}}
-                <!-- 조회수 가져와서 넣으시면 됩니다. -->
-                <v-icon color="green" class="ml-2">mdi-eye-outline</v-icon> {{item.views}}
+              <div style="border: 0.5px solid #7895B2;" class="mx-5"></div>
+              <div class="d-flex align-center justify-space-between">
+                <div style="color:#7895B2" class="ml-10 py-3">
+                  <!-- 날짜를 받아와서 넣으시면 됩니다. -->
+                  <span class="mr-3">{{item.upload_time}}</span>
+                  <!-- 이름을 받아와서 넣으시면 됩니다 -->
+                  <span>{{item.nickname}}</span>
+                </div>
+                <div class="mr-6">
+                  <!-- 좋아요 받아와서 넣으시면 됩니다. -->
+                  <v-icon color="red">mdi-thumb-up-outline</v-icon> {{item.like_count}}
+                  <!-- 댓글 가져와서 넣으시면 됩니다. -->
+                  <v-icon color="blue" class="ml-2">mdi-comment-processing-outline</v-icon> {{item.comment_count}}
+                  <!-- 조회수 가져와서 넣으시면 됩니다. -->
+                  <v-icon color="green" class="ml-2">mdi-eye-outline</v-icon> {{item.views}}
+                </div>
               </div>
-            </div>
-          </v-card>
+            </v-card>
+          </div>
+          
 
         </v-card>
       </v-col>
@@ -149,6 +160,9 @@ export default{
 
       //현재 검색 기준
       searchText: "",
+
+    //받아온 것이 없는 경우 체크
+      isExist: true,
     }
   },
   mounted() {
@@ -162,6 +176,10 @@ export default{
           console.log("조회 성공");
           for(let i = 0; response.data[i] != null; i++) {
             vm.recipes.push(response.data[i]);
+          }
+          console.log("reponse 길이: " + response.data.length);
+          if(response.data.length == 0){
+            vm.isExist = false;
           }
         }
       })
