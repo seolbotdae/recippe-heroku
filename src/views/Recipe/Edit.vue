@@ -158,6 +158,15 @@
       </popup-dialog>
     </v-dialog>
 
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -220,6 +229,9 @@ export default{
       name: "",
       amount: -1,
       unit: "",
+
+      snackbar: false,
+      snackbarContents: "",
 
       userNN: "",
 
@@ -313,12 +325,19 @@ export default{
       this.addIngredientDialog = false;
     },
     add(ingre) {
+      let vm = this;
       const addIngre = {
         "id": null,
         "name": ingre.name,
         "post_id": null,
         "unit": ingre.unit,
         "amount": ingre.amount
+      }
+      var index = this.ingredient.findIndex(e => e.name === ingre.name);
+      if(index != -1) {
+        vm.snackbarContents = "이미 추가한 재료입니다."
+        vm.snackbar = true;
+        return;
       }
       this.ingredient.push(addIngre);
     },
