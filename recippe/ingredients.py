@@ -50,18 +50,22 @@ class ControlIngredients_b():
             # 레시피 재료의 이름, 총 양들, 냉장고의 이름, 총 양들
             recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId)
             refrigerator = Refrigerator.objects.filter(nickname=nickname)
-            
-            recipeIngredients = Recipe_Ingredients.objects.filter(post_id=postId).values_list('name', 'amount').order_by('name')
-            refrigerator = Refrigerator.objects.filter(nickname=nickname).values_list('name', 'amount').order_by('name')
 
             # 재료 감산 후 업데이트
             for idx in range(len(recipeIngredients)):
+                print(recipeIngredients[idx].unit, recipeIngredients[idx].name, recipeIngredients[idx].amount)
                 if recipeIngredients[idx].unit == 'T':
-                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=refrigerator[idx].amount-(recipeIngredients[idx].amount*15))
+                    targetRefri = Refrigerator.objects.get(nickname=nickname, name=refrigerator[idx].name)
+                    print(targetRefri,"1")
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=targetRefri.amount-(recipeIngredients[idx].amount*15))
                 elif recipeIngredients[idx].unit == 'kg' or recipeIngredients[idx].unit == 'l':
-                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=refrigerator[idx].amount-(recipeIngredients[idx].amount*1000))
+                    targetRefri = Refrigerator.objects.get(nickname=nickname, name=refrigerator[idx].name)
+                    print(targetRefri,"2")
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=targetRefri.amount-(recipeIngredients[idx].amount*1000))
                 else:
-                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx][0]).update(amount=refrigerator[idx][1]-recipeIngredients[idx][1])
+                    targetRefri = Refrigerator.objects.get(nickname=nickname, name=refrigerator[idx].name)
+                    print(targetRefri,"3")
+                    Refrigerator.objects.filter(nickname=nickname, name=refrigerator[idx].name).update(amount=targetRefri.amount-recipeIngredients[idx].amount)
 
             result = self.sendResult("남은 재료 계산하기 성공")
         except:
