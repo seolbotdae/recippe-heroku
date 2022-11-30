@@ -264,30 +264,30 @@ export default{
     },
     deletePopup() {
       this.headerTitle = "요리 사진 게시글 삭제";
-      this.content1 = "삭제하시겠습니까?";
+      this.content1 = "게시글을 삭제하시겠습니까?";
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
       this.showDialog();
     },
     deleteFailPopup() {
-      this.headerTitle = "요리 사진 게시글 삭제 실패";
-      this.content1 = "게시글 삭제에 실패했습니다.";
+      this.headerTitle = "서버 오류";
+      this.content1 = "게시글 삭제를 실패하였습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
       this.showDialog();
     },
     requestFailPopup() {
-      this.headerTitle = "게시글 불러오기 실패";
-      this.content1 = "사진 게시글을 불러오는데";
-      this.content2 = "실패했습니다.";
+      this.headerTitle = "요청 실패";
+      this.content1 = "게시글을 불러오지 못했습니다.";
+      this.content2 = "";
       this.btn1Title = "확인";
       this.btn2 = false;
       this.showDialog();
     },
     likeFailPopup(text) {
-      this.headerTitle = "좋아요 "+text+" 실패";
-      this.content1 = "좋아요 "+text+"에 실패했습니다.";
+      this.headerTitle = "서버 오류";
+      this.content1 = '"좋아요" '+text+"에 실패하였습니다.";
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;

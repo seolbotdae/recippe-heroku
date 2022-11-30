@@ -160,7 +160,7 @@
               <!-- 댓글 수정 댓글 내용부분입니다. -->
               <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
                 <div class="my-text mb-0 ma-3">
-                  <v-form ref="form" lazy-validation>
+                  <v-form>
                     <v-textarea
                       outlined
                       background-color="white"
@@ -186,7 +186,7 @@
             <!-- 댓글 등록 댓글 내용부분입니다. -->
             <v-card width="100%" color="#f5efe6" flat class="mb-0 mr-5 ml-11" >
               <div class="my-text mb-0 ma-3">
-                <v-form ref="form" lazy-validation>
+                <v-form ref="form" v-model="valid" lazy-validation>
                   <v-textarea
                     outlined
                     background-color="white"
@@ -336,6 +336,7 @@ export default{
   },
   data () {
     return {
+      valid: true,
     // 팝업창
       popupDialog: false,
       reportDialog: false,
@@ -526,8 +527,16 @@ export default{
       this.showDialog();
     },
     ingreFailPopup() {
-      this.headerTitle = "사용자 재료 정보 요청 실패";
-      this.content1 = "재료 정보 요청에 실패했습니다";
+      this.headerTitle = "재료 요청 실패";
+      this.content1 = "없는 재료를 가져오는데 실패했습니다.";
+      this.content2 = "";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
+    decreaseAmountFailPopup() {
+      this.headerTitle = "저장 실패";
+      this.content1 = "감산 결과를 저장하는데 실패했습니다.";
       this.content2 = "";
       this.btn1Title = "확인";
       this.btn2 = false;
@@ -539,6 +548,22 @@ export default{
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
+      this.showDialog();
+    },
+    commentInvalidPopup() {
+      this.headerTitle = "댓글 작성";
+      this.content1 = "댓글 작성란이 비어있습니다.";
+      this.content2 = "";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
+    commentAddFailPopup() {
+      this.headerTitle = "댓글 등록";
+      this.content1 = "댓글 등록에 실패하였습니다.";
+      this.content2 = "";
+      this.btn1Title = "확인";
+      this.btn2 = false;
       this.showDialog();
     },
 
@@ -654,15 +679,27 @@ export default{
             vm.unExistIngredients();
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("500 DB 오류");
+            vm.decreaseAmountFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("502 Unknown error");
+            vm.decreaseAmountFailPopup();
+          }
+        });
     },
     methodToRunOnSelect(payload) {
       this.object = payload;
     },
     addComment() {
-      const validate = this.$refs.form.validate();
-      if(!validate) return;
-      console.log("유효성검사 통과");
       let vm = this;
+      const validate = this.$refs.form.validate();
+      if(!validate) {
+        vm.commentInvalidPopup();
+        return;
+      }
+      console.log("유효성검사 통과");
       const Comment = JSON.stringify({
         "comment_id" : 0,
 	      "comments" : vm.newComment,
@@ -679,6 +716,15 @@ export default{
             vm.$router.go();
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("403 DB 오류");
+            vm.commentAddFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("500 Unknown error");
+            vm.commentAddFailPopup();
+          }
+        });
     },
     toEditComment(object) {
       this.editCommentID = object.comment_id;
@@ -686,6 +732,10 @@ export default{
     },
     editComment() {
       let vm = this;
+      if(vm.changeComment == "") {
+        vm.commentInvalidPopup();
+        return;
+      }
       const changeComment = JSON.stringify({
         "comment_id" : vm.editCommentID,
 	      "comments" : vm.changeComment,

@@ -36,7 +36,7 @@
           <v-row v-if="!isExist" justify="center">
             <v-col cols="12">
               <p style="text-align:center; font-size:1.2em;" class="mt-10">
-                올린 레시피가 없습니다.
+                {{emptyText}}
               </p>
             </v-col>
           </v-row>
@@ -73,7 +73,6 @@
             </v-card>
           </div>
           
-
         </v-card>
       </v-col>
     </v-row>
@@ -146,6 +145,7 @@ export default{
       recipeID: null,
 
       userNN: "",
+      emptyText: "",
 
     //드롭다운
       //정렬 기준 objects
@@ -174,6 +174,7 @@ export default{
         console.log("응답 온거", response);
         if(response.status == 200) {
           console.log("조회 성공");
+          vm.emptyText = "작성한 레시피 게시글이 없습니다.";
           for(let i = 0; response.data[i] != null; i++) {
             vm.recipes.push(response.data[i]);
           }
@@ -202,8 +203,8 @@ export default{
       this.popupDialog = false;
     },
     requestFailPopup() { // 실패
-      this.headerTitle = "요청 실패";
-      this.content1 = "레시피 게시글을 요청에 실패했습니다.";
+      this.headerTitle = "레시피 요청 실패";
+      this.content1 = "레시피 게시글 요청에 실패했습니다.";
       this.showDialog();
     },
     searchRequestFailPopup() { // 검색 실패
@@ -236,6 +237,7 @@ export default{
           console.log("응답 온거", response);
           if(response.status == 200) {
               console.log("검색 성공");
+              vm.emptyText = "검색결과 레시피가 존재하지 않습니다.";
               for(let i = 0; response.data[i] != null; i++) {
                 vm.recipes.push(response.data[i]);
               }

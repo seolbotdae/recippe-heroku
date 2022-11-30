@@ -74,17 +74,26 @@
       v-model="popupDialog"
     >
       <popup-dialog
-        headerTitle = "게시글 등록 오류"
+        headerTitle = "서버 오류"
         btn1Title="확인"
         :btn2=false
         @hide="hideDialog"
       >
         <template v-slot:body>
           <!-- 내용이 들어가는 부분입니다아 -->
-          <div>게시글 등록에 실패했습니다.</div>
+          <div>게시글 등록을 실패하였습니다.</div>
         </template>
       </popup-dialog>
     </v-dialog>
+
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
 
   </v-container>
 </template>
@@ -105,7 +114,10 @@ export default{
       preview: null,
       image: null,
       nickname: "",
-      upload_time: ""
+      upload_time: "",
+
+      snackbar: false,
+      snackbarContents: "",
     };
   },
   mounted(){
@@ -154,6 +166,12 @@ export default{
     },
 
     addPhoto() {
+      let vm = this;
+      if(vm.image == null) {
+        vm.snackbarContents = "사진을 추가해주세요.";
+        vm.snackbar = true;
+        return;
+      }
       const newPhoto = JSON.stringify (
         {
 	        "post_id": null,

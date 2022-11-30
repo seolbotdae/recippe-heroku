@@ -11,7 +11,7 @@
           <v-row v-if="!isExist" justify="center">
             <v-col cols="12">
               <p style="text-align:center; font-size:1.2em;" class="mt-10">
-                올린 사진이 없습니다.
+                작성한 요리 사진 게시글이 없습니다.
               </p>
             </v-col>
           </v-row>
@@ -148,7 +148,7 @@ export default{
       this.popupDialog = false;
     },
     requestFailPopup() { // 실패
-      this.headerTitle = "요청 실패";
+      this.headerTitle = "사진 요청 실패";
       this.content1 = "사진 게시글 요청에 실패했습니다.";
       this.showDialog();
     },

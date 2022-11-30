@@ -104,8 +104,10 @@ export default{
       this.showDialog();
     },
     reportPopup(){
-      this.titlePopup = "신고 등록";
-      this.content = "신고를 등록하시겠습니까?";
+      this.titlePopup = "신고 확인";
+      let reportType = "게시글";
+      if(this.postType == -1) reportType = "댓글";
+      this.content = reportType+"을 신고하시겠습니까?";
       this.titleBtn1 = "취소";
       this.titleBtn2 = "신고하기";
       this.btn2 = true;
