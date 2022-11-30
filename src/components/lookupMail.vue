@@ -15,7 +15,7 @@
           수신자 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ mailReceiver }}
         </div>
         <div class="text-start">
-          작성시간 &nbsp;&nbsp;&nbsp;&nbsp; {{ sendTime }}
+          작성시간 &nbsp;&nbsp;&nbsp;&nbsp; {{ sendTime.split(/[T]/)[0] }}
         </div>    
       </div>
     </div>
