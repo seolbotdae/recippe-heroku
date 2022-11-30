@@ -36,7 +36,7 @@
                     <v-col class="py-0 my-0">
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 날짜 넣어주세요 -->
-                        <v-card-title primary-title>
+                        <v-card-title>
                           {{upload_time}}
                         </v-card-title>
                       </v-card>
@@ -112,7 +112,7 @@ export default{
     const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
     this.nickname = UserInfo.nickname;
     const date = new Date();
-    this.upload_time = date.toLocaleString('ko-kr');
+    this.upload_time = date.toLocaleString().split(/[\.]/)[0] + " -" + date.toLocaleString().split(/[\.]/)[1] + " -" + date.toLocaleString().split(/[\.]/)[2];
   },
   methods: {
     showDialog() { // 팝업창 보이기
