@@ -121,7 +121,7 @@
               <div class="d-flex align-top jusify-left">
                 <div class="mx-7 my-3 my-comment-commenter">
                   <h3 class="my-text">{{ item.nickname }}</h3>
-                  <p class="ma-0 my-text">{{ item.comment_time }}</p>
+                  <p class="ma-0 my-text">{{ item.comment_time.split(/[T]/)[0] }}</p>
                 </div>
   
               <!-- 댓글 부분 댓글 내용부분입니다. -->

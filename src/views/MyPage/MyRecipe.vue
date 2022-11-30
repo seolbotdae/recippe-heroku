@@ -57,7 +57,7 @@
               <div class="d-flex align-center justify-space-between">
                 <div style="color:#7895B2" class="ml-10 py-3">
                   <!-- 날짜를 받아와서 넣으시면 됩니다. -->
-                  <span class="mr-3">{{item.upload_time}}</span>
+                  <span class="mr-3">{{item.upload_time.split(/[T]/)[0]}}</span>
                   <!-- 이름을 받아와서 넣으시면 됩니다 -->
                   <span>{{item.nickname}}</span>
                 </div>
