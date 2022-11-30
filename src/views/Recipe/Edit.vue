@@ -332,7 +332,7 @@ export default{
       const addIngre = {
         "id": null,
         "name": ingre.name,
-        "post_id": null,
+        "post_id": vm.requestRecipe.post_id,
         "unit": ingre.unit,
         "amount": ingre.amount
       }
