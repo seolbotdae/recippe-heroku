@@ -241,7 +241,7 @@ export default{
         { name: '5단계'}
       ],
       hotLevelObject: {
-        name: '매운맛 단계',
+        name: '0단계',
       },
       recipeTitle: null,
       title_rule: [

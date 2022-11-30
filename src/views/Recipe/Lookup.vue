@@ -248,6 +248,15 @@
       />
     </v-dialog>
 
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -349,6 +358,9 @@ export default{
       btn2: false,
       reportType: 0,
       reportID: 0,
+
+      snackbar: false,
+      snackbarContents: "",
 
       requestRecipe: [],
       UnExistIngre: [],
@@ -505,7 +517,7 @@ export default{
     commentDeletePopup(id) {
       this.deleteCommentID = id;
       this.headerTitle = "댓글 삭제";
-      this.content1 = "삭제하시겠습니까?";
+      this.content1 = "댓글을 삭제하시겠습니까?";
       this.btn1Title = "취소";
       this.btn2Title = "삭제";
       this.btn2 = true;
@@ -515,6 +527,13 @@ export default{
     deleteFailPopup() {
       this.headerTitle = "레시피 게시글 삭제 실패";
       this.content1 = "게시글 삭제에 실패했습니다.";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
+    commentDeleteFailPopup() {
+      this.headerTitle = "댓글 삭제";
+      this.content1 = "댓글 삭제를 실패했습니다.";
       this.btn1Title = "확인";
       this.btn2 = false;
       this.showDialog();
@@ -553,6 +572,14 @@ export default{
     },
     commentInvalidPopup() {
       this.headerTitle = "댓글 작성";
+      this.content1 = "댓글 작성란이 비어있습니다.";
+      this.content2 = "";
+      this.btn1Title = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
+    editCommentInvalidPopup() {
+      this.headerTitle = "댓글 수정";
       this.content1 = "댓글 작성란이 비어있습니다.";
       this.content2 = "";
       this.btn1Title = "확인";
@@ -609,6 +636,15 @@ export default{
             vm.$router.go();
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("403 DB 오류");
+            vm.commentDeleteFailPopup();
+          } else if(e.response.status == 502) {
+            console.log("500 Unknown error");
+            vm.commentDeleteFailPopup();
+          }
+        });
     },
     
     showReportDialog() { // 신고 팝업창 보이기
@@ -734,7 +770,7 @@ export default{
     editComment() {
       let vm = this;
       if(vm.changeComment == "") {
-        vm.commentInvalidPopup();
+        vm.editCommentInvalidPopup();
         return;
       }
       const changeComment = JSON.stringify({
@@ -752,6 +788,17 @@ export default{
             router.go();
           }
         })
+        .catch(function (e) {
+          if(e.response.status == 500) {
+            console.log("403 DB 오류");
+            vm.snackbarContents = "댓글 수정 실패"
+            vm.snackbar = true;
+          } else if(e.response.status == 502) {
+            console.log("500 Unknown error");
+            vm.snackbarContents = "댓글 수정 실패"
+            vm.snackbar = true;
+          }
+        });
     },
 
   // 옆의 메뉴 버튼을 누를 경우 실행되는 함수.

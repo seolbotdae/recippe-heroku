@@ -103,13 +103,20 @@ export default{
       this.btn2 = false;
       this.showDialog();
     },
+    reportFailPopupComment(){
+      this.titlePopup = "댓글 신고";
+      this.content = "댓글 신고를 실패하였습니다.";
+      this.titleBtn1 = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
     reportPopup(){
       this.titlePopup = "신고 확인";
       let reportType = "게시글";
       if(this.postType == -1) reportType = "댓글";
       this.content = reportType+"을 신고하시겠습니까?";
       this.titleBtn1 = "취소";
-      this.titleBtn2 = "신고하기";
+      this.titleBtn2 = "신고";
       this.btn2 = true;
       this.showDialog();
     },
@@ -174,10 +181,10 @@ export default{
           .catch(function (e) {
             if(e.response.status == 404) {
               console.log("404 DB error");
-              vm.reportFailPopup();
+              vm.reportFailPopupComment();
             } else if(e.response.status == 500) {
               console.log("500 Unknown error");
-              vm.reportFailPopup();
+              vm.reportFailPopupComment();
             }
           });
         }

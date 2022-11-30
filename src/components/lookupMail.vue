@@ -93,30 +93,30 @@ export default{
       content: ""
     };
   },
+  mounted() {
+    let vm = this;
+    if(vm.mailTitle == null || vm.mailID == null ||vm.mailSender == null ||vm.mailReceiver == null ||vm.mailContents == null ||vm.mailID == null) {
+      vm.openFailPopup();
+    }
+  },
   props: {
     mailTitle: {
       type: String,
-      default: "쪽지 제목",
     },
     mailID: {
       type: Number,
-      default: "쪽지 id",
     },
     mailSender: {
       type: String,
-      default: "작성자",
     },
     mailReceiver: {
       type: String,
-      default: "수신자",
     },
     sendTime: {
       type: String,
-      default: "작성 시간",
     },
     mailContents: {
       type: String,
-      default: "내용",
     }
   },
   methods: {
@@ -131,9 +131,16 @@ export default{
       this.deleteMail();
       this.hideDialog();
     },
+    openFailPopup(){
+      this.titlePopup = "쪽지 조회 실패";
+      this.content = "쪽지를 가져오는데 실패했습니다.";
+      this.titleBtn1 = "확인";
+      this.btn2 = false;
+      this.showDialog();
+    },
     deleteFailPopup(){
-      this.titlePopup = "쪽지 삭제 실패";
-      this.content = "쪽지 삭제에 실패했습니다.";
+      this.titlePopup = "삭제 실패";
+      this.content = "삭제에 실패했습니다.";
       this.titleBtn1 = "확인";
       this.btn2 = false;
       this.showDialog();
