@@ -40,7 +40,7 @@
                       <v-card fill-height color="#f5efe6" flat>
                         <!-- 날짜 넣어주세요 -->
                         <v-card-title primary-title>
-                          {{ requestPhoto.upload_time }}
+                          {{ requestPhoto.upload_time.split(/[T]/)[0] }}
                         </v-card-title>
                       </v-card>
                     </v-col>

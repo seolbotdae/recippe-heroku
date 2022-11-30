@@ -23,7 +23,7 @@
                   <v-col class="d-flex justify-space-between">
                     <div class="pl-5">
                       <v-card-title>{{item.nickname}}</v-card-title>
-                      <v-card-subtitle>{{item.upload_time}}</v-card-subtitle>
+                      <v-card-subtitle>{{item.upload_time.split(/[T]/)[0]}}</v-card-subtitle>
                     </div>
                     <div>
                       <v-icon class="pa-6" large>

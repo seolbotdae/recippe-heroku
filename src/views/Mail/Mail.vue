@@ -17,7 +17,7 @@
             <div class="d-flex align-top justify-space-between mx-4" >
               <span>보낸사람:{{val.nickname}}</span>
               <span>받는사람:{{val.receiver}}</span>
-              <span>{{val.send_time}}</span>
+              <span>{{val.send_time.split(/[T]/)[0]}}</span>
             </div>
 
           </v-card>

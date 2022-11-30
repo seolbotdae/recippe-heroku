@@ -54,7 +54,7 @@
 
       <div style="color:#7895B2; font-size: 1.3em;">
         유통기한<br/>  
-        <span style="font-size: 0.7em;">주의! : 달력에서 유통기한을 선택하지 않을 경우 유통기한 정보가 사라집니다.</span>
+        <span style="font-size: 0.7em;">달력에서 원래 유통기한을 선택해 주세요.</span>
       </div>
 
       <v-date-picker
