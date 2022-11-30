@@ -64,7 +64,7 @@
             <div class="d-flex align-center justify-space-between">
               <div style="color:#7895B2" class="ml-10 py-3">
                 <!-- 날짜를 받아와서 넣으시면 됩니다. -->
-                <span class="mr-3">{{item.upload_time}}</span>
+                <span class="mr-3">{{item.show_upload_time}}</span>
                 <!-- 이름을 받아와서 넣으시면 됩니다 -->
                 <span>{{item.nickname}}</span>
               </div>
@@ -215,8 +215,14 @@ export default{
         console.log("리스트 응답 온거", response);
         if(response.status == 200) {
             console.log("조회 성공");
+
+
             vm.pageLength = response.data.total_page;
             for(let i = 0; response.data.recipeList[i] != null; i++) {
+              //날짜 변경
+              var parsedTime = response.data.recipeList[i].upload_time.split(/[T]/);
+              response.data.recipeList[i].show_upload_time = parsedTime[0];
+
               vm.recipes.push(response.data.recipeList[i]);
             }
           }
