@@ -120,6 +120,15 @@
       </popup-dialog>
     </v-dialog>
 
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{ snackbarContents }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -167,6 +176,9 @@ export default{
       btn1Title: "확인",
       btn2: false,
       categoryDialog: false,
+
+      snackbar: false,
+      snackbarContents: "",
 
     //레시피 정보들
       recipes: [],
@@ -256,8 +268,8 @@ export default{
       this.showDialog();
     },
     sortRequestFailPopup() { // 정렬 실패
-      this.headerTitle = "요청 실패";
-      this.content1 = "정렬 정보 요청에 실패했습니다.";
+      this.headerTitle = "정렬 실패";
+      this.content1 = "정렬된 게시글 목록을 가져오는데 실패했습니다.";
       this.showDialog();
     },
 
@@ -305,6 +317,10 @@ export default{
         });
     },
     beforeSelectKeyword() {
+      if(this.searchText == "") {
+        this.snackbarContents = "키워드를 입력해주세요."
+        this.snackbar = true;
+      }
       this.searchTextStorage = this.searchText;
       this.searchTypeStorage = this.search_object.name;
       this.selectKeyword(1);
