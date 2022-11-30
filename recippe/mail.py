@@ -47,7 +47,7 @@ class ControlMail_b():
         try:
             # 쪽지 정보를 생성 후 저장
             print(mail)
-            isExistReceiver = User.objects.filter(nickname=mail['nickname'])
+            isExistReceiver = User.objects.filter(nickname=mail['receiver'])
             if len(isExistReceiver) == 0:
                 result, code = self.sendResult("쪽지 추가 실패", None)
             else:

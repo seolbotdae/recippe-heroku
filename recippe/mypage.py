@@ -31,6 +31,7 @@ class ControlRefrigerator_b():
         return result, code
 
     def insertRefrigerator(self, refrigerator):
+        print(refrigerator)
         userRequest = refrigerator
         inputUnit = userRequest['unit']
         if inputUnit == 'kg':
@@ -42,6 +43,7 @@ class ControlRefrigerator_b():
         else: 
             changedAmount = userRequest['amount']
             changedUnit = userRequest['unit']
+        print(changedAmount, changedUnit)
 
         try:
             # 받은 식재료 정보 생성 후 저장
