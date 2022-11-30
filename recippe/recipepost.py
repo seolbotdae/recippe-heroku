@@ -155,7 +155,12 @@ class ControlRecipe_b():
                     # 저장된 레시피 게시글의 Id 가져오기
                     postid = nr.post_id
                     ingre['post_id'] = postid
-                    if ingre['unit'] == 'kg' or ingre['unit'] == 'l':
+                    if ingre['unit'] == 'kg':
+                        ingre['unit'] = 'g'
+                        ingre['amount'] = ingre['amount'] * 1000
+                        print(ingre)
+                    elif ingre['unit'] == 'l':
+                        ingre['unit'] = 'ml'
                         ingre['amount'] = ingre['amount'] * 1000
                     ingre = RecipeIngredientsSerializer(data=ingre)
                     if ingre.is_valid():
@@ -179,6 +184,14 @@ class ControlRecipe_b():
             Recipe_Ingredients.objects.filter(post_id=updatedRecipe['post_id']).delete()
             update_ingredients = updatedRecipe['Recipe_Ingredients']
             for uingre in update_ingredients:
+                if uingre['unit'] == 'kg':
+                    uingre['unit'] = 'g'
+                    uingre['amount'] = uingre['amount'] * 1000
+                    print(uingre)
+                elif uingre['unit'] == 'l':
+                    uingre['unit'] = 'ml'
+                    uingre['amount'] = uingre['amount'] * 1000                        
+                    print(uingre)
                 uingre = RecipeIngredientsSerializer(data=uingre)
                 if uingre.is_valid():
                     uingre.save()
