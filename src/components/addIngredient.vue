@@ -310,7 +310,7 @@ export default{
       }
       const UserInfo = JSON.parse(localStorage.getItem("UserInfo"));
       const Ingre = {
-          "amount": vm.amount,
+          "amount": Number(vm.amount),
           "expiry_date": this.is_expiry_not_exist ? null : vm.expiry_date, // 없어도 됨
           "name" : vm.name,
           "nickname" : UserInfo.nickname,
