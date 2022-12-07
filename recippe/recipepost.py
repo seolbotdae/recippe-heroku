@@ -281,8 +281,9 @@ class ControlComment_b():
                 comment_id = commentId
             )
 
-            cs = Comment.objects.filter(post_id=d.post_id)
-            RecipePost.objects.filter(post_id=d.post_id).update(comment_count=len(cs)) # 좋아요 수 업데이트
+            print(d.post_id.post_id)
+            cs = Comment.objects.filter(post_id=RecipePost.objects.get(post_id = d.post_id.post_id))
+            RecipePost.objects.filter(post_id=d.post_id.post_id).update(comment_count=len(cs)) # 좋아요 수 업데이트
             
             d.delete()
 
