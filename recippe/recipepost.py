@@ -280,11 +280,11 @@ class ControlComment_b():
                 nickname = nickname,
                 comment_id = commentId
             )
-            
-            d.delete()
 
             cs = Comment.objects.filter(post_id=d.post_id)
             RecipePost.objects.filter(post_id=d.post_id).update(comment_count=len(cs)) # 좋아요 수 업데이트
+            
+            d.delete()
 
             code = self.sendResult("댓글 삭제 성공")
         except:
